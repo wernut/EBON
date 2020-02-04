@@ -229,12 +229,14 @@ int main()
 		delete[] log;
 	}
 
-
 	// - Clearing color:
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	// - Enabling wiremesh mode:
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// - Enabling VSync:
 	glfwSwapInterval(true);
-	//glPointSize(5.0f);
 
 	// - Entering a while loop until an exit event has been registered:
 	while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
@@ -245,22 +247,24 @@ int main()
 		// - Creating the PV matrix:
 		glm::mat4 pv = projection * view;
 
-		model = glm::rotate(model, 0.0016f, glm::vec3(1, 1, 1));
+		//model = glm::rotate(model, 0.0016f, glm::vec3(1, 1, 1));
 		double time = glfwGetTime();
 
-		float sinTime = sin(time);
+		//float sinTime = sin(time);
+		float sinTime = 1.0f;
 
 		glClearColor(sinTime, sinTime, sinTime, 1.0f);
 
 		// - Creating the final colour within the fragment shader:
 		glm::vec4 color = glm::vec4(-sinTime, -sinTime, -sinTime, 1.0f);
 
-
 		glUseProgram(shader_progam_ID);
 		auto uniform_location = glGetUniformLocation(shader_progam_ID, "projection_view_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(pv));
+
 		uniform_location = glGetUniformLocation(shader_progam_ID, "model_matrix");
 		glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(model));
+
 		uniform_location = glGetUniformLocation(shader_progam_ID, "color");
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
 
@@ -268,7 +272,6 @@ int main()
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
-
 
 
 		// Updating the monitors display by swapping the back buffer with the front buffer:
