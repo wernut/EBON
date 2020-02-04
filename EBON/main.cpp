@@ -63,11 +63,17 @@ int main()
 
 		4, 5, 6, 5, 6, 7, // back
 
-		0, 4, 6, 2, 6, 3, // top
+		4, 5, 0, 5, 0, 1, // left
+
+		6, 7, 2, 7, 2, 3, // right
+
+		5, 1, 7, 1, 7, 3, // bottom
+
+		4, 0, 6, 0, 6, 2, // top
 	};
 
 	int vertex_count = 8;
-	int index_count = 18;
+	int index_count = 36;
 
 	// *** Create and load mesh *** /// 
 	uint VAO;
@@ -97,7 +103,7 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// *** Camera *** ///
-	glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.1f, 5.0f);
+	glm::mat4 projection = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 5.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 model = glm::mat4(1);
 
@@ -227,6 +233,7 @@ int main()
 	// - Clearing color:
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glfwSwapInterval(true);
 	//glPointSize(5.0f);
 
 	// - Entering a while loop until an exit event has been registered:
@@ -238,11 +245,15 @@ int main()
 		// - Creating the PV matrix:
 		glm::mat4 pv = projection * view;
 
-		//model = glm::rotate(model, 0.016f, glm::vec3(0, 0, 1));
+		model = glm::rotate(model, 0.0016f, glm::vec3(1, 1, 1));
 		double time = glfwGetTime();
 
+		float sinTime = sin(time);
+
+		glClearColor(sinTime, sinTime, sinTime, 1.0f);
+
 		// - Creating the final colour within the fragment shader:
-		glm::vec4 color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		glm::vec4 color = glm::vec4(-sinTime, -sinTime, -sinTime, 1.0f);
 
 
 		glUseProgram(shader_progam_ID);
