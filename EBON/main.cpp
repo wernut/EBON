@@ -44,43 +44,62 @@ int main()
 	// *** Mesh Data *** ///
 	glm::vec3 vertices[]
 	{
-		glm::vec3(-0.5f,  0.5f, 0.0f),
-		glm::vec3( 0.5f,  0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3( 0.5f,  0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3( 0.5f, -0.5f, 0.0f),
+		// front
+		glm::vec3(-0.5f,  0.5f, 0.0f), // top left 0
+		glm::vec3(-0.5f, -0.5f, 0.0f), // bot letf 1
+		glm::vec3( 0.5f,  0.5f, 0.0f), // top right 2
+		glm::vec3( 0.5f, -0.5f, 0.0f), // bot right 3
+
+		// back
+		glm::vec3(-0.5f,  0.5f, -1.0f), // top left 4
+		glm::vec3(-0.5f, -0.5f, -1.0f),	// bot letf 5
+		glm::vec3(0.5f,  0.5f,  -1.0f),	// top right 6
+		glm::vec3(0.5f, -0.5f,  -1.0f),	// bot right 7
 	};
 
+	int index_buffer[]
+	{
+		0, 1, 2, 1, 2, 3, // front
+
+		4, 5, 6, 5, 6, 7, // back
+
+		0, 4, 6, 2, 6, 3, // top
+	};
+
+	int vertex_count = 8;
+	int index_count = 18;
 
 	// *** Create and load mesh *** /// 
 	uint VAO;
 	uint VBO;
-	//uint IBO;
+	uint IBO;
 
-	// generating vao & vbo
+	// - Generating VAO & VBO:
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &IBO);
 
-	// binding vao and vbo
+	// - Binding VAO and VBO:
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(glm::vec3), &verticies[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(glm::vec3), vertices, GL_STATIC_DRAW);
 
-	// creating vertix attribute pointer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(int), index_buffer, GL_STATIC_DRAW);
+
+	// - Creating vertix attribute pointer:
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 
-	// unbinding
+	// - Unbinding:
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// *** Camera *** ///
-	glm::mat4 projection = glm::perspective(90.0f, 16 / 9.0f, 0.1f, 5.0f);
+	glm::mat4 projection = glm::perspective(1.507f, 16 / 9.0f, 0.1f, 5.0f);
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 model = glm::mat4(1);
-
 
 	// *** Load shader from file into string *** //
 	uint vertex_shader_ID = 0;
@@ -90,7 +109,7 @@ int main()
 	std::string shader_data;
 	std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
 
-	// Load source into string for compile
+	// - Load source into string for compile:
 	std::stringstream string_stream;
 	if (in_file_stream.is_open())
 	{
@@ -99,22 +118,34 @@ int main()
 		in_file_stream.close();
 	}
 
-	// Allocate space for shader program
+	// - Allocate space for shader program:
 	vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
-	// Convert to raw char*
+	// - Convert to raw char*:
 	const char* data = shader_data.c_str();
-	// Send in the char* to shader location
+	// - Send in the char* to shader location:
 	glShaderSource(vertex_shader_ID, 1, (const GLchar**)&data, 0);
-	// Build!
+	// - Build!:
 	glCompileShader(vertex_shader_ID);
 
-	// Did it work?
-	// Check the shader compiled
+	// - Check the shader compiled:
 	GLint success = GL_FALSE;
 	glGetShaderiv(vertex_shader_ID, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		printf("Vertex shader failed!\n");
+		// - Get length of OpenGL error message:
+		GLint log_length = 0;
+		glGetShaderiv(shader_progam_ID, GL_INFO_LOG_LENGTH, &log_length);
+		// - Create the error buffer: 
+		char* log = new char[log_length];
+		// - Copy the error from the buffer:
+		glGetShaderInfoLog(shader_progam_ID, log_length, 0, log);
+
+		// - Create the error message:
+		std::string error_message(log);
+		error_message += "VETREX_SHADER_FAILED_TO_COMPILE";
+		printf(error_message.c_str());
+		// - Clean up anyway:
+		delete[] log;
 	}
 
 
@@ -122,7 +153,7 @@ int main()
 	std::ifstream in_file_stream_frag("..\\Shaders\\simple_fragment.glsl", std::ifstream::in);
 	std::stringstream frag_string_stream;
 
-	// Load source into string for compile
+	// - Load source into string for compile
 	if (in_file_stream_frag.is_open())
 	{
 		frag_string_stream << in_file_stream_frag.rdbuf();
@@ -130,51 +161,89 @@ int main()
 		in_file_stream_frag.close();
 	}
 
-	// Allocate space for shader program
+	// - Allocate space for shader program
 	fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
-	// Convert to raw char*
+	// - Convert to raw char*
 	data = shader_data.c_str();
-	// Send in the char* to shader location
+	// - Send in the char* to shader location
 	glShaderSource(fragment_shader_ID, 1, (const GLchar**)&data, 0);
-	// Build!
+	// - Build!
 	glCompileShader(fragment_shader_ID);
 
-	// Did it work?
-	// Check the shader compiled
+	// - Did it work?
+	// - Check the shader compiled
 	success = GL_FALSE;
 	glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &success);
-	if (success == GL_FALSE)
+	if (!success)
 	{
-		printf("Fragment shader failed!\n");
+		// - Get length of OpenGL error message:
+		GLint log_length = 0;
+		glGetShaderiv(shader_progam_ID, GL_INFO_LOG_LENGTH, &log_length);
+		// - Create the error buffer: 
+		char* log = new char[log_length];
+		// - Copy the error from the buffer:
+		glGetShaderInfoLog(shader_progam_ID, log_length, 0, log);
+
+		// - Create the error message:
+		std::string error_message(log);
+		error_message += "FRAGMENT_SHADER_FAILED_TO_COMPILE";
+		printf(error_message.c_str());
+		// - Clean up anyway:
+		delete[] log;
 	}
 
-	// Linking the shaders!
+	// - Creating the shader program.
 	shader_progam_ID = glCreateProgram();
 
+	// - Attaching the vertex and fragment shader to the shader program.
 	glAttachShader(shader_progam_ID, vertex_shader_ID);
 	glAttachShader(shader_progam_ID, fragment_shader_ID);
 
+	// - Linking the shaders:
 	glLinkProgram(shader_progam_ID);
 
+	// - Checking for successful link:
 	success = GL_FALSE;
 	glGetProgramiv(shader_progam_ID, GL_LINK_STATUS, &success);
 	if (!success)
 	{
-		printf("Shader linking failed!");
+		// - Get length of OpenGL error message:
+		GLint log_length = 0;
+		glGetShaderiv(shader_progam_ID, GL_INFO_LOG_LENGTH, &log_length);
+		// - Create the error buffer: 
+		char* log = new char[log_length];
+		// - Copy the error from the buffer:
+		glGetShaderInfoLog(shader_progam_ID, log_length, 0, log);
+
+		// - Create the error message:
+		std::string error_message(log);
+		error_message += "SHADER_FAILED_TO_COMPILE";
+		printf(error_message.c_str());
+		// - Clean up anyway:
+		delete[] log;
 	}
 
-	// Clearing color
-	glClearColor(0, 0, 0, 1.0);
 
-	// Entering a while loop until an exit event has been registered:
+	// - Clearing color:
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPointSize(5.0f);
+
+	// - Entering a while loop until an exit event has been registered:
 	while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
-		// Drawing test square with triangles:
+		// - Drawing test square with triangles:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// - Creating the PV matrix:
 		glm::mat4 pv = projection * view;
 
-		glm::vec4 color = glm::vec4(0.5f);
+		//model = glm::rotate(model, 0.016f, glm::vec3(0, 0, 1));
+		double time = glfwGetTime();
+
+		// - Creating the final colour within the fragment shader:
+		glm::vec4 color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
 
 		glUseProgram(shader_progam_ID);
 		auto uniform_location = glGetUniformLocation(shader_progam_ID, "projection_view_matrix");
@@ -185,7 +254,9 @@ int main()
 		glUniform4fv(uniform_location, 1, glm::value_ptr(color));
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
 
 
 
