@@ -41,20 +41,25 @@ int main()
 	auto minor = ogl_GetMinorVersion();
 	printf("GL: %i.%i\n", major, minor);
 
+	// ------------------------------
+
+
+	// ------------------------------
+
 	// *** Mesh Data *** ///
 	glm::vec3 vertices[]
 	{
 		// front
-		glm::vec3(-0.5f,  0.5f, 0.0f), // top left 0
-		glm::vec3(-0.5f, -0.5f, 0.0f), // bot letf 1
-		glm::vec3( 0.5f,  0.5f, 0.0f), // top right 2
-		glm::vec3( 0.5f, -0.5f, 0.0f), // bot right 3
+		glm::vec3(-0.5f,  0.5f, 0.0f), // 0
+		glm::vec3(-0.5f, -0.5f, 0.0f), // 1
+		glm::vec3( 0.5f,  0.5f, 0.0f), // 2
+		glm::vec3( 0.5f, -0.5f, 0.0f), // 3
 
 		// back
-		glm::vec3(-0.5f,  0.5f, -1.0f), // top left 4
-		glm::vec3(-0.5f, -0.5f, -1.0f),	// bot letf 5
-		glm::vec3(0.5f,  0.5f,  -1.0f),	// top right 6
-		glm::vec3(0.5f, -0.5f,  -1.0f),	// bot right 7
+		glm::vec3(-0.5f,  0.5f, -1.0f), // 4
+		glm::vec3(-0.5f, -0.5f, -1.0f),	// 5
+		glm::vec3(0.5f,  0.5f,  -1.0f),	// 6
+		glm::vec3(0.5f, -0.5f,  -1.0f),	// 7
 	};
 
 	int index_buffer[]
@@ -247,11 +252,11 @@ int main()
 		// - Creating the PV matrix:
 		glm::mat4 pv = projection * view;
 
-		//model = glm::rotate(model, 0.0016f, glm::vec3(1, 1, 1));
+	    model = glm::rotate(model, 0.0016f, glm::vec3(1, 1, 1));
 		double time = glfwGetTime();
 
-		//float sinTime = sin(time);
-		float sinTime = 1.0f;
+		float sinTime = sin(time);
+		//float sinTime = 1.0f;
 
 		glClearColor(sinTime, sinTime, sinTime, 1.0f);
 
