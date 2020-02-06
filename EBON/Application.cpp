@@ -51,6 +51,8 @@ int Application::InitWindow()
 		glfwTerminate();
 		return -3;
 	}
+
+	return 0;
 }
 
 // Printing the OpenGL version to the console:

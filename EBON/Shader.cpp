@@ -4,38 +4,20 @@
 // Set up the shader:
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
-	vertex_shader_ID = loadVertexShader(vertexPath);
-	fragment_shader_ID = loadFragmentShader(fragmentPath);
-	ID = linkShaders();
+	loadAndLinkShaders(vertexPath, fragmentPath);
 }
 
-// Use the shader:
-void Shader::use()
-{
-	glUseProgram(ID);
-}
+// ..\\Shaders\\simple_vertex.glsl
+// ..\\Shaders\\simple_fragment.glsl
 
-// Uniform functions:
-void Shader::setBool(std::string& name, bool value)
+void Shader::loadAndLinkShaders(const char* vertexPath, const char* fragmentPath)
 {
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
-}
-
-void Shader::setInt(std::string& name, int value) 
-{
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
-}
-
-void Shader::setFloat(std::string& name, float value) 
-{
-	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-}
-
-uint Shader::loadVertexShader(const char* vertexPath)
-{
+	// Loading vertex shader:
 	uint vertex_shader_ID = 0;
+	uint fragment_shader_ID = 0;
+	shader_program_ID = 0;
 	std::string shader_data;
-	std::ifstream in_file_stream("..\\Shaders\\simple_vertex.glsl", std::ifstream::in);
+	std::ifstream in_file_stream(vertexPath, std::ifstream::in);
 
 	// - Load source into string for compile:
 	std::stringstream string_stream;
@@ -74,19 +56,9 @@ uint Shader::loadVertexShader(const char* vertexPath)
 		printf(error_message.c_str());
 		// - Clean up anyway:
 		delete[] log;
-
-		// Exiting the function after the error message:
-		return -1;
 	}
 
-	return vertex_shader_ID;
-}
-
-uint Shader::loadFragmentShader(const char* fragmentPath)
-{
-	uint fragment_shader_ID = 0;
-	std::string shader_data;
-	std::ifstream in_file_stream_frag("..\\Shaders\\simple_fragment.glsl", std::ifstream::in);
+	std::ifstream in_file_stream_frag(fragmentPath, std::ifstream::in);
 	std::stringstream frag_string_stream;
 
 	// - Load source into string for compile
@@ -100,7 +72,7 @@ uint Shader::loadFragmentShader(const char* fragmentPath)
 	// - Allocate space for shader program
 	fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
 	// - Convert to raw char*
-	const char* data = shader_data.c_str();
+	data = shader_data.c_str();
 	// - Send in the char* to shader location
 	glShaderSource(fragment_shader_ID, 1, (const GLchar**)&data, 0);
 	// - Build!
@@ -108,7 +80,7 @@ uint Shader::loadFragmentShader(const char* fragmentPath)
 
 	// - Did it work?
 	// - Check the shader compiled
-	GLint success = GL_FALSE;
+	success = GL_FALSE;
 	glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
@@ -126,13 +98,8 @@ uint Shader::loadFragmentShader(const char* fragmentPath)
 		printf(error_message.c_str());
 		// - Clean up anyway:
 		delete[] log;
-
-		return -2;
 	}
-}
 
-uint Shader::linkShaders()
-{
 	// - Creating the shader program.
 	shader_program_ID = glCreateProgram();
 
@@ -144,7 +111,7 @@ uint Shader::linkShaders()
 	glLinkProgram(shader_program_ID);
 
 	// - Checking for successful link:
-	GLint success = GL_FALSE;
+	success = GL_FALSE;
 	glGetProgramiv(shader_program_ID, GL_LINK_STATUS, &success);
 	if (!success)
 	{
@@ -162,12 +129,50 @@ uint Shader::linkShaders()
 		printf(error_message.c_str());
 		// - Clean up anyway:
 		delete[] log;
-
-		return -3;
 	}
 
 	glDeleteShader(vertex_shader_ID);
 	glDeleteShader(fragment_shader_ID);
+}
 
+void Shader::use()
+{
+	glUseProgram(shader_program_ID);
+}
+
+void Shader::setBool(const std::string& name, bool value) const
+{
+	glUniform1i(glGetUniformLocation(shader_program_ID, name.c_str()), (int)value);
+}
+
+void Shader::setInt(const std::string& name, int value) const
+{
+	glUniform1i(glGetUniformLocation(shader_program_ID, name.c_str()), value);
+}
+
+void Shader::setFloat(const std::string& name, float value) const
+{
+	glUniform1f(glGetUniformLocation(shader_program_ID, name.c_str()), value);
+}
+
+void Shader::setMatrix4(const std::string& name, glm::mat4 value) const
+{
+	auto uniform_location = glGetUniformLocation(shader_program_ID, name.c_str());
+	glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(value));
+}
+
+void Shader::setVector4(const std::string& name, glm::vec4 value) const
+{
+	auto uniform_location = glGetUniformLocation(shader_program_ID, name.c_str());
+	glUniform4fv(uniform_location, 1, glm::value_ptr(value));
+}
+
+uint Shader::GetID()
+{
+	if (shader_program_ID < 0)
+	{
+		printf("SHADER_ERROR: NO ID.");
+		return -1;
+	}
 	return shader_program_ID;
 }
