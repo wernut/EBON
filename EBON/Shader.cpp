@@ -157,14 +157,12 @@ void Shader::setFloat(const std::string& name, float value) const
 
 void Shader::setMatrix4(const std::string& name, glm::mat4 value) const
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, name.c_str());
-	glUniformMatrix4fv(uniform_location, 1, false, glm::value_ptr(value));
+	glUniformMatrix4fv(glGetUniformLocation(shader_program_ID, name.c_str()), 1, false, glm::value_ptr(value));
 }
 
 void Shader::setVector4(const std::string& name, glm::vec4 value) const
 {
-	auto uniform_location = glGetUniformLocation(shader_program_ID, name.c_str());
-	glUniform4fv(uniform_location, 1, glm::value_ptr(value));
+	glUniform4fv(glGetUniformLocation(shader_program_ID, name.c_str()), 1, glm::value_ptr(value));
 }
 
 uint Shader::GetID()

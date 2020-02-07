@@ -5,6 +5,7 @@
 
 #include "Shader.h"
 #include "Mesh.h"
+#include "Camera.h"
 
 #include <fstream>
 #include <sstream>
@@ -47,8 +48,12 @@ int main()
 	// ------------------------------
 
 	// *** Camera *** ///
-	glm::mat4 projection = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 5.0f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+	//glm::mat4 projection = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 5.0f);
+	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+	
+	// Testing camera:
+	Camera camera;
+
 
 	// Testing shader class:
 	Shader testShader("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
@@ -98,7 +103,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// - Creating the PV matrix:
-		glm::mat4 pv = projection * view;
+		//glm::mat4 pv = projection * view;
+		camera.setPosition(glm::vec3(0, 0, -10));
+		camera.update(0);
+
 
 	    meshModel = glm::rotate(meshModel, 0.0016f, glm::vec3(1, 1, 1));
 		double time = glfwGetTime();
@@ -113,7 +121,7 @@ int main()
 
 		// Testing shader:
 		testShader.use();
-		testShader.setMatrix4("projection_view_matrix", pv);
+		testShader.setMatrix4("projection_view_matrix", camera.getProjectionView());
 		testShader.setMatrix4("model_matrix", meshModel);
 		testShader.setVector4("color", color);
 
