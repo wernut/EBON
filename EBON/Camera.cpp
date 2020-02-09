@@ -3,11 +3,25 @@
 
 Camera::Camera()
 {
-	lookAtRot = glm::vec3(0, 0, 1);
-	position = glm::vec3(0);
-	axis = glm::vec3(0, 1, 0);
-	view_transform = glm::lookAt(lookAtRot, position, axis);
-	projection_transform = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 5.0f);
+	// Movement vars:
+	movementSpeed = 0.05f;
+
+	// Position / Rotation:
+	position = glm::vec3(0.0f, 0.0f, 3.0f);
+	target = glm::vec3(0.0f);
+	direction = glm::vec3(0);
+
+	// Axis:
+	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	rightAxis = glm::vec3(0);
+	upAxis = glm::vec3(0);
+	frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
+
+	// Transforms:
+	view_transform = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+								 glm::vec3(0.0f, 0.0f, 0.0f),
+								 glm::vec3(0.0f, 1.0f, 3.0f));
+	projection_transform = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 15.0f);
 	projectionView_transform = projection_transform * view_transform;
 	world_transform = glm::inverse(view_transform);
 }
@@ -16,6 +30,10 @@ Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
+	direction = glm::normalize(position - target);
+	rightAxis = glm::normalize(glm::cross(worldUp, direction));
+	upAxis = glm::cross(direction, rightAxis);
+	setPosition(position);
 	updateProjectionViewTransform();
 }
 
@@ -31,12 +49,24 @@ void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 
 void Camera::setPosition(glm::vec3 position)
 {
-	view_transform = glm::lookAt(lookAtRot, position, axis);
+	view_transform = glm::lookAt(position, position + frontAxis, upAxis);
 }
 
 void Camera::updateProjectionViewTransform()
 {
 	projectionView_transform = projection_transform * view_transform;
+}
+
+void Camera::processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		position += movementSpeed * frontAxis;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		position -= movementSpeed * frontAxis;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
 }
 
 glm::mat4 Camera::getWorldTransform()

@@ -46,14 +46,8 @@ int main()
 	printf("GL: %i.%i\n", major, minor);
 
 	// ------------------------------
-
-	// *** Camera *** ///
-	//glm::mat4 projection = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 5.0f);
-	//glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
-	
 	// Testing camera:
 	Camera camera;
-
 
 	// Testing shader class:
 	Shader testShader("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
@@ -84,7 +78,7 @@ int main()
 
 	// Testing mesh class:
 	Mesh testMesh;
-	glm::mat4 meshModel = glm::mat4(1);
+	glm::mat4 model = glm::mat4(1);
 	testMesh.initialise(8, cube_vertices, 36, index_buffer);
 
 	// - Clearing color:
@@ -102,27 +96,22 @@ int main()
 		// - Drawing test square with triangles:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Rotate the model
+		model = glm::rotate(model, 0.016f, glm::vec3(1.0f, 1.0f, 1.0f));
+
 		// - Creating the PV matrix:
-		//glm::mat4 pv = projection * view;
-		camera.setPosition(glm::vec3(0, 0, -10));
+		camera.processInput(window);
 		camera.update(0);
 
-
-	    meshModel = glm::rotate(meshModel, 0.0016f, glm::vec3(1, 1, 1));
 		double time = glfwGetTime();
 
-		//float sinTime = sin(time);
-		float sinTime = -1.0f;
-
-		glClearColor(sinTime, sinTime, sinTime, 1.0f);
-
 		// - Creating the final colour within the fragment shader:
-		glm::vec4 color = glm::vec4(-sinTime, -sinTime, -sinTime, 1.0f);
+		glm::vec4 color = glm::vec4(1.0f);
 
 		// Testing shader:
 		testShader.use();
 		testShader.setMatrix4("projection_view_matrix", camera.getProjectionView());
-		testShader.setMatrix4("model_matrix", meshModel);
+		testShader.setMatrix4("model_matrix", model);
 		testShader.setVector4("color", color);
 
 		testMesh.draw();
@@ -136,9 +125,6 @@ int main()
 
 	// Destorying the GLFW window:
 	glfwDestroyWindow(window);
-
-	//glDeleteBuffers(1, &VAO);
-	//glDeleteBuffers(1, &VBO);
 
 	// Terminating the GLFW application:
 	glfwTerminate();
