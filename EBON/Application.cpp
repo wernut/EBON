@@ -6,6 +6,9 @@ Application::Application()
 {
 	// Creating GLFW window:
 	if (InitWindow() < 0) { return; }
+
+	// Printing the version of OpenGL we are running:
+	PrintOpenGLVersion();
 }
 
 Application::~Application()
@@ -55,6 +58,28 @@ int Application::InitWindow()
 	return 0;
 }
 
+// Updating the application, should be called every frame:
+void Application::Update()
+{
+	// Updating deltaTime;
+	double currentFrame = getTime();
+	m_deltaTime = currentFrame - m_lastFrame;
+	m_lastFrame = currentFrame;
+
+	// Updating the FPS counter:
+	m_frames++;
+	m_fpsInterval += m_deltaTime;
+	if (m_fpsInterval >= 1.0f)
+	{
+		m_fps = m_frames;
+		m_frames = 0;
+		m_fpsInterval -= 1.0f;
+	}
+
+	// Checking if the application should exit:
+	m_gameOver = m_gameOver || hasWindowClosed();
+}
+
 // Printing the OpenGL version to the console:
 void Application::PrintOpenGLVersion()
 {
@@ -69,12 +94,28 @@ void Application::SetVSync(bool enabled)
 	glfwSwapInterval(enabled);
 }
 
-void Application::Run()
+// Getters and setters:
+double Application::getDeltaTime()
 {
-
+	return m_deltaTime;
 }
 
-void Application::Update()
+double Application::getTime()
 {
+	return glfwGetTime();
+}
 
+uint Application::getFPS()
+{
+	return m_fps;
+}
+
+bool Application::isGameOver()
+{
+	return m_gameOver;
+}
+
+bool Application::hasWindowClosed()
+{
+	return glfwWindowShouldClose(m_window) == GL_TRUE;
 }

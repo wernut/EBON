@@ -8,6 +8,11 @@ class Camera
 private:
 	// Movement vars:
 	float movementSpeed;
+	float pitch, yaw;
+	float sensitivity;
+	double mouseLastX, mouseLastY;
+	float minPitch, maxPitch;
+	bool firstTimeEnter;
 
 	// Position / Rotation:
 	glm::vec3 direction;
@@ -15,7 +20,7 @@ private:
 	glm::vec3 position;
 
 	// Axis:
-	glm::vec3 worldUp;
+	glm::vec3 worldUpAxis;
 	glm::vec3 rightAxis;
 	glm::vec3 upAxis;
 	glm::vec3 frontAxis;
@@ -35,7 +40,8 @@ public:
 	void setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 	void setPosition(glm::vec3 position);
 	void updateProjectionViewTransform();
-	void processInput(GLFWwindow* window);
+	void processInput(GLFWwindow* &window);
+	void mouseCallBack(GLFWwindow* &window, double xPos, double yPos);
 
 	glm::mat4 getWorldTransform();
 	glm::mat4 getView();

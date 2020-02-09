@@ -5,6 +5,8 @@
 #include "glfw3.h"
 #include <iostream>
 
+using uint = unsigned int;
+
 class Application
 {
 public:
@@ -19,8 +21,6 @@ public:
 	{
 		if (!m_instance)
 			m_instance = new Application();
-		else
-			std::cout << "Error creating application: Application already exists!" << std::endl;
 	}
 
 	// Cleaing up the singleton instance:
@@ -31,17 +31,21 @@ public:
 			delete m_instance;
 			m_instance = nullptr;
 		}
-		else
-			std::cout << "Error deleting application: Application doesn't exist!" << std::endl;
 	}
 
 	/*
 		APPLICATION FUNCTIONS:
 	*/
 
+	void Update();
 	void PrintOpenGLVersion();
 	void SetVSync(bool enabled);
-	void Run();
+	// Getters & Setters
+	double getDeltaTime();
+	double getTime();
+	uint getFPS();
+	bool isGameOver();
+	bool hasWindowClosed();
 
 private:
 	Application();
@@ -52,11 +56,16 @@ private:
 	*/
 	
 	GLFWwindow* m_window;
+	double m_deltaTime;
+	double m_lastFrame;
+	uint m_fps;
+	uint m_frames;
+	double m_fpsInterval;
+	bool m_gameOver;
 
 	/*
 		APPLICATION FUNCTIONS:
 	*/
 	int InitWindow();
-	void Update();
 };
 

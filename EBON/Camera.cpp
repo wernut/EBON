@@ -1,10 +1,20 @@
 #include "Camera.h"
 #include "ext.hpp"
+#include "Directives.h"
+#include <cmath>
 
 Camera::Camera()
 {
 	// Movement vars:
 	movementSpeed = 0.05f;
+	pitch = 0.0f;
+	yaw = -90.0f;
+	sensitivity = 0.05f;
+	mouseLastX = SCREEN_WIDTH / 2;
+	mouseLastY = SCREEN_HEIGHT / 2;
+	minPitch = -89.0f;
+	maxPitch =  89.0f;
+	firstTimeEnter = true;
 
 	// Position / Rotation:
 	position = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -12,7 +22,7 @@ Camera::Camera()
 	direction = glm::vec3(0);
 
 	// Axis:
-	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	rightAxis = glm::vec3(0);
 	upAxis = glm::vec3(0);
 	frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -31,7 +41,7 @@ Camera::~Camera() {}
 void Camera::update(float deltaTime) 
 {
 	direction = glm::normalize(position - target);
-	rightAxis = glm::normalize(glm::cross(worldUp, direction));
+	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
 	upAxis = glm::cross(direction, rightAxis);
 	setPosition(position);
 	updateProjectionViewTransform();
@@ -57,7 +67,7 @@ void Camera::updateProjectionViewTransform()
 	projectionView_transform = projection_transform * view_transform;
 }
 
-void Camera::processInput(GLFWwindow* window)
+void Camera::processInput(GLFWwindow* &window)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		position += movementSpeed * frontAxis;
@@ -67,6 +77,47 @@ void Camera::processInput(GLFWwindow* window)
 		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
+}
+
+void Camera::mouseCallBack(GLFWwindow* &window, double xPos, double yPos)
+{
+	// Checking if this is the first time the window has been in focus:
+	if (firstTimeEnter)
+	{
+		mouseLastX = xPos;
+		mouseLastY = yPos;
+		firstTimeEnter = false;
+	}
+
+	// Calculate the offset movement between the last and current frame:
+	float xOffset = (float) (xPos - mouseLastX);
+	float yOffset = (float) (mouseLastY - yPos);
+	mouseLastX = xPos;
+	mouseLastY = yPos;
+
+	// Multiplying the offsets by the sensitivity var:
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	// Adding offset values to the yaw and pitch:
+	yaw += xOffset;
+	pitch += yOffset;
+
+	// Clamping the pitch:
+	if (pitch > maxPitch)
+		pitch = maxPitch;
+	else if (pitch < minPitch)
+		pitch = minPitch;
+
+	// Clamping the yaw:
+	yaw = glm::mod(yaw + xOffset, 360.0f);
+
+	// Calculating final direction & adjusting the front axis:
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw) * cos(glm::radians(pitch)));
+	frontAxis = glm::normalize(direction);
 }
 
 glm::mat4 Camera::getWorldTransform()

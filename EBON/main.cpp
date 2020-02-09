@@ -3,6 +3,7 @@
 #include "..\glcore\gl_core_4_5.h"
 #include "glfw3.h"
 
+#include "Directives.h"
 #include "Shader.h"
 #include "Mesh.h"
 #include "Camera.h"
@@ -20,7 +21,7 @@ int main()
 		return -1;
 
 	// - Creating a window with GLFW:
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "EBON", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "EBON", nullptr, nullptr);
 
 	// Checking if the window exists; if not, then terminate the program via GLFW:
 	if (window == nullptr)
@@ -49,6 +50,19 @@ int main()
 	// Testing camera:
 	Camera camera;
 
+	// Capturing the mouse (hiding & locking it in the middle of the screen):
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	// Static casting the mouse call back function:
+	auto callbackStaticCast = [](GLFWwindow* w, GLFWcursorposfun mouseCallBack)
+	{
+		static_cast<GLFWcursorposfun>(glfwSetCursorPosCallback(w, mouseCallBack));
+	};
+
+	// Adding the cameras callback function to the window:
+	callbackStaticCast(window, camera.mouseCallBack);
+	//glfwSetCursorPosCallback(window, camera.mouseCallBack);
+
 	// Testing shader class:
 	Shader testShader("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
 
@@ -76,7 +90,7 @@ int main()
 		4, 0, 6, 0, 6, 2, // top
 	};
 
-	// Testing mesh class:
+	// Testing mesh class with above vertices:
 	Mesh testMesh;
 	glm::mat4 model = glm::mat4(1);
 	testMesh.initialise(8, cube_vertices, 36, index_buffer);
