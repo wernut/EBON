@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include "Primitives.h"
 
 #include <fstream>
 #include <sstream>
@@ -50,19 +51,6 @@ int main()
 	// Testing camera:
 	Camera camera;
 
-	// Capturing the mouse (hiding & locking it in the middle of the screen):
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	// Static casting the mouse call back function:
-	auto callbackStaticCast = [](GLFWwindow* w, GLFWcursorposfun mouseCallBack)
-	{
-		static_cast<GLFWcursorposfun>(glfwSetCursorPosCallback(w, mouseCallBack));
-	};
-
-	// Adding the cameras callback function to the window:
-	callbackStaticCast(window, camera.mouseCallBack);
-	//glfwSetCursorPosCallback(window, camera.mouseCallBack);
-
 	// Testing shader class:
 	Shader testShader("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
 
@@ -82,18 +70,33 @@ int main()
 	// Indexed vertex positions:
 	uint index_buffer[]
 	{
-		0, 1, 2, 1, 2, 3, // front
-		4, 5, 6, 5, 6, 7, // back
-		4, 5, 0, 5, 0, 1, // left
-		6, 7, 2, 7, 2, 3, // right
-		5, 1, 7, 1, 7, 3, // bottom
-		4, 0, 6, 0, 6, 2, // top
+		0, 1, 2, 
+		1, 2, 3, // front
+		4, 5, 6, 
+		5, 6, 7, // back
+		4, 5, 0, 
+		5, 0, 1, // left
+		6, 7, 2, 
+		7, 2, 3, // right
+		5, 1, 7, 
+		1, 7, 3, // bottom
+		4, 0, 6, 
+		0, 6, 2, // top
 	};
+
+
+	Mesh::Vertex* sphere_vertices;
+	uint* sphere_indices;
+	uint vertexCount, indexCount;
+	Primitives::generateSphere(sphere_vertices, vertexCount, 
+							   sphere_indices, indexCount, 
+							   1.0f, 36.0f, 18.0f);
 
 	// Testing mesh class with above vertices:
 	Mesh testMesh;
 	glm::mat4 model = glm::mat4(1);
-	testMesh.initialise(8, cube_vertices, 36, index_buffer);
+	testMesh.initialise(vertexCount, sphere_vertices, indexCount, sphere_indices);
+	//testMesh.initialise(8, cube_vertices, 36, index_buffer);
 
 	// - Clearing color:
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -111,13 +114,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Rotate the model
-		model = glm::rotate(model, 0.016f, glm::vec3(1.0f, 1.0f, 1.0f));
+		//model = glm::rotate(model, 0.016f, glm::vec3(1.0f, 1.0f, 1.0f));
+
+		// Polling events so that all operating system messages and events are handled correctly:
+		glfwPollEvents();
 
 		// - Creating the PV matrix:
-		camera.processInput(window);
-		camera.update(0);
-
-		double time = glfwGetTime();
+		camera.update(0); 
 
 		// - Creating the final colour within the fragment shader:
 		glm::vec4 color = glm::vec4(1.0f);
@@ -128,13 +131,11 @@ int main()
 		testShader.setMatrix4("model_matrix", model);
 		testShader.setVector4("color", color);
 
+		// Drawing the mesh
 		testMesh.draw();
 
 		// Updating the monitors display by swapping the back buffer with the front buffer:
 		glfwSwapBuffers(window);
-		
-		// Polling events so that all operating system messages and events are handled correctly:
-		glfwPollEvents();
 	}
 
 	// Destorying the GLFW window:

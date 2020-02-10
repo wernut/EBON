@@ -7,15 +7,20 @@ Application::Application()
 	// Creating GLFW window:
 	if (InitWindow() < 0) { return; }
 
+	// Init vars:
+	m_deltaTime = 0.0;
+	m_lastFrame = 0.0;
+	m_fps = 0;
+	m_frames = 0;
+	m_fpsInterval = 0.0;
+	m_gameOver = false;
+
 	// Printing the version of OpenGL we are running:
 	PrintOpenGLVersion();
 }
 
 Application::~Application()
 {
-	// Deleting instance:
-	Destroy();
-
 	// Deleting the window:
 	if (m_window)
 	{
@@ -118,4 +123,19 @@ bool Application::isGameOver()
 bool Application::hasWindowClosed()
 {
 	return glfwWindowShouldClose(m_window) == GL_TRUE;
+}
+
+void Application::setGameOver(bool value)
+{
+	m_gameOver = value;
+}
+
+void Application::SwapBuffers()
+{
+	glfwSwapBuffers(m_window);
+}
+
+void Application::ClearBuffers()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

@@ -10,6 +10,7 @@ private:
 	float movementSpeed;
 	float pitch, yaw;
 	float sensitivity;
+	double mouseX, mouseY;
 	double mouseLastX, mouseLastY;
 	float minPitch, maxPitch;
 	bool firstTimeEnter;
@@ -40,8 +41,9 @@ public:
 	void setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 	void setPosition(glm::vec3 position);
 	void updateProjectionViewTransform();
-	void processInput(GLFWwindow* &window);
-	void mouseCallBack(GLFWwindow* &window, double xPos, double yPos);
+	void processKeyboardInput();
+	void processMouseInput();
+	void updateMatricies();
 
 	glm::mat4 getWorldTransform();
 	glm::mat4 getView();

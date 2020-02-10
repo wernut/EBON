@@ -24,7 +24,7 @@ public:
 	}
 
 	// Cleaing up the singleton instance:
-	void Destroy()
+	static void Destroy()
 	{
 		if (m_instance)
 		{
@@ -33,6 +33,8 @@ public:
 		}
 	}
 
+	static Application* getInstance() { return m_instance; }
+
 	/*
 		APPLICATION FUNCTIONS:
 	*/
@@ -40,12 +42,16 @@ public:
 	void Update();
 	void PrintOpenGLVersion();
 	void SetVSync(bool enabled);
-	// Getters & Setters
+	void SwapBuffers();
+	void ClearBuffers();
+	// Getters
 	double getDeltaTime();
 	double getTime();
 	uint getFPS();
 	bool isGameOver();
 	bool hasWindowClosed();
+	// Setters
+	void setGameOver(bool value);
 
 private:
 	Application();

@@ -10,6 +10,8 @@ Camera::Camera()
 	pitch = 0.0f;
 	yaw = -90.0f;
 	sensitivity = 0.05f;
+	mouseX = 0;
+	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
 	mouseLastY = SCREEN_HEIGHT / 2;
 	minPitch = -89.0f;
@@ -34,12 +36,18 @@ Camera::Camera()
 	projection_transform = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 15.0f);
 	projectionView_transform = projection_transform * view_transform;
 	world_transform = glm::inverse(view_transform);
+
+
+	// Capturing the mouse (hiding & locking it in the middle of the screen):
+	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
+	processKeyboardInput();
+	processMouseInput();
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
 	upAxis = glm::cross(direction, rightAxis);
@@ -55,11 +63,13 @@ void Camera::setPerspective(float fov, float ratio, float near, float far)
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 {
 	view_transform = glm::lookAt(from, to, up);
+	//updateMatricies();
 }
 
 void Camera::setPosition(glm::vec3 position)
 {
 	view_transform = glm::lookAt(position, position + frontAxis, upAxis);
+	//updateMatricies();
 }
 
 void Camera::updateProjectionViewTransform()
@@ -67,8 +77,10 @@ void Camera::updateProjectionViewTransform()
 	projectionView_transform = projection_transform * view_transform;
 }
 
-void Camera::processInput(GLFWwindow* &window)
+void Camera::processKeyboardInput()
 {
+	GLFWwindow* window = glfwGetCurrentContext();
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		position += movementSpeed * frontAxis;
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -77,10 +89,18 @@ void Camera::processInput(GLFWwindow* &window)
 		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		position -= movementSpeed * worldUpAxis;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		position -= movementSpeed * -worldUpAxis;
 }
 
-void Camera::mouseCallBack(GLFWwindow* &window, double xPos, double yPos)
+void Camera::processMouseInput()
 {
+	GLFWwindow* window = glfwGetCurrentContext();
+	double xPos, yPos;
+	glfwGetCursorPos(window, &xPos, &yPos);
+
 	// Checking if this is the first time the window has been in focus:
 	if (firstTimeEnter)
 	{
@@ -100,7 +120,7 @@ void Camera::mouseCallBack(GLFWwindow* &window, double xPos, double yPos)
 	yOffset *= sensitivity;
 
 	// Adding offset values to the yaw and pitch:
-	yaw += xOffset;
+	yaw   += xOffset;
 	pitch += yOffset;
 
 	// Clamping the pitch:
@@ -114,9 +134,9 @@ void Camera::mouseCallBack(GLFWwindow* &window, double xPos, double yPos)
 
 	// Calculating final direction & adjusting the front axis:
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw) * cos(glm::radians(pitch)));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	frontAxis = glm::normalize(direction);
 }
 
@@ -138,4 +158,10 @@ glm::mat4 Camera::getProjection()
 glm::mat4 Camera::getProjectionView()
 {
 	return projectionView_transform;
+}
+
+void Camera::updateMatricies()
+{
+	view_transform  = glm::inverse(world_transform);
+	world_transform = glm::inverse(view_transform);
 }
