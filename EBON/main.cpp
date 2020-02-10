@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 using uint = unsigned int;
 
@@ -54,6 +55,9 @@ int main()
 	// Testing shader class:
 	Shader testShader("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
 
+	// model transform
+	glm::mat4 model = glm::mat4(1);
+
 	// Cube vertices:
 	Mesh::Vertex cube_vertices[8];
 	cube_vertices[0].position = glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f); // Front
@@ -85,17 +89,20 @@ int main()
 	};
 
 
-	Mesh::Vertex* sphere_vertices;
-	uint* sphere_indices;
-	uint vertexCount, indexCount;
-	Primitives::generateSphere(sphere_vertices, vertexCount, 
-							   sphere_indices, indexCount, 
-							   1.0f, 36.0f, 18.0f);
+	//Mesh::Vertex* sphere_vertices;
+	//uint* sphere_indices;
+	//uint  vertexCount, indexCount;
+	//Primitives::generateSphereMesh(sphere_vertices, vertexCount, 
+	//						       sphere_indices, indexCount, 
+	//						   1.0f, 36.0f, 18.0f);
 
 	// Testing mesh class with above vertices:
-	Mesh testMesh;
-	glm::mat4 model = glm::mat4(1);
-	testMesh.initialise(vertexCount, sphere_vertices, indexCount, sphere_indices);
+	Mesh* sphereMesh = Primitives::generateSphereMesh(10.0f, 36.0f, 18.0f);
+	Mesh* cubeMesh = Primitives::generateCubeMesh(5.0f);
+
+
+	//testMesh.initialise(vertexCount, sphere_vertices, indexCount, sphere_indices);
+	//Mesh testMesh;
 	//testMesh.initialise(8, cube_vertices, 36, index_buffer);
 
 	// - Clearing color:
@@ -107,6 +114,10 @@ int main()
 	// - Enabling VSync:
 	glfwSwapInterval(true);
 
+	// Vars for deltaTime
+	float deltaTime = 0;
+	float lastFrame = 0;
+
 	// - Entering a while loop until an exit event has been registered:
 	while (!glfwWindowShouldClose(window) && glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
@@ -114,13 +125,18 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Rotate the model
-		//model = glm::rotate(model, 0.016f, glm::vec3(1.0f, 1.0f, 1.0f));
+		 //model = glm::rotate(model, 0.0016f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// Polling events so that all operating system messages and events are handled correctly:
 		glfwPollEvents();
 
+		// Obtaining the deltaTime between frames:
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// - Creating the PV matrix:
-		camera.update(0); 
+		camera.update(deltaTime);
 
 		// - Creating the final colour within the fragment shader:
 		glm::vec4 color = glm::vec4(1.0f);
@@ -132,11 +148,18 @@ int main()
 		testShader.setVector4("color", color);
 
 		// Drawing the mesh
-		testMesh.draw();
+		sphereMesh->draw();
+		cubeMesh->draw();
 
 		// Updating the monitors display by swapping the back buffer with the front buffer:
 		glfwSwapBuffers(window);
 	}
+
+	if (sphereMesh)
+		delete sphereMesh;
+
+	if (cubeMesh)
+		delete cubeMesh;
 
 	// Destorying the GLFW window:
 	glfwDestroyWindow(window);

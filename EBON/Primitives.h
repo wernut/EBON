@@ -1,5 +1,6 @@
 #pragma once
 #include "Mesh.h"
+#include <vector>
 
 using uint = unsigned int;
 
@@ -9,7 +10,7 @@ public:
 	Primitives();
 	~Primitives();
 
-	static uint vertexCount, indexCount;
-	static void generateSphere(Mesh::Vertex* &vertices, uint &vertexCount, uint* &indices, uint &indexCount, float radius, float stackCount, float sectorCount);
+	static Mesh* generateSphereMesh(float radius, float stackCount, float sectorCount);
+	static Mesh* generateCubeMesh(float scale);
 };
 

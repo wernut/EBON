@@ -10,6 +10,27 @@ Mesh::Mesh()
 	IBO = 0;
 }
 
+Mesh::Mesh(Mesh* &mesh)
+{
+	vertex_count = mesh->vertex_count;
+	index_count = mesh->index_count;
+	tri_count = mesh->tri_count;
+	VAO = mesh->VAO;
+	VBO = mesh->VBO;
+	IBO = mesh->IBO;
+}
+
+Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint* indexBuffer, uint* indices)
+{
+	vertex_count = vertexCount;
+	index_count = indexCount;
+	tri_count = indexCount / 3;
+	VAO = 0;
+	VBO = 0;
+	IBO = 0;
+	initialise(vertex_count, vertices, index_count, indexBuffer, indices);
+}
+
 Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &VAO);

@@ -6,6 +6,12 @@
 class Camera
 {
 private:
+	// Camera view vars:
+	const float fov = 1.507f;
+	const float ratio = 16 / 9.0f;
+	const float nearPlane = 0.1f;
+	const float farPlane = 60.0f;
+
 	// Movement vars:
 	float movementSpeed;
 	float pitch, yaw;
@@ -32,6 +38,8 @@ private:
 	glm::mat4 projection_transform;
 	glm::mat4 projectionView_transform;
 
+	GLFWwindow* m_window;
+
 public:
 	Camera();
 	virtual ~Camera();
@@ -41,8 +49,8 @@ public:
 	void setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 	void setPosition(glm::vec3 position);
 	void updateProjectionViewTransform();
-	void processKeyboardInput();
-	void processMouseInput();
+	void updateKeyboardInput(float deltaTime);
+	void updateMouseInput(float deltaTime);
 	void updateMatricies();
 
 	glm::mat4 getWorldTransform();

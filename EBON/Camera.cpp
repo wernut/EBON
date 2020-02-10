@@ -6,10 +6,10 @@
 Camera::Camera()
 {
 	// Movement vars:
-	movementSpeed = 0.05f;
+	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 0.05f;
+	sensitivity = 2.5f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -30,27 +30,28 @@ Camera::Camera()
 	frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	// Transforms:
-	view_transform = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-								 glm::vec3(0.0f, 0.0f, 0.0f),
-								 glm::vec3(0.0f, 1.0f, 3.0f));
-	projection_transform = glm::perspective(1.707f, 16 / 9.0f, 0.1f, 15.0f);
+	view_transform = glm::mat4(1.0f);
+	projection_transform = glm::perspective(fov, ratio, nearPlane, farPlane);
 	projectionView_transform = projection_transform * view_transform;
 	world_transform = glm::inverse(view_transform);
 
+	// Getting the GLFW window:
+	m_window = glfwGetCurrentContext();
 
 	// Capturing the mouse (hiding & locking it in the middle of the screen):
-	glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
-	processKeyboardInput();
-	processMouseInput();
+	target = frontAxis * 15.0f;
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
 	upAxis = glm::cross(direction, rightAxis);
+	updateKeyboardInput(deltaTime);
+	updateMouseInput(deltaTime);
 	setPosition(position);
 	updateProjectionViewTransform();
 }
@@ -77,29 +78,32 @@ void Camera::updateProjectionViewTransform()
 	projectionView_transform = projection_transform * view_transform;
 }
 
-void Camera::processKeyboardInput()
+void Camera::updateKeyboardInput(float deltaTime)
 {
-	GLFWwindow* window = glfwGetCurrentContext();
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		position += movementSpeed * frontAxis;
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		position -= movementSpeed * frontAxis;
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed;
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		position -= movementSpeed * worldUpAxis;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		position -= movementSpeed * -worldUpAxis;
+	if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
+		position += movementSpeed * frontAxis * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
+		position -= movementSpeed * frontAxis * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
+		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
+		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		position += movementSpeed * worldUpAxis * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		position -= movementSpeed * worldUpAxis * deltaTime;
 }
 
-void Camera::processMouseInput()
+void Camera::updateMouseInput(float deltaTime)
 {
-	GLFWwindow* window = glfwGetCurrentContext();
 	double xPos, yPos;
-	glfwGetCursorPos(window, &xPos, &yPos);
+	glfwGetCursorPos(m_window, &xPos, &yPos);
 
 	// Checking if this is the first time the window has been in focus:
 	if (firstTimeEnter)
@@ -116,12 +120,12 @@ void Camera::processMouseInput()
 	mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
+	xOffset *= sensitivity * deltaTime;
+	yOffset *= sensitivity * deltaTime;
 
 	// Adding offset values to the yaw and pitch:
-	yaw   += xOffset;
-	pitch += yOffset;
+	yaw   += xOffset * 2;
+	pitch += yOffset * 2;
 
 	// Clamping the pitch:
 	if (pitch > maxPitch)
