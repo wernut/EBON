@@ -24,6 +24,6 @@ public:
 
 	void initialiseCube();
 	void initialise(uint vertexCount, const Vertex* vertices, uint indexCount = 0, const uint* indexBuffer = NULL, uint* indices = NULL);
-	void draw();
+	void render();
 };
 

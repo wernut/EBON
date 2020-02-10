@@ -68,7 +68,7 @@ Mesh* Primitives::generateSphereMesh(float radius, float stackCount, float secto
 	// store vertices
 	Mesh::Vertex* vertices = new Mesh::Vertex[vertexCount];
 	uint ni = 1;
-	for (int i = 0; i < vertexCount; ++i)
+	for (uint i = 0; i < vertexCount; ++i)
 	{
 		vertices[i].position.x = vertex_buffer[ni - 1];
 		vertices[i].position.y = vertex_buffer[ni];

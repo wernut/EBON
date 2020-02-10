@@ -10,7 +10,7 @@ public:
 	~Game();
 
 	void Run();
-	void Update(float deltaTime);
+	void Update();
 	//void Render(Renderer* renderer);
 
 };

@@ -140,9 +140,15 @@ void Mesh::initialise(uint vertexCount, const Vertex* vertices, uint indexCount,
 	// Setting mesh variables:
 	vertex_count = vertexCount;
 	index_count = indexCount;
+
+	if (vertices)
+		delete[] vertices;
+
+	if (indexBuffer)
+		delete[] indexBuffer;
 }
 
-void Mesh::draw()
+void Mesh::render()
 {
 	glBindVertexArray(VAO);
 	if (IBO != 0)

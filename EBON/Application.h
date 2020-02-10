@@ -17,10 +17,13 @@ public:
 	static Application* m_instance;
 
 	// Creating the singleton instance:
-	static void Create()
+	static Application* Create(const char* gameTitle, const float windowWidth, const float windowHeight)
 	{
 		if (!m_instance)
-			m_instance = new Application();
+		{
+			m_instance = new Application(gameTitle, windowWidth, windowHeight);
+			return m_instance;
+		}
 	}
 
 	// Cleaing up the singleton instance:
@@ -36,25 +39,29 @@ public:
 	static Application* getInstance() { return m_instance; }
 
 	/*
-		APPLICATION FUNCTIONS:
+		APPLICATION FUNCTIONS / OPENGL WRAPPER:
 	*/
-
+	void SetVSync(bool value);
 	void Update();
 	void PrintOpenGLVersion();
-	void SetVSync(bool enabled);
 	void SwapBuffers();
 	void ClearBuffers();
+	void PollEvents();
+	void ClearColor(float r, float g, float b, float a);
+	void ToggleWiremeshMode();
 	// Getters
 	double getDeltaTime();
 	double getTime();
 	uint getFPS();
 	bool isGameOver();
 	bool hasWindowClosed();
+	float getWindowWidth();
+	float getWindowHeight();
 	// Setters
 	void setGameOver(bool value);
 
-private:
-	Application();
+protected:
+	Application(const char* gameTitle, const float screenWidth, const float screenHeight);
 	~Application();
 
 	/*
@@ -62,16 +69,16 @@ private:
 	*/
 	
 	GLFWwindow* m_window;
-	double m_deltaTime;
-	double m_lastFrame;
-	uint m_fps;
-	uint m_frames;
+	double m_deltaTime, m_lastFrame;
 	double m_fpsInterval;
+	uint m_fps, m_frames;
 	bool m_gameOver;
+	char* m_gameTitle;
+	float windowWidth, windowHeight;
 
 	/*
 		APPLICATION FUNCTIONS:
 	*/
-	int InitWindow();
+	int InitWindow(const char* gameTitle, const float screenWidth, const float screenHeight);
 };
 

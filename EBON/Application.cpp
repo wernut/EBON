@@ -2,10 +2,10 @@
 
 Application* Application::m_instance = nullptr;
 
-Application::Application()
+Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Creating GLFW window:
-	if (InitWindow() < 0) { return; }
+	if (InitWindow(gameTitle, windowWidth, windowHeight) < 0) { return; }
 
 	// Init vars:
 	m_deltaTime = 0.0;
@@ -14,6 +14,9 @@ Application::Application()
 	m_frames = 0;
 	m_fpsInterval = 0.0;
 	m_gameOver = false;
+
+	// Making the singleton instance this class:
+	m_instance = this;
 
 	// Printing the version of OpenGL we are running:
 	PrintOpenGLVersion();
@@ -31,14 +34,14 @@ Application::~Application()
 }
 
 // Initialising the GLFW window: 
-int Application::InitWindow()
+int Application::InitWindow(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Initalise GLFW.
 	if (glfwInit() == false)
 		return -1;
 
 	// Creating the window:
-	m_window = glfwCreateWindow(1280, 720, "EBON", NULL, NULL);
+	m_window = glfwCreateWindow(windowWidth, windowHeight, gameTitle, NULL, NULL);
 
 	// Checking if the window was successfully created:
 	if (m_window == NULL)
@@ -138,4 +141,29 @@ void Application::SwapBuffers()
 void Application::ClearBuffers()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Application::PollEvents()
+{
+	glfwPollEvents();
+}
+
+float Application::getWindowWidth()
+{
+	return windowWidth;
+}
+
+float Application::getWindowHeight()
+{
+	return windowHeight;
+}
+
+void Application::ClearColor(float r, float g, float b, float a)
+{
+	glClearColor(r, g, b, a);
+}
+
+void Application::ToggleWiremeshMode()
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
