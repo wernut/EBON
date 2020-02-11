@@ -17,7 +17,7 @@ ShaderProgram::ShaderProgram(const char* vertexLocation, const char* fragmentLoc
 	glLinkProgram(m_shaderProgramID);
 
 	// Checking if the linking was successful:
-	checkIfSuccessful(m_shaderProgramID);
+	// checkSuccess(m_shaderProgramID);
 }
 
 ShaderProgram::~ShaderProgram()
@@ -55,7 +55,7 @@ uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
 	glCompileShader(id);
 
 	// - Check the shader compiled:
-	checkIfSuccessful(id);
+	checkSuccess(id);
 
 	return id;
 }
@@ -65,7 +65,7 @@ uint ShaderProgram::getID()
 	return m_shaderProgramID;
 }
 
-GLint ShaderProgram::checkIfSuccessful(uint id)
+GLint ShaderProgram::checkSuccess(uint id)
 {
 	// - Check the shader compiled:
 	GLint success = GL_FALSE;
@@ -81,7 +81,7 @@ GLint ShaderProgram::checkIfSuccessful(uint id)
 		glGetShaderInfoLog(id, log_length, 0, log);
 
 		// - Create the error message:
-		std::string error_message(log);
+		std::string error_message(&(log[0]));
 		error_message += "_SHADER_FAILED_TO_COMPILE";
 		printf(error_message.c_str());
 		// - Clean up anyway:

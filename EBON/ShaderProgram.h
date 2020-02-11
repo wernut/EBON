@@ -14,7 +14,7 @@ private:
 	uint m_fragmentID;
 	uint m_shaderProgramID;
 	uint loadShader(const char* fileLocation, uint shaderType);
-	GLint checkIfSuccessful(uint id);
+	GLint checkSuccess(uint id);
 
 public:
 	ShaderProgram(const char* vertexLocation, const char* fragmentLocation);

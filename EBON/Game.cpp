@@ -44,27 +44,17 @@ void Game::Update()
     // Creating a final color vector for the fragment shader:
     glm::vec4 color  = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-    // Creating some test models with generated cubes:
-    //RawModel* sphere_1 = new RawModel(Primitives::generateSphere(0.5f, 18, 9), ShaderManager::DEFAULT);
-
-    int X = 10, Y = 10, Z = 10;
-
-    RawModel* *** spheres = new RawModel* ** [X];
-    for (int i = 0; i < X; i++) {
-        spheres[i] = new RawModel* * [Y];
-
-        for (int j = 0; j < Y; j++) {
-            spheres[i][j] = new RawModel * [Z];
-
-            for (int k = 0; k < Z; k++) {
-                spheres[i][j][k] = new RawModel(Primitives::generateSphere(0.5f, 18.0f, 9.0f), ShaderManager::DEFAULT);
-                spheres[i][j][k]->setPosition(glm::vec3(i * 2.0f, j * 2.0f, k * 2.0f));
-            }
-        }
-    }
+    // Testing some OBJ models:
+    RawModel buddha("..\\models\\Buddha.obj", ShaderManager::DEFAULT);
+    RawModel bunny ("..\\models\\Bunny.obj",  ShaderManager::DEFAULT);
+    RawModel dragon("..\\models\\Dragon.obj", ShaderManager::DEFAULT);
+    RawModel lucy  ("..\\models\\Lucy.obj",   ShaderManager::DEFAULT);
 
     // Set positions:
-    //sphere_1->setPosition(glm::vec3(-1.0f, 4.0f, -5.0f));
+    buddha.setPosition(glm::vec3(-10.0f, 0.0f, -10.0f));
+    bunny.setPosition(glm::vec3 ( 10.0f, 0.0f,  10.0f));
+    dragon.setPosition(glm::vec3(-10.0f, 0.0f,  10.0f));
+    lucy.setPosition(glm::vec3(   10.0f, 0.0f, -10.0f));
 
     // Creating a test camera:
     Camera* camera = new Camera();
@@ -97,19 +87,10 @@ void Game::Update()
         // Updating the camera class:
         camera->update(deltaTime);
 
-        for (int x = 0; x < X; ++x)
-        {
-            for (int y = 0; y < Y; ++y)
-            {
-                for (int z = 0; z < Z; ++z)
-                {
-                    spheres[x][y][z]->render(camera);
-                }
-            }
-        }
-
-        // Rendering the spheres:
-       // sphere_1->render(camera);
+        buddha.draw(camera);
+        bunny.draw(camera);
+        dragon.draw(camera);
+        lucy.draw(camera);
 
         // Swapping the buffers:
         m_application->SwapBuffers();
@@ -117,19 +98,4 @@ void Game::Update()
 
     // Deleting the cameras:
     delete camera;
-
-
-    for (int i = 0; i < X; i++) {
-        delete[] spheres[i];
-
-        for (int j = 0; j < Y; j++) {
-            delete[] spheres[i][j];
-
-            for (int k = 0; k < Z; k++) {
-                delete[] spheres[i][j][k];
-            }
-        }
-    }
-    //delete[] spheres;
-   // delete sphere_1;
 }

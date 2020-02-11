@@ -2,6 +2,7 @@
 #include "ext.hpp"
 #include "Directives.h"
 #include <cmath>
+#include <iostream>
 
 Camera::Camera()
 {
@@ -9,7 +10,7 @@ Camera::Camera()
 	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 2.5f;
+	sensitivity = 75.0f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -118,12 +119,12 @@ void Camera::updateMouseInput(float deltaTime)
 	mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	xOffset *= sensitivity * deltaTime;
-	yOffset *= sensitivity * deltaTime;
+	xOffset *= 2 * sensitivity * deltaTime;
+	yOffset *= 2 * sensitivity * deltaTime;
 
 	// Adding offset values to the yaw and pitch:
-	yaw   += xOffset * 2;
-	pitch += yOffset * 2;
+	yaw   += xOffset;
+	pitch += yOffset;
 
 	// Clamping the pitch:
 	if (pitch > maxPitch)
