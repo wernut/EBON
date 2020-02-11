@@ -1,10 +1,12 @@
 #pragma once
+#include "ShaderManager.h"
 #include "Application.h"
 
 class Game
 {
 private:
-	Application* m_app;
+	Application* m_application;
+	ShaderManager* m_shaderManager;
 public:
 	Game();
 	~Game();

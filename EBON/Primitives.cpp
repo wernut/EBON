@@ -9,7 +9,7 @@ Primitives::Primitives() {}
 
 Primitives::~Primitives(){}
 
-Mesh* Primitives::generateSphereMesh(float radius, float stackCount, float sectorCount)
+Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCount)
 {
 	std::vector<float> vertex_buffer;
 	std::vector<uint>  index_buffer;
@@ -80,7 +80,7 @@ Mesh* Primitives::generateSphereMesh(float radius, float stackCount, float secto
 	// store indices
 	indexCount = index_buffer.size();
 	uint* indices = new uint[indexCount];
-	for (int i = 0; i < indexCount; ++i)
+	for (size_t i = 0; i < indexCount; ++i)
 	{
 		indices[i] = index_buffer[i];
 	}
@@ -88,7 +88,7 @@ Mesh* Primitives::generateSphereMesh(float radius, float stackCount, float secto
 	return new Mesh(vertexCount, vertices, indexCount, indices);
 }
 
-Mesh* Primitives::generateCubeMesh(float scale)
+Mesh* Primitives::generateCube(float scale)
 {
 	// Cube vertices:
 	float s = 0.1f * scale;
@@ -104,7 +104,7 @@ Mesh* Primitives::generateCubeMesh(float scale)
 	vertices[7].position = glm::vec4( s, -s, -s * 2, 1.0f);
 
 	// Indexed vertex positions:
-	uint index_buffer[]
+	uint indices[]
 	{
 		0, 1, 2,
 		1, 2, 3, // front
@@ -120,5 +120,39 @@ Mesh* Primitives::generateCubeMesh(float scale)
 		0, 6, 2, // top
 	};
 
-	return new Mesh(8, vertices, 36, index_buffer);
+	return new Mesh(8, vertices, 36, indices);
+}
+
+Mesh* Primitives::generatePlane(float s, float width, float height)
+{
+	//Mesh::Vertex* vertices = new Mesh::Vertex[(uint)(width * height)];
+	//uint vertexCount = 0;
+	//uint vertexIndex = 0;
+	//for (int x = 0; x < width; ++x)
+	//{
+	//	float xPos = x;
+	//	if (xPos == 0)
+	//		xPos = 1;
+	//	for (int y = 0; y < height; ++y)
+	//	{
+	//		float yPos = x;
+	//		if (yPos == 0)
+	//			yPos = 1;
+	//		vertices[vertexIndex + 0].position = glm::vec4(-s * xPos, -s, 0.0f, 1.0f); 
+	//		vertices[vertexIndex + 1].position = glm::vec4( s * xPos, -s, 0.0f, 1.0f);
+	//		vertices[vertexIndex + 2].position = glm::vec4(-s * xPos, -s, -yPos * 2, 1.0f);
+	//		vertices[vertexIndex + 3].position = glm::vec4( s * xPos, -s, -yPos * 2, 1.0f);
+	//		vertexIndex += 4;
+	//		++vertexCount;
+	//	}
+	//}
+
+	//uint* indices = new uint[6]
+	//{
+	//	0, 1, 2,
+	//	1, 2, 3,
+	//};
+	//uint indexCount = 6;
+
+	return new Mesh();
 }

@@ -46,6 +46,7 @@ Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
+	updateProjectionViewTransform();
 	target = frontAxis * 15.0f;
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
@@ -53,7 +54,6 @@ void Camera::update(float deltaTime)
 	updateKeyboardInput(deltaTime);
 	updateMouseInput(deltaTime);
 	setPosition(position);
-	updateProjectionViewTransform();
 }
 
 void Camera::setPerspective(float fov, float ratio, float near, float far)
@@ -64,13 +64,11 @@ void Camera::setPerspective(float fov, float ratio, float near, float far)
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 {
 	view_transform = glm::lookAt(from, to, up);
-	//updateMatricies();
 }
 
 void Camera::setPosition(glm::vec3 position)
 {
 	view_transform = glm::lookAt(position, position + frontAxis, upAxis);
-	//updateMatricies();
 }
 
 void Camera::updateProjectionViewTransform()
@@ -166,6 +164,5 @@ glm::mat4 Camera::getProjectionView()
 
 void Camera::updateMatricies()
 {
-	view_transform  = glm::inverse(world_transform);
-	world_transform = glm::inverse(view_transform);
+	view_transform = glm::inverse(world_transform);
 }

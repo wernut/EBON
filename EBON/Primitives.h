@@ -10,7 +10,8 @@ public:
 	Primitives();
 	~Primitives();
 
-	static Mesh* generateSphereMesh(float radius, float stackCount, float sectorCount);
-	static Mesh* generateCubeMesh(float scale);
+	static Mesh* generateSphere(float radius, float stackCount, float sectorCount);
+	static Mesh* generateCube(float scale);
+	static Mesh* generatePlane(float s, float width, float height);
 };
 

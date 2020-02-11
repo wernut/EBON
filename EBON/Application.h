@@ -24,6 +24,8 @@ public:
 			m_instance = new Application(gameTitle, windowWidth, windowHeight);
 			return m_instance;
 		}
+		else
+			return nullptr;
 	}
 
 	// Cleaing up the singleton instance:
