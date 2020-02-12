@@ -1,7 +1,5 @@
 #include "Application.h"
 
-Application* Application::m_instance = nullptr;
-
 Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Creating GLFW window:
@@ -14,9 +12,6 @@ Application::Application(const char* gameTitle, const float windowWidth, const f
 	m_frames = 0;
 	m_fpsInterval = 0.0;
 	m_gameOver = false;
-
-	// Making the singleton instance this class:
-	m_instance = this;
 
 	// Printing the version of OpenGL we are running:
 	PrintOpenGLVersion();
@@ -148,6 +143,11 @@ void Application::PollEvents()
 	glfwPollEvents();
 }
 
+GLFWwindow* Application::getWindow()
+{
+	return m_window;
+}
+
 float Application::getWindowWidth()
 {
 	return windowWidth;
@@ -156,6 +156,14 @@ float Application::getWindowWidth()
 float Application::getWindowHeight()
 {
 	return windowHeight;
+}
+
+void Application::getMousePos(float& xPos, float& yPos)
+{
+	double _xPos, _yPos;
+	glfwGetCursorPos(m_window, &_xPos, &_yPos);
+	xPos = _xPos;
+	yPos = _yPos;
 }
 
 void Application::ClearColor(float r, float g, float b, float a)

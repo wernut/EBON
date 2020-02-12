@@ -15,9 +15,6 @@ ShaderProgram::ShaderProgram(const char* vertexLocation, const char* fragmentLoc
 
 	// - Linking the shaders:
 	glLinkProgram(m_shaderProgramID);
-
-	// Checking if the linking was successful:
-	checkIfSuccessful(m_shaderProgramID);
 }
 
 ShaderProgram::~ShaderProgram()

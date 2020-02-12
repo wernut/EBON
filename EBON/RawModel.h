@@ -3,7 +3,9 @@
 #include "ext.hpp"
 #include "ShaderManager.h"
 #include "Mesh.h"
+#include "OBJMesh.h"
 #include "Camera.h"
+
 
 class RawModel
 {
@@ -12,13 +14,16 @@ private:
 	ShaderProgram* m_shader;
 	glm::mat4 m_transform;
 	Mesh* m_mesh;
+	aie::OBJMesh m_objMesh;
 
 public:
 	RawModel();
 	RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType);
+	RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType);
 	~RawModel();
 
 	void render(Camera* camera);
+	void renderOBJ(Camera* camera);
 
 	glm::mat4 getTransform();
 	void setPosition(glm::vec3 position);

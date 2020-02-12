@@ -2,26 +2,34 @@
 #include "Directives.h"
 #include "ShaderManager.h"
 #include "Mesh.h"
-#include "Camera.h"
 #include "Primitives.h"
 #include "RawModel.h"
 
 Game::Game()
 {
+    // Creating the game manager:
+    m_gameManager = GameManager::Create("EBON", SCREEN_WIDTH, SCREEN_HEIGHT);
+
     // Creating the application:
-    m_application = Application::Create("EBON", SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_application = m_gameManager->getApplication();
 
     // Creating the shader manager:
-    m_shaderManager = ShaderManager::Create();
+    m_shaderManager = m_gameManager->getShaderManager();
+
+    // Creating the camera:
+    m_camera = new Camera();
+
+    // Creating a pointer to the GLFWwindow:
+    m_window = m_application->getWindow();
 }
 
 Game::~Game() 
 {
-    // Destorying the shader manager:
-    ShaderManager::Destroy();
+    // Destroying the camera:
+    delete m_camera;
 
-    // Destroying the app, this should be done last:
-    Application::Destroy();
+    // Destorying the game manager:
+    GameManager::Destroy();
 }
 
 void Game::Run()
@@ -31,6 +39,12 @@ void Game::Run()
         // Setup game:
         m_application->setGameOver(false);
 
+        // Clearing the color: (Making the background white).
+        m_application->ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        // Enabling wiremesh mode:
+        m_application->ToggleWiremeshMode();
+
         // Update game:
         Update();
     }
@@ -38,42 +52,17 @@ void Game::Run()
   
 void Game::Update()
 {
-    // Getting the window:
-    auto window = glfwGetCurrentContext();
+    // Creating some test obj models:
+    RawModel bunny ("..\\Models\\Bunny.obj",  ShaderManager::DEFAULT);
+    RawModel buddha("..\\Models\\Buddha.obj", ShaderManager::DEFAULT);
+    RawModel dragon("..\\Models\\Dragon.obj", ShaderManager::DEFAULT);
+    RawModel lucy  ("..\\Models\\Lucy.obj",   ShaderManager::DEFAULT);
 
-    // Creating a final color vector for the fragment shader:
-    glm::vec4 color  = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    bunny.setPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
+    buddha.setPosition(glm::vec3(-10.0f, 0.0f, -10.0f));
+    dragon.setPosition(glm::vec3(10.0f, 0.0f, 0.0f));
+    lucy.setPosition(glm::vec3(  0.0f, 0.0f, 10.0f));
 
-    // Creating some test models with generated cubes:
-    //RawModel* sphere_1 = new RawModel(Primitives::generateSphere(0.5f, 18, 9), ShaderManager::DEFAULT);
-
-    int X = 10, Y = 10, Z = 10;
-
-    RawModel* *** spheres = new RawModel* ** [X];
-    for (int i = 0; i < X; i++) {
-        spheres[i] = new RawModel* * [Y];
-
-        for (int j = 0; j < Y; j++) {
-            spheres[i][j] = new RawModel * [Z];
-
-            for (int k = 0; k < Z; k++) {
-                spheres[i][j][k] = new RawModel(Primitives::generateSphere(0.5f, 18.0f, 9.0f), ShaderManager::DEFAULT);
-                spheres[i][j][k]->setPosition(glm::vec3(i * 2.0f, j * 2.0f, k * 2.0f));
-            }
-        }
-    }
-
-    // Set positions:
-    //sphere_1->setPosition(glm::vec3(-1.0f, 4.0f, -5.0f));
-
-    // Creating a test camera:
-    Camera* camera = new Camera();
-
-    // Enabling wiremesh mode:
-    m_application->ToggleWiremeshMode();
-
-    // Clearing the color:
-    m_application->ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Main game loop:
     while (!m_application->hasWindowClosed() && !m_application->isGameOver())
@@ -91,45 +80,19 @@ void Game::Update()
         float deltaTime = (float) (m_application->getDeltaTime());
 
         // Do stuff here! -------------------------------------
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             m_application->setGameOver(true);
 
         // Updating the camera class:
-        camera->update(deltaTime);
+        m_camera->update(deltaTime);
 
-        for (int x = 0; x < X; ++x)
-        {
-            for (int y = 0; y < Y; ++y)
-            {
-                for (int z = 0; z < Z; ++z)
-                {
-                    spheres[x][y][z]->render(camera);
-                }
-            }
-        }
-
-        // Rendering the spheres:
-       // sphere_1->render(camera);
+        // Render models:
+        bunny.renderOBJ(m_camera);
+        buddha.renderOBJ(m_camera);
+        dragon.renderOBJ(m_camera);
+        lucy.renderOBJ(m_camera);
 
         // Swapping the buffers:
         m_application->SwapBuffers();
     }
-
-    // Deleting the cameras:
-    delete camera;
-
-
-    for (int i = 0; i < X; i++) {
-        delete[] spheres[i];
-
-        for (int j = 0; j < Y; j++) {
-            delete[] spheres[i][j];
-
-            for (int k = 0; k < Z; k++) {
-                delete[] spheres[i][j][k];
-            }
-        }
-    }
-    //delete[] spheres;
-   // delete sphere_1;
 }
