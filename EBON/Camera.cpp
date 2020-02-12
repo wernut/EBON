@@ -27,7 +27,7 @@ Camera::Camera()
 	// Axis:
 	worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	rightAxis = glm::vec3(0);
-	upAxis = glm::vec3(0);
+	upAxis = glm::vec3(0, 1, 0);
 	frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	// Transforms:
@@ -51,7 +51,7 @@ void Camera::update(float deltaTime)
 	target = frontAxis * 15.0f;
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
-	upAxis = glm::cross(direction, rightAxis);
+    upAxis = glm::cross(direction, rightAxis);
 	updateKeyboardInput(deltaTime);
 	updateMouseInput(deltaTime);
 	setPosition(position);
@@ -69,7 +69,7 @@ void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 
 void Camera::setPosition(glm::vec3 position)
 {
-	view_transform = glm::lookAt(position, position + frontAxis, upAxis);
+	view_transform = glm::lookAt(position, position + target, upAxis);
 }
 
 void Camera::updateProjectionViewTransform()
@@ -87,10 +87,10 @@ void Camera::updateKeyboardInput(float deltaTime)
 		position -= movementSpeed * frontAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
-		position -= glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed * deltaTime;
+		position -= glm::normalize(glm::cross(frontAxis, worldUpAxis)) * movementSpeed * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
-		position += glm::normalize(glm::cross(frontAxis, upAxis)) * movementSpeed * deltaTime;
+		position += glm::normalize(glm::cross(frontAxis, worldUpAxis)) * movementSpeed * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		position += movementSpeed * worldUpAxis * deltaTime;

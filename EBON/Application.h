@@ -10,39 +10,9 @@ using uint = unsigned int;
 class Application
 {
 public:
-	/*
-		SINGLETON FUNCTIONS:
-	*/
+	Application(const char* gameTitle, const float screenWidth, const float screenHeight);
+	~Application();
 
-	static Application* m_instance;
-
-	// Creating the singleton instance:
-	static Application* Create(const char* gameTitle, const float windowWidth, const float windowHeight)
-	{
-		if (!m_instance)
-		{
-			m_instance = new Application(gameTitle, windowWidth, windowHeight);
-			return m_instance;
-		}
-		else
-			return nullptr;
-	}
-
-	// Cleaing up the singleton instance:
-	static void Destroy()
-	{
-		if (m_instance)
-		{
-			delete m_instance;
-			m_instance = nullptr;
-		}
-	}
-
-	static Application* getInstance() { return m_instance; }
-
-	/*
-		APPLICATION FUNCTIONS / OPENGL WRAPPER:
-	*/
 	void SetVSync(bool value);
 	void Update();
 	void PrintOpenGLVersion();
@@ -56,20 +26,15 @@ public:
 	double getTime();
 	uint getFPS();
 	bool isGameOver();
+	GLFWwindow* getWindow();
 	bool hasWindowClosed();
 	float getWindowWidth();
 	float getWindowHeight();
+	void getMousePos(float &xPos, float &yPos);
 	// Setters
 	void setGameOver(bool value);
 
-protected:
-	Application(const char* gameTitle, const float screenWidth, const float screenHeight);
-	~Application();
-
-	/*
-		APPLICATION VARIABLES:
-	*/
-	
+private:
 	GLFWwindow* m_window;
 	double m_deltaTime, m_lastFrame;
 	double m_fpsInterval;
@@ -78,9 +43,6 @@ protected:
 	char* m_gameTitle;
 	float windowWidth, windowHeight;
 
-	/*
-		APPLICATION FUNCTIONS:
-	*/
 	int InitWindow(const char* gameTitle, const float screenWidth, const float screenHeight);
 };
 
