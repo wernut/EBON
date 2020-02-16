@@ -5,7 +5,9 @@ ShaderManager* ShaderManager::m_instance = nullptr;
 ShaderManager::ShaderManager()
 {
 	m_shaders = new ShaderProgram *[COUNT];
-	m_shaders[DEFAULT] = new ShaderProgram("..\\Shaders\\simple_vertex.glsl", "..\\Shaders\\simple_fragment.glsl");
+	m_shaders[DEFAULT]  = new ShaderProgram("..\\Shaders\\simple_vertex.glsl",   "..\\Shaders\\simple_fragment.glsl");
+	m_shaders[TEXTURED] = new ShaderProgram("..\\Shaders\\textured_vertex.glsl", "..\\Shaders\\textured_fragment.glsl");
+	m_shaders[TERRAIN]	= new ShaderProgram("..\\Shaders\\terrain_vertex.glsl", "..\\Shaders\\terrain_fragment.glsl");
 }
 
 ShaderManager::~ShaderManager()

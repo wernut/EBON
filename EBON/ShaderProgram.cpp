@@ -52,7 +52,7 @@ uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
 	glCompileShader(id);
 
 	// - Check the shader compiled:
-	checkIfSuccessful(id);
+	checkSuccess(id);
 
 	return id;
 }
@@ -62,7 +62,7 @@ uint ShaderProgram::getID()
 	return m_shaderProgramID;
 }
 
-GLint ShaderProgram::checkIfSuccessful(uint id)
+GLint ShaderProgram::checkSuccess(uint id)
 {
 	// - Check the shader compiled:
 	GLint success = GL_FALSE;

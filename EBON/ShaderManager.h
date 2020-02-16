@@ -17,6 +17,8 @@ public:
 	enum E_SHADER_TYPE
 	{
 		DEFAULT,
+		TEXTURED,
+		TERRAIN,
 		COUNT,
 	};
 

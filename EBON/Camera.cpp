@@ -69,7 +69,7 @@ void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 
 void Camera::setPosition(glm::vec3 position)
 {
-	view_transform = glm::lookAt(position, position + target, upAxis);
+	view_transform = glm::lookAt(position, position + target, worldUpAxis);
 }
 
 void Camera::updateProjectionViewTransform()

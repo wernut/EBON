@@ -7,11 +7,13 @@ using uint = unsigned int;
 class Primitives
 {
 public:
-	Primitives();
-	~Primitives();
+	// Procedual geometry:
+	static Mesh* generateCube(const char* fileLocation = "");
+	static Mesh* generateSphere(float radius, float stackCount, float sectorCount, const char* fileLocation = "");
+	static Mesh* generatePlane(float size, const char* fileLocation = "");
 
-	static Mesh* generateSphere(float radius, float stackCount, float sectorCount);
-	static Mesh* generateCube(float scale);
-	static Mesh* generatePlane(float s, float width, float height);
+	// Vector to array functions:
+	static uint* vectorToUintArray(std::vector<uint> index_buffer, uint &indexCount);
+	static Mesh::Vertex* vectorToVertexArray(std::vector<glm::vec4> vertex_buffer,std::vector<glm::vec2> uv_buffer, uint &vertexCount);
 };
 

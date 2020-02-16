@@ -40,10 +40,12 @@ void Game::Run()
         m_application->setGameOver(false);
 
         // Clearing the color: (Making the background white).
-        m_application->ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        m_application->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Enabling wiremesh mode:
-        m_application->ToggleWiremeshMode();
+        // m_application->ToggleWiremeshMode();
+
+        glEnable(GL_DEPTH_TEST);
 
         // Update game:
         Update();
@@ -53,16 +55,15 @@ void Game::Run()
 void Game::Update()
 {
     // Creating some test obj models:
-    RawModel bunny ("..\\Models\\Bunny.obj",  ShaderManager::DEFAULT);
-    RawModel buddha("..\\Models\\Buddha.obj", ShaderManager::DEFAULT);
-    RawModel dragon("..\\Models\\Dragon.obj", ShaderManager::DEFAULT);
-    RawModel lucy  ("..\\Models\\Lucy.obj",   ShaderManager::DEFAULT);
+    //RawModel bunny ("..\\Models\\Bunny.obj",  ShaderManager::DEFAULT);
 
-    bunny.setPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
-    buddha.setPosition(glm::vec3(-10.0f, 0.0f, -10.0f));
-    dragon.setPosition(glm::vec3(10.0f, 0.0f, 0.0f));
-    lucy.setPosition(glm::vec3(  0.0f, 0.0f, 10.0f));
+    //RawModel texturedCube(Primitives::generateCube("..\\Textures\\container.jpg"), ShaderManager::TEXTURED);
+   // RawModel texturedPlane(Primitives::generatePlane(50, "..\\Textures\\grass.jpg"), ShaderManager::TERRAIN);
+    RawModel sphere(Primitives::generateSphere(1.0f, 36.0f, 18.0f, "..\\Textures\\earth_diffuse.jpg"), ShaderManager::TEXTURED);
 
+    sphere.setRotation(-60, glm::vec3(1, 0, 0));
+    sphere.setRotation(-45, glm::vec3(1, 0, 1));
+    //texturedPlane.setPosition(glm::vec3(-25, -2, -25));
 
     // Main game loop:
     while (!m_application->hasWindowClosed() && !m_application->isGameOver())
@@ -86,11 +87,18 @@ void Game::Update()
         // Updating the camera class:
         m_camera->update(deltaTime);
 
-        // Render models:
-        bunny.renderOBJ(m_camera);
-        buddha.renderOBJ(m_camera);
-        dragon.renderOBJ(m_camera);
-        lucy.renderOBJ(m_camera);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 1);
+        sphere.setRotation(-deltaTime * 10, glm::vec3(0, 0, 1));
+        sphere.render(m_camera);
+
+        /*glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 1);
+        texturedCube.render(m_camera);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 2);
+        texturedPlane.render(m_camera);*/
 
         // Swapping the buffers:
         m_application->SwapBuffers();

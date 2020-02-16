@@ -25,12 +25,21 @@
     <Filter Include="Source Files\Geometry">
       <UniqueIdentifier>{1d6f7eb0-07e3-4430-bfe6-d5109a51794c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Imports">
+      <UniqueIdentifier>{fe942c4c-90dc-4cae-815d-b2a6e41503c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Imports">
+      <UniqueIdentifier>{d76a2244-b7cc-4aea-b7bf-39f5240e6600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Models">
+      <UniqueIdentifier>{0b515f1d-a7c8-400e-a18d-ef913b116731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Models">
+      <UniqueIdentifier>{b7d0de53-18bd-4bff-bee5-1f6758ea8f02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
@@ -60,11 +69,14 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RawModel.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c">
+      <Filter>Source Files\Imports</Filter>
+    </ClCompile>
+    <ClCompile Include="RawModel.cpp">
+      <Filter>Source Files\Models</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +84,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Directives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -101,11 +110,17 @@
     <ClInclude Include="GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RawModel.h">
-      <Filter>Header Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Directives.h">
+      <Filter>Header Files\Imports</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\Imports</Filter>
+    </ClInclude>
+    <ClInclude Include="RawModel.h">
+      <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

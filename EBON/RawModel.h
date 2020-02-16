@@ -13,6 +13,7 @@ private:
 	ShaderManager* m_shaderManager;
 	ShaderProgram* m_shader;
 	glm::mat4 m_transform;
+	glm::vec3 m_pos;
 	Mesh* m_mesh;
 	aie::OBJMesh m_objMesh;
 
@@ -27,6 +28,7 @@ public:
 
 	glm::mat4 getTransform();
 	void setPosition(glm::vec3 position);
+	glm::vec3 getPosition();
 	void setRotation(float eularAngle, glm::vec3 axis);
 };
 

@@ -167,6 +167,7 @@
     <ClInclude Include="RawModel.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>

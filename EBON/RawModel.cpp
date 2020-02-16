@@ -7,6 +7,7 @@ RawModel::RawModel()
 	m_shader = m_shaderManager->getShader(ShaderManager::DEFAULT);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
+	m_pos = glm::vec3(0.0f);
 }
 
 // meshType must constuct new mesh!
@@ -16,6 +17,7 @@ RawModel::RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType)
 	m_shader = m_shaderManager->getShader(shaderType);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = meshType;
+	m_pos = glm::vec3(0.0f);
 }
 
 RawModel::RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType)
@@ -24,6 +26,7 @@ RawModel::RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shader
 	m_shader = m_shaderManager->getShader(shaderType);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
+	m_pos = glm::vec3(0.0f);
 	if (!m_objMesh.load(fileLocation, false))
 		std::cout << "ERROR_LOADING_OBJ_FILE!" << std::endl;
 }
@@ -66,6 +69,12 @@ glm::mat4 RawModel::getTransform()
 void RawModel::setPosition(glm::vec3 position)
 {
 	m_transform = glm::translate(m_transform, position);
+	m_pos = position;
+}
+
+glm::vec3 RawModel::getPosition()
+{
+	return m_pos;
 }
 
 void RawModel::setRotation(float eularAngle, glm::vec3 axis)
