@@ -18,9 +18,11 @@ public:
 	{
 		DEFAULT,
 		TEXTURED,
-		TERRAIN,
+		TRIPPY,
 		COUNT,
 	};
+
+	void ReloadAllShaders();
 
 	ShaderProgram* getShader(E_SHADER_TYPE shaderType);
 };

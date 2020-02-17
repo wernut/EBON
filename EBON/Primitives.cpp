@@ -1,10 +1,10 @@
-#include "Primitives.h"
-
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <random>
-
 #include <iostream>
+
+#include "Primitives.h"
+#include "PerlinNoise.hpp"
+
 
 Mesh* Primitives::generateCube(const char* fileLocation)
 {
@@ -81,13 +81,16 @@ Mesh* Primitives::generateCube(const char* fileLocation)
 Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCount, const char* fileLocation)
 {
 	std::vector<glm::vec4> vertex_buffer;
-	std::vector<uint>      index_buffer;
 	std::vector<glm::vec2> uv_buffer;
+	std::vector<glm::vec4> normal_buffer;
+	std::vector<uint>      index_buffer;
 	uint vertexCount = 0;
 	uint indexCount  = 0;
 
 	float x, y, z, xy;
 	float s, t;
+	float nx, ny, nz, lengthInv = 1.0f / radius;
+
 	float sectorStep = (float)(2 * M_PI / sectorCount);
 	float stackStep  = (float)(M_PI / stackCount);
 	float sectorAngle, stackAngle;
@@ -112,6 +115,12 @@ Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCou
 			s = (float)j / sectorCount;
 			t = (float)i / stackCount;
 			uv_buffer.push_back(glm::vec2(s, t));
+
+			// Normalized vertex normal:
+			nx = x * lengthInv;
+			ny = y * lengthInv;
+			nz = z * lengthInv;
+			normal_buffer.push_back(glm::vec4(nx, ny, nz, 1.0f));
 
 			++vertexCount;
 		}
@@ -154,27 +163,43 @@ Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCou
 		return new Mesh(vertexCount, vertices, indexCount, indices, true);
 }
 
-Mesh* Primitives::generatePlane(float size, const char* fileLocation)
+Mesh* Primitives::generatePlane(float size, const char* fileLocation, bool perlinY, uint seed)
 {
 	std::vector<glm::vec4> vertex_buffer;
 	std::vector<glm::vec2> uv_buffer;
 	std::vector<uint>      index_buffer;
 	uint vertexAndUVCount = 0;
 	uint indexCount = 0;
-	float randY = 0;
+	float elevation = 0;
+
+	siv::PerlinNoise perlin(seed);
 
 	for (int i = 0; i < size; ++i)
 	{
 		for (int j = 0; j < size; ++j)
 		{
-			randY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			//std::cout << randY << std::endl;
-			vertex_buffer.push_back(glm::vec4(i, randY, j, 1.0f));
+			// Getting the Y level via perlin noise:
+			if (perlinY)
+			{
+				double nx = i / size - 0.5;
+				double ny = j / size - 0.5;
+				elevation = 1  * perlin.noise(1 * nx, 1 * ny);
+					   +  0.5  * perlin.noise(2 * nx, 2 * ny);
+					   +  0.25 * perlin.noise(4 * nx, 4 * ny);
+
+				elevation *= 10;
+
+				// std::cout << elevation << std::endl;
+			}
+
+			// Creating vertices & uv coords:
+			vertex_buffer.push_back(glm::vec4(i, elevation, j, 1.0f));
 			uv_buffer.push_back(glm::vec2((float)(i / size), (float)(j / size)));
 			vertexAndUVCount++;
 
 			if (i == 0 || j == 0) continue;
 
+			// Creating indices:
 			index_buffer.push_back(size * i + j);				//Top right
 			index_buffer.push_back(size * i + (j - 1));		    //Bottom right
 			index_buffer.push_back(size * (i - 1) + (j - 1));	//Bottom left - First triangle

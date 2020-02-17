@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#define DEBUG
+
 Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Creating GLFW window:
@@ -12,6 +14,7 @@ Application::Application(const char* gameTitle, const float windowWidth, const f
 	m_frames = 0;
 	m_fpsInterval = 0.0;
 	m_gameOver = false;
+	m_wireMeshMode = false;
 
 	// Printing the version of OpenGL we are running:
 	PrintOpenGLVersion();
@@ -150,12 +153,12 @@ GLFWwindow* Application::getWindow()
 
 float Application::getWindowWidth()
 {
-	return windowWidth;
+	return m_windowWidth;
 }
 
 float Application::getWindowHeight()
 {
-	return windowHeight;
+	return m_windowHeight;
 }
 
 void Application::getMousePos(float& xPos, float& yPos)
@@ -173,5 +176,20 @@ void Application::ClearColor(float r, float g, float b, float a)
 
 void Application::ToggleWiremeshMode()
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	m_wireMeshMode = !m_wireMeshMode;
+
+#ifdef DEBUG
+	std::cout << std::endl;
+	std::cout << "+ Toggling wiremesh mode..." << std::endl;
+	std::cout << "WIREMESH_" << m_wireMeshMode << std::endl;
+#endif // DEBUG
+
+	if (m_wireMeshMode)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }

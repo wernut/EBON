@@ -28,7 +28,7 @@ void GameManager::CreateApplication(const char* gameTitle, const float windowWid
 		m_application = new Application(gameTitle, windowWidth, windowHeight);
 	}
 	else
-		std::cout << "APPLICATION_FAILED_TO_INIT: ALREADY EXISTS." << std::endl;
+		std::cout << "APPLICATION_FAILED_TO_INIT: m_application != nullptr" << std::endl;
 
 }
 
@@ -39,7 +39,7 @@ Application* GameManager::getApplication()
 		return m_application;
 	}
 	else
-		std::cout << "FAILED_TO_GET_APPLICATION: DOESN'T EXIST." << std::endl;
+		std::cout << "FAILED_TO_GET_APPLICATION: m_application == nullptr" << std::endl;
 
 	return nullptr;
 }
@@ -51,7 +51,7 @@ void GameManager::CreateShaderManager()
 		m_shaderManager = new ShaderManager();
 	}
 	else
-		std::cout << "SHADERMANAGER_FAILED_TO_INIT: ALREADY EXISTS." << std::endl;
+		std::cout << "SHADERMANAGER_FAILED_TO_INIT: m_shaderManager != nullptr" << std::endl;
 
 }
 
@@ -62,7 +62,7 @@ ShaderManager* GameManager::getShaderManager()
 		return m_shaderManager;
 	}
 	else
-		std::cout << "FAILED_TO_GET_SHADERMANAGER: DOESN'T EXIST." << std::endl;
+		std::cout << "FAILED_TO_GET_SHADERMANAGER: m_shaderManager == nullptr" << std::endl;
 
 	return nullptr;
 }

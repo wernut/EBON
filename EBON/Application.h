@@ -41,7 +41,8 @@ private:
 	uint m_fps, m_frames;
 	bool m_gameOver;
 	char* m_gameTitle;
-	float windowWidth, windowHeight;
+	bool m_wireMeshMode;
+	float m_windowWidth, m_windowHeight;
 
 	int InitWindow(const char* gameTitle, const float screenWidth, const float screenHeight);
 };

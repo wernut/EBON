@@ -23,20 +23,30 @@ public:
 	Mesh();
 	Mesh(Mesh* &mesh);
 
+	// Standard mesh:
 	Mesh(uint vertexCount,    const Vertex* vertices, 
 		 uint indexCount = 0, const uint* indexBuffer = NULL, 
 		 bool shouldCleanUp = false);
 
+	// Textured mesh:
 	Mesh(uint vertexCount, const Vertex* vertices, const char* textureLocation, 
 		 uint indexCount = 0, const uint* indexBuffer = NULL, 
 		 bool shouldCleanUp = false);
 
 	virtual ~Mesh();
 
-	void initialiseCube();
-	void initialise(uint vertexCount, const Vertex* vertices, uint indexCount = 0, const uint* indexBuffer = NULL);
+	// Render mesh:
 	void render();
-	// Temp texture init
+
+private:
+
+	// Temp cube init:
+	void initialiseCube();
+
+	// Standard init:
+	void initialise(uint vertexCount, const Vertex* vertices, uint indexCount = 0, const uint* indexBuffer = NULL);
+
+	// Texture init:
 	void initialiseWithTexture(uint vertexCount, const Vertex* vertices, 
 							   const char* textureLocation, uint indexCount = 0,
 							   const uint* indexBuffer = NULL);

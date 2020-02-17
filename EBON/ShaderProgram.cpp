@@ -1,10 +1,14 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(const char* vertexLocation, const char* fragmentLocation)
+ShaderProgram::ShaderProgram(std::string vertexLocation, std::string fragmentLocation)
 {
+	// Storing the location of the files:
+	m_vertexLocation = vertexLocation;
+	m_fragmentLocation = fragmentLocation;
+
 	// Loading the vertex and fragment shader:
-	m_vertexID   = loadShader(vertexLocation,   GL_VERTEX_SHADER);
-	m_fragmentID = loadShader(fragmentLocation, GL_FRAGMENT_SHADER);
+	m_vertexID   = loadShader(vertexLocation.c_str(),   GL_VERTEX_SHADER);
+	m_fragmentID = loadShader(fragmentLocation.c_str(), GL_FRAGMENT_SHADER);
 
 	// - Creating the shader program:
 	m_shaderProgramID = glCreateProgram();
@@ -19,11 +23,7 @@ ShaderProgram::ShaderProgram(const char* vertexLocation, const char* fragmentLoc
 
 ShaderProgram::~ShaderProgram()
 {
-	glDetachShader(m_shaderProgramID, m_vertexID);
-	glDetachShader(m_shaderProgramID, m_fragmentID);
-	glDeleteShader(m_vertexID);
-	glDeleteShader(m_fragmentID);
-	glDeleteProgram(m_shaderProgramID);
+	cleanUpShader();
 }
 
 uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
@@ -52,9 +52,7 @@ uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
 	glCompileShader(id);
 
 	// - Check the shader compiled:
-	checkSuccess(id);
-
-	return id;
+	return checkSuccess(id);
 }
 
 uint ShaderProgram::getID()
@@ -79,13 +77,15 @@ GLint ShaderProgram::checkSuccess(uint id)
 
 		// - Create the error message:
 		std::string error_message(log);
-		error_message += "_SHADER_FAILED_TO_COMPILE";
+		error_message += "_SHADER_FAILED_TO_COMPILE_";
 		printf(error_message.c_str());
 		// - Clean up anyway:
 		delete[] log;
+
+		return -1;
 	}
 
-	return success;
+	return id;
 }
 
 // Use the shader:
@@ -127,4 +127,41 @@ void ShaderProgram::setMatrix4(const std::string& name, glm::mat4 value) const
 void ShaderProgram::setVector4(const std::string& name, glm::vec4 value) const
 {
 	glUniform4fv(glGetUniformLocation(m_shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
+}
+
+bool ShaderProgram::Reload()
+{
+	// - Deattach and delete shaders:
+	cleanUpShader();
+
+	// Loading the vertex and fragment shader:
+	m_vertexID   = loadShader(m_vertexLocation.c_str(), GL_VERTEX_SHADER);
+	m_fragmentID = loadShader(m_fragmentLocation.c_str(), GL_FRAGMENT_SHADER);
+
+	if (m_vertexID == -1 || m_fragmentID == -1)
+	{
+		cleanUpShader();
+		return false;
+	}
+
+	// - Creating the shader program:
+	m_shaderProgramID = glCreateProgram();
+
+	// - Attaching the vertex and fragment shader to the shader program:
+	glAttachShader(m_shaderProgramID, m_vertexID);
+	glAttachShader(m_shaderProgramID, m_fragmentID);
+
+	// - Linking the shaders:
+	glLinkProgram(m_shaderProgramID);
+
+	return true;
+}
+
+void ShaderProgram::cleanUpShader()
+{
+	glDetachShader(m_shaderProgramID, m_vertexID);
+	glDetachShader(m_shaderProgramID, m_fragmentID);
+	glDeleteShader(m_vertexID);
+	glDeleteShader(m_fragmentID);
+	glDeleteProgram(m_shaderProgramID);
 }

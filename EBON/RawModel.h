@@ -19,7 +19,9 @@ private:
 
 public:
 	RawModel();
+	// Generated mesh:
 	RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType);
+	// OBJ mesh:
 	RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType);
 	~RawModel();
 
@@ -30,5 +32,6 @@ public:
 	void setPosition(glm::vec3 position);
 	glm::vec3 getPosition();
 	void setRotation(float eularAngle, glm::vec3 axis);
+	ShaderProgram* getShader();
 };
 

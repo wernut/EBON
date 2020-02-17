@@ -142,6 +142,10 @@ void Mesh::initialise(uint vertexCount, const Vertex* vertices, uint indexCount,
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
+	//// Create attribute point to vertex normal direction:
+	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) + sizeof(glm::vec2)));
+	//glEnableVertexAttribArray(1);
+
 	// Checking if the index buffer exists
 	if(indexCount != 0)
 	{
@@ -232,6 +236,7 @@ void Mesh::initialiseWithTexture(uint vertexCount, const Vertex* vertices, const
 	vertex_count = vertexCount;
 	index_count = indexCount;
 
+	// Should we clean up the passed vertices and indices?
 	if (m_shouldCleanUp)
 	{
 		if (vertices)

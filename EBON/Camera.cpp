@@ -10,7 +10,7 @@ Camera::Camera()
 	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 75.0f;
+	sensitivity = 3.0f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -47,8 +47,7 @@ Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
-	updateProjectionViewTransform();
-	target = frontAxis * 15.0f;
+	target = frontAxis;
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
     upAxis = glm::cross(direction, rightAxis);
@@ -65,11 +64,15 @@ void Camera::setPerspective(float fov, float ratio, float near, float far)
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 {
 	view_transform = glm::lookAt(from, to, up);
+	world_transform = glm::inverse(view_transform);
+	updateProjectionViewTransform();
 }
 
 void Camera::setPosition(glm::vec3 position)
 {
 	view_transform = glm::lookAt(position, position + target, worldUpAxis);
+	world_transform = glm::inverse(view_transform);
+	updateProjectionViewTransform();
 }
 
 void Camera::updateProjectionViewTransform()
@@ -97,6 +100,11 @@ void Camera::updateKeyboardInput(float deltaTime)
 
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		position -= movementSpeed * worldUpAxis * deltaTime;
+
+	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		movementSpeed = 10.0f;
+	else
+		movementSpeed = 3.5;
 }
 
 void Camera::updateMouseInput(float deltaTime)
@@ -119,8 +127,8 @@ void Camera::updateMouseInput(float deltaTime)
 	mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	xOffset *= 2 * sensitivity * deltaTime;
-	yOffset *= 2 * sensitivity * deltaTime;
+	xOffset *= sensitivity * deltaTime;
+	yOffset *= sensitivity * deltaTime;
 
 	// Adding offset values to the yaw and pitch:
 	yaw   += xOffset;

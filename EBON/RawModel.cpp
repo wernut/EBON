@@ -39,24 +39,18 @@ RawModel::~RawModel()
 
 void RawModel::render(Camera* camera)
 {
-	glm::vec4 color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
 	m_shader->use();
 	m_shader->setMatrix4("projection_view_matrix", camera->getProjectionView());
 	m_shader->setMatrix4("model_matrix", m_transform);
-	m_shader->setVector4("color", color);
 	m_mesh->render();
 	m_shader->stop();
 }
 
 void RawModel::renderOBJ(Camera* camera)
 {
-	glm::vec4 color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
 	m_shader->use();
 	m_shader->setMatrix4("projection_view_matrix", camera->getProjectionView());
 	m_shader->setMatrix4("model_matrix", m_transform);
-	m_shader->setVector4("color", color);
 	m_objMesh.draw();
 	m_shader->stop();
 }
@@ -80,4 +74,9 @@ glm::vec3 RawModel::getPosition()
 void RawModel::setRotation(float eularAngle, glm::vec3 axis)
 {
 	m_transform = glm::rotate(m_transform, glm::radians(eularAngle), axis);
+}
+
+ShaderProgram* RawModel::getShader()
+{
+	return m_shader;
 }

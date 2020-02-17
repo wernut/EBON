@@ -13,11 +13,13 @@ private:
 	uint m_vertexID;
 	uint m_fragmentID;
 	uint m_shaderProgramID;
+	std::string m_vertexLocation, m_fragmentLocation;
 	uint loadShader(const char* fileLocation, uint shaderType);
 	GLint checkSuccess(uint id);
+	void cleanUpShader();
 
 public:
-	ShaderProgram(const char* vertexLocation, const char* fragmentLocation);
+	ShaderProgram(std::string vertexLocation, std::string fragmentLocation);
 	virtual ~ShaderProgram();
 
 	uint getID();
@@ -33,5 +35,8 @@ public:
 	void setFloat(const std::string& name, float value) const;
 	void setMatrix4(const std::string& name, glm::mat4 value) const;
 	void setVector4(const std::string& name, glm::vec4 value) const;
+
+	// Test function to reload the shader:
+	bool Reload();
 };
 
