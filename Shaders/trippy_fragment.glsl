@@ -9,6 +9,6 @@ in vec4 outNormal;
 void main()
 {
 	vec4 modNormal = outNormal;
-	modNormal.x += 5;
+	modNormal.x += sin(50);
 	final_color = modNormal;
 }
