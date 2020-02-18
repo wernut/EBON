@@ -20,6 +20,7 @@ RawModel::RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType)
 	m_pos = glm::vec3(0.0f);
 }
 
+// obj constructor
 RawModel::RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType)
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();

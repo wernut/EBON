@@ -9,6 +9,7 @@ ShaderManager::ShaderManager()
 	m_shaders[DEFAULT]  = new ShaderProgram("..\\Shaders\\simple_vertex.glsl",   "..\\Shaders\\simple_fragment.glsl");
 	m_shaders[TEXTURED] = new ShaderProgram("..\\Shaders\\textured_vertex.glsl", "..\\Shaders\\textured_fragment.glsl");
 	m_shaders[TRIPPY] = new ShaderProgram("..\\Shaders\\trippy_vertex.glsl", "..\\Shaders\\trippy_fragment.glsl");
+	m_shaders[RETRO] = new ShaderProgram("..\\Shaders\\retro_vertex.glsl", "..\\Shaders\\retro_fragment.glsl");
 }
 
 ShaderManager::~ShaderManager()

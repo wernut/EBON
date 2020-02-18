@@ -6,7 +6,7 @@
 #include "PerlinNoise.hpp"
 
 
-Mesh* Primitives::generateCube(const char* fileLocation)
+Mesh* Primitives::generateCube()
 {
 	// Cube vertices:
 	Mesh::Vertex vertices[8];
@@ -23,15 +23,15 @@ Mesh* Primitives::generateCube(const char* fileLocation)
 	vertices[7].position = glm::vec4(0.5f, 0.5f, 1.0f, 1.0f);	// Top Right
 
 	// Textures
-	vertices[0].texCoords = glm::vec2(0.0f, 0.0f);
-	vertices[1].texCoords = glm::vec2(1.0f, 0.0f);
-	vertices[2].texCoords = glm::vec2(0.0f, 1.0f);
-	vertices[3].texCoords = glm::vec2(1.0f, 1.0f);
+	vertices[0].texCoord = glm::vec2(0.0f, 0.0f);
+	vertices[1].texCoord = glm::vec2(1.0f, 0.0f);
+	vertices[2].texCoord = glm::vec2(0.0f, 1.0f);
+	vertices[3].texCoord = glm::vec2(1.0f, 1.0f);
 	// -		
-	vertices[4].texCoords = glm::vec2(0.0f, 0.0f);
-	vertices[5].texCoords = glm::vec2(1.0f, 0.0f);
-	vertices[6].texCoords = glm::vec2(0.0f, 1.0f);
-	vertices[7].texCoords = glm::vec2(1.0f, 1.0f);
+	vertices[4].texCoord = glm::vec2(0.0f, 0.0f);
+	vertices[5].texCoord = glm::vec2(1.0f, 0.0f);
+	vertices[6].texCoord = glm::vec2(0.0f, 1.0f);
+	vertices[7].texCoord = glm::vec2(1.0f, 1.0f);
 
 	// Indexed vertex positions:
 	// OpenGL by default has a counter clock-wise winding order:
@@ -72,13 +72,10 @@ Mesh* Primitives::generateCube(const char* fileLocation)
 		0, 4, 5, // bottom
 	};
 
-	if (fileLocation != "")
-		return new Mesh(8, vertices, fileLocation, 36, indices, true);
-	else
-		return new Mesh(8, vertices, 36, indices, true);
+	return new Mesh(8, vertices, 36, indices);
 }
 
-Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCount, const char* fileLocation)
+Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCount)
 {
 	std::vector<glm::vec4> vertex_buffer;
 	std::vector<glm::vec2> uv_buffer;
@@ -157,13 +154,11 @@ Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCou
 	// store indices
 	uint* indices = vectorToUintArray(index_buffer, indexCount);
 
-	if(fileLocation != "")
-		return new Mesh(vertexCount, vertices, fileLocation, indexCount, indices, true);
-	else
-		return new Mesh(vertexCount, vertices, indexCount, indices, true);
+	// creating mesh
+	return new Mesh(vertexCount, vertices, indexCount, indices);
 }
 
-Mesh* Primitives::generatePlane(float size, const char* fileLocation, bool perlinY, uint seed)
+Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 {
 	std::vector<glm::vec4> vertex_buffer;
 	std::vector<glm::vec2> uv_buffer;
@@ -216,10 +211,8 @@ Mesh* Primitives::generatePlane(float size, const char* fileLocation, bool perli
 	// store indices
 	uint* indices = vectorToUintArray(index_buffer, indexCount);
 
-	if(fileLocation != "")
-		return new Mesh(vertexAndUVCount, vertices, fileLocation, indexCount, indices, true);
-	else
-		return new Mesh(vertexAndUVCount, vertices, indexCount, indices, true);
+	// Creating mesh
+	return new Mesh(vertexAndUVCount, vertices, indexCount, indices);
 
 }
 
@@ -240,7 +233,7 @@ Mesh::Vertex* Primitives::vectorToVertexArray(std::vector<glm::vec4> vertex_buff
 	for (uint i = 0; i < vertexCount; ++i)
 	{
 		vertices[i].position = vertex_buffer[i];
-		vertices[i].texCoords = uv_buffer[i];
+		vertices[i].texCoord = uv_buffer[i];
 	}
 
 	return vertices;

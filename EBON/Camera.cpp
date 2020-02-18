@@ -10,7 +10,7 @@ Camera::Camera()
 	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 150.0f;
+	sensitivity = 3.0f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -102,7 +102,7 @@ void Camera::updateKeyboardInput(float deltaTime)
 		position -= movementSpeed * worldUpAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		movementSpeed = 10.0f;
+		movementSpeed = 15.0f;
 	else
 		movementSpeed = 3.5;
 }

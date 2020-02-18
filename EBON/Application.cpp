@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#define DEBUG
-
 Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Creating GLFW window:
@@ -178,11 +176,9 @@ void Application::ToggleWiremeshMode()
 {
 	m_wireMeshMode = !m_wireMeshMode;
 
-#ifdef DEBUG
 	std::cout << std::endl;
 	std::cout << "+ Toggling wiremesh mode..." << std::endl;
 	std::cout << "WIREMESH_" << m_wireMeshMode << std::endl;
-#endif // DEBUG
 
 	if (m_wireMeshMode)
 	{

@@ -129,15 +129,17 @@ void ShaderProgram::setVector4(const std::string& name, glm::vec4 value) const
 	glUniform4fv(glGetUniformLocation(m_shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
 }
 
+// Function to recompile the shader at runtime:
 bool ShaderProgram::Reload()
 {
 	// - Deattach and delete shaders:
 	cleanUpShader();
 
-	// Loading the vertex and fragment shader:
+	// - Loading the vertex and fragment shader:
 	m_vertexID   = loadShader(m_vertexLocation.c_str(), GL_VERTEX_SHADER);
 	m_fragmentID = loadShader(m_fragmentLocation.c_str(), GL_FRAGMENT_SHADER);
 
+	// - If either of the shaders fail to compile, then exit out of the function.
 	if (m_vertexID == -1 || m_fragmentID == -1)
 	{
 		cleanUpShader();
@@ -154,6 +156,7 @@ bool ShaderProgram::Reload()
 	// - Linking the shaders:
 	glLinkProgram(m_shaderProgramID);
 
+	// - Successfully loaded shader:
 	return true;
 }
 

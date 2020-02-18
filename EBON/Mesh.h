@@ -6,49 +6,33 @@ using uint = unsigned int;
 
 class Mesh
 {
-private:
-	bool m_shouldCleanUp;
-protected:
-	uint vertex_count, index_count, tri_count;
-	uint VAO, VBO, IBO; 
-	uint loadTexture(const char* textureLocation);
 public:
 	struct Vertex
 	{
 		glm::vec4 position;
-		glm::vec2 texCoords;
-		glm::vec4 normals;
+		glm::vec4 normal;
+		glm::vec2 texCoord;
 	};
 
+protected:
+	uint m_vertexCount, m_indexCount, m_triCount;
+	uint m_VAO, m_VBO, m_IBO;
+	const Vertex* m_vertices;
+	const uint* m_indices;
+public:
 	Mesh();
 	Mesh(Mesh* &mesh);
 
 	// Standard mesh:
-	Mesh(uint vertexCount,    const Vertex* vertices, 
-		 uint indexCount = 0, const uint* indexBuffer = NULL, 
-		 bool shouldCleanUp = false);
-
-	// Textured mesh:
-	Mesh(uint vertexCount, const Vertex* vertices, const char* textureLocation, 
-		 uint indexCount = 0, const uint* indexBuffer = NULL, 
-		 bool shouldCleanUp = false);
+	Mesh(uint vertexCount, const Vertex* vertices,
+		 uint indexCount = 0, const uint* indexBuffer = nullptr);
 
 	virtual ~Mesh();
 
 	// Render mesh:
 	void render();
 
-private:
-
-	// Temp cube init:
-	void initialiseCube();
-
 	// Standard init:
-	void initialise(uint vertexCount, const Vertex* vertices, uint indexCount = 0, const uint* indexBuffer = NULL);
-
-	// Texture init:
-	void initialiseWithTexture(uint vertexCount, const Vertex* vertices, 
-							   const char* textureLocation, uint indexCount = 0,
-							   const uint* indexBuffer = NULL);
+	void initialise();
 };
 

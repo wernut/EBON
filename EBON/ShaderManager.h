@@ -19,6 +19,7 @@ public:
 		DEFAULT,
 		TEXTURED,
 		TRIPPY,
+		RETRO,
 		COUNT,
 	};
 

@@ -9,7 +9,7 @@
 
 class RawModel
 {
-private:
+protected:
 	ShaderManager* m_shaderManager;
 	ShaderProgram* m_shader;
 	glm::mat4 m_transform;

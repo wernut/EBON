@@ -6,11 +6,11 @@ layout(location = 1) in vec2 tex_coords;
 uniform mat4 projection_view_matrix;
 uniform mat4 model_matrix;
 
-out vec2 textCoords;
+out vec2 texCoords;
 
 
 void main()
 {
 	gl_Position = (projection_view_matrix * model_matrix) * vec4(local_position, 1);
-	textCoords = tex_coords;
+	texCoords = tex_coords;
 }
