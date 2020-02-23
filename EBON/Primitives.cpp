@@ -9,7 +9,7 @@
 Mesh* Primitives::generateCube()
 {
 	// Cube vertices:
-	Mesh::Vertex vertices[8];
+	Mesh::Vertex* vertices = new Mesh::Vertex[8];
 
 	// Positions:
 	vertices[0].position = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f); // Bottom Left
@@ -51,7 +51,7 @@ Mesh* Primitives::generateCube()
 		|  /|  |  /|  |  /|  |  /|  |  /|  |  /|
 		|/  |  |/  |  |/  |  |/  |  |/  |  |/  |
 		0---1  4---0  5---4  1---5  2---3  0---1 */
-	uint indices[]
+	uint* indices = new uint[36]
 	{
 		0, 1, 3,
 		0, 2, 3, // front
@@ -108,16 +108,16 @@ Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCou
 			// Positions:
 			vertex_buffer.push_back(glm::vec4(x, y, z, 1.0f));
 
-			// UV positions:
-			s = (float)j / sectorCount;
-			t = (float)i / stackCount;
-			uv_buffer.push_back(glm::vec2(s, t));
-
-			// Normalized vertex normal:
+			//Normal:
 			nx = x * lengthInv;
 			ny = y * lengthInv;
 			nz = z * lengthInv;
 			normal_buffer.push_back(glm::vec4(nx, ny, nz, 1.0f));
+
+			// UV positions:
+			s = (float)j / sectorCount;
+			t = (float)i / stackCount;
+			uv_buffer.push_back(glm::vec2(s, t));
 
 			++vertexCount;
 		}
@@ -150,6 +150,12 @@ Mesh* Primitives::generateSphere(float radius, float stackCount, float sectorCou
 
 	// store vertices
 	Mesh::Vertex* vertices = vectorToVertexArray(vertex_buffer, uv_buffer, vertexCount);
+
+	// Add normals to vertices:
+	for (uint i = 0; i < vertexCount; ++i)
+	{
+		vertices[i].normal = normal_buffer[i];
+	}
 
 	// store indices
 	uint* indices = vectorToUintArray(index_buffer, indexCount);

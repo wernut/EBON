@@ -12,14 +12,12 @@ private:
 	Camera* m_camera;
 	GLFWwindow* m_window;
 
+	RawModel* m_sun;
+
 	TexturedModel* m_earth;
 	Image* m_earthImage;
 
 	RawModel* m_objModel;
-	
-	float m_adjust;
-	float m_adjustSpeed;
-	float m_maxAdjust;
 
 	bool m_canReload;
 	float m_reloadTimer;

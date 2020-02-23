@@ -5,6 +5,7 @@ RawModel::RawModel()
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
 	m_shader = m_shaderManager->getShader(ShaderManager::DEFAULT);
+	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
 	m_pos = glm::vec3(0.0f);
@@ -15,6 +16,7 @@ RawModel::RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType)
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
 	m_shader = m_shaderManager->getShader(shaderType);
+	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = meshType;
 	m_pos = glm::vec3(0.0f);
@@ -25,11 +27,12 @@ RawModel::RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shader
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
 	m_shader = m_shaderManager->getShader(shaderType);
+	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
 	m_pos = glm::vec3(0.0f);
 	if (!m_objMesh.load(fileLocation, false))
-		std::cout << "ERROR_LOADING_OBJ_FILE!" << std::endl;
+		std::cout << "_ERROR_LOADING_OBJ_FILE_AT_LOCATION_" << fileLocation << std::endl;
 }
 
 RawModel::~RawModel()
@@ -65,6 +68,11 @@ void RawModel::setPosition(glm::vec3 position)
 {
 	m_transform = glm::translate(m_transform, position);
 	m_pos = position;
+}
+
+void RawModel::setScale(glm::vec3 scale)
+{
+	m_transform = glm::scale(m_transform, scale);
 }
 
 glm::vec3 RawModel::getPosition()

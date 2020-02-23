@@ -2,11 +2,15 @@
 
 ShaderProgram::ShaderProgram(std::string vertexLocation, std::string fragmentLocation)
 {
-	// Storing the location of the files:
+	// - Init vars:
+	m_bEffectStatus = false;
+	m_bIsInUse = false;
+
+	// - Storing the location of the files:
 	m_vertexLocation = vertexLocation;
 	m_fragmentLocation = fragmentLocation;
 
-	// Loading the vertex and fragment shader:
+	// - Loading the vertex and fragment shader:
 	m_vertexID   = loadShader(vertexLocation.c_str(),   GL_VERTEX_SHADER);
 	m_fragmentID = loadShader(fragmentLocation.c_str(), GL_FRAGMENT_SHADER);
 
@@ -55,6 +59,18 @@ uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
 	return checkSuccess(id);
 }
 
+// Virtual functions:
+
+void ShaderProgram::update(float deltaTime){}
+
+void ShaderProgram::toggleEffect(float args0, float args1, float args2) {}
+
+void ShaderProgram::startEffect() {}
+
+void ShaderProgram::stopEffect() {}
+
+void ShaderProgram::resetEffect() {}
+
 uint ShaderProgram::getID()
 {
 	return m_shaderProgramID;
@@ -94,9 +110,6 @@ void ShaderProgram::use()
 	glUseProgram(m_shaderProgramID);
 }
 
-// Bind the attributes:
-void ShaderProgram::bindAttributes() {}
-
 // Stop using the shader:
 void ShaderProgram::stop()
 {
@@ -127,6 +140,11 @@ void ShaderProgram::setMatrix4(const std::string& name, glm::mat4 value) const
 void ShaderProgram::setVector4(const std::string& name, glm::vec4 value) const
 {
 	glUniform4fv(glGetUniformLocation(m_shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
+}
+
+void ShaderProgram::setVector3(const std::string& name, glm::vec3 value) const
+{
+	glUniform3fv(glGetUniformLocation(m_shaderProgramID, name.c_str()), 1, glm::value_ptr(value));
 }
 
 // Function to recompile the shader at runtime:
@@ -167,4 +185,19 @@ void ShaderProgram::cleanUpShader()
 	glDeleteShader(m_vertexID);
 	glDeleteShader(m_fragmentID);
 	glDeleteProgram(m_shaderProgramID);
+}
+
+bool ShaderProgram::GetEffectStatus()
+{
+	return m_bEffectStatus;
+}
+
+void ShaderProgram::SetInUse(bool value)
+{
+	m_bIsInUse = value;
+}
+
+bool ShaderProgram::GetInUse()
+{
+	return m_bIsInUse;
 }

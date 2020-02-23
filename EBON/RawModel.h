@@ -28,10 +28,14 @@ public:
 	void render(Camera* camera);
 	void renderOBJ(Camera* camera);
 
+	ShaderProgram* getShader();
 	glm::mat4 getTransform();
+
 	void setPosition(glm::vec3 position);
 	glm::vec3 getPosition();
+
 	void setRotation(float eularAngle, glm::vec3 axis);
-	ShaderProgram* getShader();
+
+	void setScale(glm::vec3 scale);
 };
 

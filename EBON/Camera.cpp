@@ -10,7 +10,7 @@ Camera::Camera()
 	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 3.0f;
+	sensitivity = 95.0f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -174,4 +174,9 @@ glm::mat4 Camera::getProjectionView()
 void Camera::updateMatricies()
 {
 	view_transform = glm::inverse(world_transform);
+}
+
+glm::vec3 Camera::getPosition()	
+{
+	return position;
 }

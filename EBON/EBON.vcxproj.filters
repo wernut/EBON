@@ -81,6 +81,9 @@
     <ClCompile Include="Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderFade.cpp">
+      <Filter>Source Files\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="TexturedModel.h">
       <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderFade.h">
+      <Filter>Header Files\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

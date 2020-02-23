@@ -20,6 +20,8 @@ public:
 		TEXTURED,
 		TRIPPY,
 		RETRO,
+		LIGHT,
+		FADE,
 		COUNT,
 	};
 

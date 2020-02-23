@@ -23,6 +23,7 @@ Mesh::Mesh(Mesh* &mesh)
 	m_IBO = mesh->m_IBO;
 	m_vertices = mesh->m_vertices;
 	m_indices = mesh->m_indices;
+	initialise();
 }
 
 Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint* indices)
@@ -44,8 +45,11 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_IBO);
 
-	delete[] m_vertices;
-	delete[] m_indices;
+	if(m_vertices)
+		delete[] m_vertices;
+
+	if(m_indices)
+		delete[] m_indices;
 }
 
 void Mesh::initialise()
@@ -73,12 +77,16 @@ void Mesh::initialise()
 	// 0 = bytes from the start of the vertex data to the first of that attribute type:
 
 	// Create vertex attribute pointer to positions:
-	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glEnableVertexAttribArray(0);
 
-	// Create attribute point to vertex texture coordinates:
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
+	// Create attribute point to the normals:
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4)));
 	glEnableVertexAttribArray(1);
+
+	// Create attribute point to the texture coordinates:
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
+	glEnableVertexAttribArray(2);
 
 	// Checking if the index buffer exists
 	if(m_indexCount != 0)

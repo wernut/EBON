@@ -18,15 +18,26 @@ private:
 	GLint checkSuccess(uint id);
 	void cleanUpShader();
 
+protected:
+	bool m_bEffectStatus;
+	bool m_bIsInUse;
+
 public:
 	ShaderProgram(std::string vertexLocation, std::string fragmentLocation);
-	virtual ~ShaderProgram();
 
+	// virutal functions:
+	virtual ~ShaderProgram();
+	virtual void update(float deltaTime);
+	virtual void toggleEffect(float args0 = 0.0f, float args1 = 0.0f, float args2 = 0.0f);
+	virtual void startEffect();
+	virtual void stopEffect();
+	virtual void resetEffect();
+
+	// Get the shader ID:
 	uint getID();
 
 	// Use the shader:
 	void use();
-	void bindAttributes();
 	void stop();
 
 	// Uniform functions:
@@ -35,8 +46,12 @@ public:
 	void setFloat(const std::string& name, float value) const;
 	void setMatrix4(const std::string& name, glm::mat4 value) const;
 	void setVector4(const std::string& name, glm::vec4 value) const;
+	void setVector3(const std::string& name, glm::vec3 value) const;
 
-	// Test function to reload the shader:
+	// Function to reload the shader:
 	bool Reload();
+	void SetInUse(bool value);
+	bool GetInUse();
+	bool GetEffectStatus();
 };
 
