@@ -3,9 +3,9 @@
 in vec4 outNormal;
 in float hasPassed;
 in float isInLine;
-out vec4 final_color;
-
 in vec4 outLineColor;
+
+out vec4 final_color;
 
 void main()
 {	
@@ -20,6 +20,6 @@ void main()
 	}
 	else
 	{
-		discard;
+		// discard;
 	}
 }

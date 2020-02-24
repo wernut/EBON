@@ -214,6 +214,12 @@ Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 	// store vertices
 	Mesh::Vertex* vertices = vectorToVertexArray(vertex_buffer, uv_buffer, vertexAndUVCount);
 
+	for (uint i = 0; i < vertexAndUVCount; ++i)
+	{
+		vertices[i].normal = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	}
+
+
 	// store indices
 	uint* indices = vectorToUintArray(index_buffer, indexCount);
 

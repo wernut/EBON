@@ -1,7 +1,5 @@
 #version 450
 
-#define PI 3.1415926535897932384626433832795
-
 layout(location = 0) in vec3 local_position;
 layout(location = 1) in vec4 normal;
 layout(location = 2) in vec4 tex_coords;
@@ -21,16 +19,21 @@ out float isInLine;
 
 float line = 0.25f;
 
+vec4 position = vec4(local_position, 1.0f);
+
+bool pixelIsInLine()
+{
+	return position.y > timer && position.y < timer + line;
+}
+
 void main()
 {
-	vec4 position = vec4(local_position, 1.0f);
-
 	outLineColor = lineColor;
 
 	if(isRunning)
 	{
 
-		if(position.y > timer && position.y < timer + line)
+		if(pixelIsInLine())
 		{
 			isInLine = 1.0f;
 		}
@@ -42,11 +45,13 @@ void main()
 	}
 	else
 	{
-		isInLine = -1.0f;
-
-		if(timer > line && position.y > timer && position.y < timer + line)
+		if(timer > line && pixelIsInLine())
 		{
 			isInLine = 1.0f;
+		}
+		else
+		{
+			isInLine = -1.0f;
 		}
 
 		if(position.y > timer)

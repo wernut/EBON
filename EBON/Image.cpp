@@ -49,6 +49,9 @@ uint Image::load(const char* textureLocation)
 		std::cout << "_FAILED_TO_LOAD_TEXTURE_ID_" << texture << std::endl;
 	}
 
+	// Flipping the image on load:
+	stbi_set_flip_vertically_on_load(true);
+
 	// Freeing the image memory:
 	stbi_image_free(data);
 

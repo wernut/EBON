@@ -10,7 +10,7 @@ private:
 	const float fov = 1.507f;
 	const float ratio = 16 / 9.0f;
 	const float nearPlane = 0.1f;
-	const float farPlane = 60.0f;
+	const float farPlane = 150.0f;
 
 	// Movement vars:
 	float movementSpeed;
