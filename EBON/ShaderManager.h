@@ -17,10 +17,11 @@ public:
 	enum E_SHADER_TYPE
 	{
 		DEFAULT,
-		TEXTURED,
+		DIR_LIT,
+		DIR_LIT_NM,
+		POI_LIT,
 		TRIPPY,
 		RETRO,
-		LIGHT,
 		FADE,
 		COUNT,
 	};

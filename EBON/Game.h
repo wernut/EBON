@@ -6,14 +6,21 @@
 class Game
 {
 private:
-	struct Light
+	struct DirectionalLight
 	{
 		glm::vec3 direction;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
 
-	Light m_light;
+	struct PointLight
+	{
+		glm::vec3 position;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+	};
+
+	DirectionalLight m_light;
 
 	glm::vec3 m_ambientLight;
 
@@ -23,16 +30,17 @@ private:
 	Camera* m_camera;
 	GLFWwindow* m_window;
 
-	TexturedModel* m_texturedModel;
-	Image* m_modelTexture;
-	RawModel* m_sun;
+	TexturedModel* m_earthModel;
+	Image* m_earthDiffuse;
+	Image* m_earthSpecular;
+	Image* m_earthNormal;
 
-	RawModel* m_lightCube;
+	TexturedModel* m_ivyModel;
+	Image* m_ivyDiffuse;
+	Image* m_ivySpecular;
+	Image* m_ivyNormal;
 
-	TexturedModel* m_objModel;
-	Image* m_objTexture;
-
-	TexturedModel* m_grassPlane;
+	TexturedModel* m_grassModel;
 	Image* m_grassTexture;
 
 	TexturedModel* m_lampModel;

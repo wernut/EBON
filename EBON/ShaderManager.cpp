@@ -7,12 +7,13 @@ ShaderManager* ShaderManager::m_instance = nullptr;
 ShaderManager::ShaderManager()
 {
 	m_shaders = new ShaderProgram *[COUNT];
-	m_shaders[DEFAULT]  = new ShaderProgram("..\\Shaders\\simple_vertex.glsl",   "..\\Shaders\\simple_fragment.glsl");
-	m_shaders[TEXTURED] = new ShaderProgram("..\\Shaders\\textured_vertex.glsl", "..\\Shaders\\textured_fragment.glsl");
-	m_shaders[TRIPPY] = new ShaderProgram("..\\Shaders\\trippy_vertex.glsl", "..\\Shaders\\trippy_fragment.glsl");
-	m_shaders[RETRO] = new ShaderProgram("..\\Shaders\\retro_vertex.glsl", "..\\Shaders\\retro_fragment.glsl");
-	m_shaders[LIGHT] = new ShaderProgram("..\\Shaders\\light_vertex.glsl", "..\\Shaders\\light_fragment.glsl");
-	m_shaders[FADE] = new ShaderFade();
+	m_shaders[DEFAULT]     = new ShaderProgram("..\\Shaders\\default_vertex.glsl", "..\\Shaders\\default_fragment.glsl");
+	m_shaders[DIR_LIT]     = new ShaderProgram("..\\Shaders\\dirlit_vertex.glsl",   "..\\Shaders\\dirlit_fragment.glsl");
+	m_shaders[DIR_LIT_NM]  = new ShaderProgram("..\\Shaders\\dirlit_NM_vertex.glsl",   "..\\Shaders\\dirlit_NM_fragment.glsl");
+	m_shaders[POI_LIT]	   = new ShaderProgram("..\\Shaders\\poilit_vertex.glsl", "..\\Shaders\\poilit_fragment.glsl");
+	m_shaders[TRIPPY]      = new ShaderProgram("..\\Shaders\\Effects\\trippy_vertex.glsl", "..\\Shaders\\Effects\\trippy_fragment.glsl");
+	m_shaders[RETRO]	   = new ShaderProgram("..\\Shaders\\Effects\\retro_vertex.glsl", "..\\Shaders\\Effects\\retro_fragment.glsl");
+	m_shaders[FADE]		   = new ShaderFade();
 }
 
 ShaderManager::~ShaderManager()

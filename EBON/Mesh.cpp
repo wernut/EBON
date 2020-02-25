@@ -80,13 +80,17 @@ void Mesh::initialise()
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glEnableVertexAttribArray(0);
 
-	// Create attribute point to the normals:
+	// Create attribute pointer to the normals:
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4)));
 	glEnableVertexAttribArray(1);
 
-	// Create attribute point to the texture coordinates:
+	// Create attribute pointer to the texture coordinates:
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec4) * 2));
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2);	
+	
+	// Create attribute pointer to the tangents:
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)((sizeof(glm::vec4) * 2) + sizeof(glm::vec2)));
+	glEnableVertexAttribArray(3);
 
 	// Checking if the index buffer exists
 	if(m_indexCount != 0)

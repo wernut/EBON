@@ -12,6 +12,7 @@ public:
 		glm::vec4 position;
 		glm::vec4 normal;
 		glm::vec2 texCoord;
+		glm::vec4 tangent;
 	};
 
 protected:

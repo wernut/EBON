@@ -29,18 +29,15 @@ uint Image::load(const char* textureLocation)
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// Texture paramenters:
-	int width, height, rnChannels;
-
 	// Load texture and store it in an unsigned char array.
-	unsigned char* data = stbi_load(textureLocation, &width, &height, &rnChannels, 0);
+	unsigned char* data = stbi_load(textureLocation, &m_width, &m_height, &m_rnChannels, 0);
 
 	// Checking if the data was loaded:
 	if (data)
 	{
-		/* ERROR HERE WHEN LOADING JPG AND PNG! RGB for JPEG, and RGBA for PNG!*/
+		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		// Generating the texture with the data we loaded before:
-		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_format, width, height, 0, m_gl_format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_format, m_width, m_height, 0, m_gl_format, GL_UNSIGNED_BYTE, data);
 		// Generating mipmap for the image:
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}

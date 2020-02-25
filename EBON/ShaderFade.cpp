@@ -1,7 +1,7 @@
 #include "ShaderFade.h"
 #include "GameManager.h"
 
-ShaderFade::ShaderFade() : ShaderProgram("..\\Shaders\\fade_vertex.glsl", "..\\Shaders\\fade_fragment.glsl")
+ShaderFade::ShaderFade() : ShaderProgram("..\\Shaders\\Effects\\fade_vertex.glsl", "..\\Shaders\\Effects\\fade_fragment.glsl")
 {
     m_defaultSpeed = 3.5f;
     m_defaultMax = 10.0f;

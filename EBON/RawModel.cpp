@@ -4,7 +4,7 @@
 RawModel::RawModel()
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
-	m_shader = m_shaderManager->getShader(ShaderManager::DEFAULT);
+	m_shader = m_shaderManager->getShader(ShaderManager::DIR_LIT);
 	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
