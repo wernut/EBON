@@ -43,20 +43,20 @@ RawModel::~RawModel()
 
 void RawModel::render(Camera* camera)
 {
-	m_shader->use();
+	m_shader->bind();
 	m_shader->setMatrix4("projection_view_matrix", camera->getProjectionView());
 	m_shader->setMatrix4("model_matrix", m_transform);
 	m_mesh->render();
-	m_shader->stop();
+	m_shader->unbind();
 }
 
 void RawModel::renderOBJ(Camera* camera)
 {
-	m_shader->use();
+	m_shader->bind();
 	m_shader->setMatrix4("projection_view_matrix", camera->getProjectionView());
 	m_shader->setMatrix4("model_matrix", m_transform);
 	m_objMesh.draw();
-	m_shader->stop();
+	m_shader->unbind();
 }
 
 glm::mat4 RawModel::getTransform()

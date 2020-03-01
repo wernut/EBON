@@ -23,6 +23,13 @@ ShaderProgram::ShaderProgram(std::string vertexLocation, std::string fragmentLoc
 
 	// - Linking the shaders:
 	glLinkProgram(m_shaderProgramID);
+
+	//GLint val = GL_FALSE;
+	//glGetShaderiv(m_shaderProgramID, GL_COMPILE_STATUS, &val);
+	//if (val != GL_TRUE)
+	//{
+	//	// compilation failed
+	//}
 }
 
 ShaderProgram::~ShaderProgram()
@@ -105,13 +112,13 @@ GLint ShaderProgram::checkSuccess(uint id)
 }
 
 // Use the shader:
-void ShaderProgram::use()
+void ShaderProgram::bind()
 {
 	glUseProgram(m_shaderProgramID);
 }
 
 // Stop using the shader:
-void ShaderProgram::stop()
+void ShaderProgram::unbind()
 {
 	glUseProgram(0);
 }

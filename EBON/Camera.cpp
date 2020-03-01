@@ -10,7 +10,7 @@ Camera::Camera()
 	movementSpeed = 3.5f;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 3.0f;
+	sensitivity = 0.10f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -127,8 +127,8 @@ void Camera::updateMouseInput(float deltaTime)
 	mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	xOffset *= sensitivity * deltaTime;
-	yOffset *= sensitivity * deltaTime;
+	(xOffset *= sensitivity) * deltaTime;
+	(yOffset *= sensitivity) * deltaTime;
 
 	// Adding offset values to the yaw and pitch:
 	yaw   += xOffset;

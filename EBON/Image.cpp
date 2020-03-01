@@ -24,10 +24,10 @@ uint Image::load(const char* textureLocation)
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// Setting the texture wrapping/filtering options:
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	// Load texture and store it in an unsigned char array.
 	unsigned char* data = stbi_load(textureLocation, &m_width, &m_height, &m_rnChannels, 0);
@@ -35,7 +35,6 @@ uint Image::load(const char* textureLocation)
 	// Checking if the data was loaded:
 	if (data)
 	{
-		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		// Generating the texture with the data we loaded before:
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_format, m_width, m_height, 0, m_gl_format, GL_UNSIGNED_BYTE, data);
 		// Generating mipmap for the image:

@@ -10,6 +10,7 @@
 
 Game::Game()
 {
+
     // Creating the game manager:
     m_gameManager = GameManager::Create("EBON", SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -31,6 +32,7 @@ Game::Game()
     // Initalising vars:
     m_canReload = true;
     m_reloadTimer = 0.0f;
+
 }
 
 Game::~Game() 
@@ -42,52 +44,12 @@ Game::~Game()
     delete m_ivyModel;
     m_ivyModel = nullptr;
 
-    delete m_lampModel;
-    m_lampModel = nullptr;
-    
-    delete m_grassModel;
-    m_grassModel = nullptr;
-
     // Destroying the camera:
     delete m_camera;
     m_camera = nullptr;
 
     // Destorying the game manager:
     GameManager::Destroy();
-}
-
-void Game::InitModels()
-{
-    // Light properties
-    m_light.direction = glm::vec3(0.0f, -1.0f, 0.0f);
-    m_light.diffuse = { 1, 1, 1 };
-    m_light.specular = { 1, 1, 1 };
-    m_ambientLight = { 0.25f, 0.25f, 0.25f };
-
-    // Earth
-    m_earthDiffuse   = new Image("..\\Textures\\Earth\\earth_diffuse.jpg", GL_RGB);
-    m_earthSpecular  = new Image("..\\Textures\\Earth\\earth_specular.jpg", GL_RGB);
-    m_earthNormal    = new Image("..\\Textures\\Earth\\earth_normal.jpg", GL_RGB);
-    m_earthModel = new TexturedModel(Primitives::generateSphere(1.0f, 36.0f, 18.0f), ShaderManager::DIR_LIT_NM, m_earthDiffuse, m_earthSpecular, m_earthNormal);
-    m_earthModel->setPosition(glm::vec3(3.0f));
-
-    // Ivysaur
-    m_ivyDiffuse = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Diffuse.jpg", GL_RGB);
-    m_ivySpecular = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Specular.jpg", GL_RGB);
-    m_ivyNormal = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Normal.jpg", GL_RGB);
-    m_ivyModel = new TexturedModel("..\\Models\\Ivysaur\\Pokemon.obj", ShaderManager::DIR_LIT_NM, m_ivyDiffuse, m_ivySpecular, m_ivyNormal);
-    m_ivyModel->setPosition(glm::vec3(2.0f, 0.0f, 0.7f));
-
-    // Lamp
-    m_lampTexture = new Image("..\\Textures\\grey-concrete-texture.jpg", GL_RGB);
-    m_lampModel = new TexturedModel("..\\Models\\lamp_post.obj", ShaderManager::DIR_LIT, m_lampTexture);
-    m_lampModel->setScale(glm::vec3(0.001f));
-    m_lampModel->setPosition(glm::vec3(2.0f, 0.0f, 2.0f));
-
-    // Grass
-    m_grassTexture = new Image("..\\Textures\\grass.jpg", GL_RGB);
-    m_grassModel = new TexturedModel(Primitives::generatePlane(25.0f), ShaderManager::DIR_LIT, m_grassTexture);
-    m_grassModel->setPosition(glm::vec3(-(25.0f / 2.0f), 0.0f, -(25.0f / 2.0f)));
 }
 
 void Game::Run()
@@ -108,6 +70,31 @@ void Game::Run()
         // Update game:
         Update();
     }
+}
+
+void Game::InitModels()
+{
+    // Light properties
+    m_light.direction = glm::vec3(0.0f, -1.0f, 0.0f);
+    m_light.diffuse = { 1, 1, 1 };
+    m_light.specular = { 1, 1, 1 };
+    m_ambientLight = { 0.15f, 0.15f, 0.15f };
+
+    // Earth
+    Image* earthDiffuse = new Image("..\\Textures\\Earth\\earth_diffuse.jpg", GL_RGB);
+    Image* earthSpecular = new Image("..\\Textures\\Earth\\earth_specular.jpg", GL_RGB);
+    Image* earthNormal = new Image("..\\Textures\\Earth\\earth_normal.jpg", GL_RGB);
+    m_earthModel = new TexturedModel(Primitives::generateSphere(1.0f, 36.0f, 18.0f), ShaderManager::DIR_LIT_NM, earthDiffuse, earthSpecular, earthNormal);
+    m_earthModel->setPosition(glm::vec3(3.0f));
+
+    // Ivysaur
+    Image* ivyDiffuse = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Diffuse.png", GL_RGBA);
+    Image* ivySpecular = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Specular.png", GL_RGBA);
+    Image* ivyNormal = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Normal.png", GL_RGBA);
+    Image* ivyAmbient = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Ambient_Occlusion.png", GL_RGBA);
+    Image* ivyGloss = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Ambient_Occlusion.png", GL_RGBA);
+    m_ivyModel = new TexturedModel("..\\Models\\Ivysaur\\Pokemon.obj", ShaderManager::DIR_LIT_NM, ivyDiffuse, ivySpecular, ivyNormal, ivyAmbient, ivyGloss);
+    m_ivyModel->setPosition(glm::vec3(2.0f, 0.0f, 0.7f));
 }
   
 void Game::Update()
@@ -167,43 +154,10 @@ void Game::Render()
     m_application->ClearBuffers();
 
     float time = m_application->getTime();
-    //m_light.direction = glm::vec3(sin(time * 2), -1.0f, cos(time * 2));
-
-    // Ivysaur
-    m_ivyModel->getShader()->use();
-    m_ivyModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_ivyModel->getTransform())));
-    m_ivyModel->getShader()->setVector3("Ia", m_ambientLight);
-    m_ivyModel->getShader()->setVector3("Id", m_light.diffuse);
-    m_ivyModel->getShader()->setVector3("Is", m_light.specular);
-    m_ivyModel->getShader()->setVector3("light_direction", m_light.direction);
-    m_ivyModel->getShader()->setVector3("camera_position", m_camera->getPosition());
-    m_ivyModel->render(m_camera);
-    m_ivyModel->getShader()->stop();
-
-    // Lamp
-    m_lampModel->getShader()->use();
-    m_lampModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_lampModel->getTransform())));
-    m_lampModel->getShader()->setVector3("Ia", m_ambientLight);
-    m_lampModel->getShader()->setVector3("Id", m_light.diffuse);
-    m_lampModel->getShader()->setVector3("Is", m_light.specular);
-    m_lampModel->getShader()->setVector3("light_direction", m_light.direction);
-    m_lampModel->getShader()->setVector3("camera_position", m_camera->getPosition());
-    m_lampModel->render(m_camera);
-    m_lampModel->getShader()->stop();
-
-    // Grass
-    m_grassModel->getShader()->use();
-    m_grassModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_grassModel->getTransform())));
-    m_grassModel->getShader()->setVector3("Ia", m_ambientLight);
-    m_grassModel->getShader()->setVector3("Id", m_light.diffuse);
-    m_grassModel->getShader()->setVector3("Is", m_light.specular);    
-    m_grassModel->getShader()->setVector3("light_direction", m_light.direction);
-    m_grassModel->getShader()->setVector3("camera_position", m_camera->getPosition());
-    m_grassModel->render(m_camera);
-    m_grassModel->getShader()->stop();
+    m_light.direction = glm::vec3(sin(time * 2), -1.0f, cos(time * 2));
 
     // Earth
-    m_earthModel->getShader()->use();
+    m_earthModel->getShader()->bind();
     m_earthModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_earthModel->getTransform())));
     m_earthModel->getShader()->setVector3("Ia", m_ambientLight);
     m_earthModel->getShader()->setVector3("Id", m_light.diffuse);
@@ -211,7 +165,18 @@ void Game::Render()
     m_earthModel->getShader()->setVector3("light_direction", m_light.direction);
     m_earthModel->getShader()->setVector3("camera_position", m_camera->getPosition());
     m_earthModel->render(m_camera);
-    m_earthModel->getShader()->stop();
+    m_earthModel->getShader()->unbind();
+
+    // Ivysaur
+    m_ivyModel->getShader()->bind();
+    m_ivyModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_ivyModel->getTransform())));
+    m_ivyModel->getShader()->setVector3("Ia", m_ambientLight);
+    m_ivyModel->getShader()->setVector3("Id", m_light.diffuse);
+    m_ivyModel->getShader()->setVector3("Is", m_light.specular);
+    m_ivyModel->getShader()->setVector3("light_direction", -m_light.direction);
+    m_ivyModel->getShader()->setVector3("camera_position", m_camera->getPosition());
+    m_ivyModel->render(m_camera);
+    m_ivyModel->getShader()->unbind();
 
     // Swapping the buffers:
     m_application->SwapBuffers();

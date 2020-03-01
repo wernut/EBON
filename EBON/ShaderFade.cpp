@@ -16,7 +16,7 @@ void ShaderFade::update(float deltaTime)
     Application* application = GameManager::getInstance()->getApplication();
     float time = application->getTime();
 
-    use();
+    bind();
     setBool("isRunning", m_bEffectStatus);
     setBool("hasFaded", m_hasFaded);
     setFloat("timer", m_timer);
@@ -50,7 +50,7 @@ void ShaderFade::update(float deltaTime)
         }
     }
 
-    stop();
+    unbind();
 }
 
 void ShaderFade::toggleEffect(float args0, float args1, float args2)

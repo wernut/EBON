@@ -148,47 +148,47 @@ namespace aie {
 
 	void OBJMesh::draw(bool usePatches /* = false */) {
 
-		int program = -1;
-		glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+		//int program = -1;
+		//glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
-		if (program == -1) {
-			printf("No shader bound!\n");
-			return;
-		}
+		//if (program == -1) {
+		//	printf("No shader bound!\n");
+		//	return;
+		//}
 
-		// pull uniforms from the shader
-		int kaUniform = glGetUniformLocation(program, "Ka");
-		int kdUniform = glGetUniformLocation(program, "Kd");
-		int ksUniform = glGetUniformLocation(program, "Ks");
-		int keUniform = glGetUniformLocation(program, "Ke");
-		int opacityUniform = glGetUniformLocation(program, "opacity");
-		int specPowUniform = glGetUniformLocation(program, "specularPower");
+		//// pull uniforms from the shader
+		//int kaUniform = glGetUniformLocation(program, "Ka");
+		//int kdUniform = glGetUniformLocation(program, "Kd");
+		//int ksUniform = glGetUniformLocation(program, "Ks");
+		//int keUniform = glGetUniformLocation(program, "Ke");
+		//int opacityUniform = glGetUniformLocation(program, "opacity");
+		//int specPowUniform = glGetUniformLocation(program, "specularPower");
 
-		int alphaTexUniform = glGetUniformLocation(program, "alphaTexture");
-		int ambientTexUniform = glGetUniformLocation(program, "ambientTexture");
-		int diffuseTexUniform = glGetUniformLocation(program, "diffuseTexture");
-		int specTexUniform = glGetUniformLocation(program, "specularTexture");
-		int specHighlightTexUniform = glGetUniformLocation(program, "specularHighlightTexture");
-		int normalTexUniform = glGetUniformLocation(program, "normalTexture");
-		int dispTexUniform = glGetUniformLocation(program, "displacementTexture");
+		//int alphaTexUniform = glGetUniformLocation(program, "alphaTexture");
+		//int ambientTexUniform = glGetUniformLocation(program, "ambientTexture");
+		//int diffuseTexUniform = glGetUniformLocation(program, "diffuseTexture");
+		//int specTexUniform = glGetUniformLocation(program, "specularTexture");
+		//int specHighlightTexUniform = glGetUniformLocation(program, "specularHighlightTexture");
+		//int normalTexUniform = glGetUniformLocation(program, "normalTexture");
+		//int dispTexUniform = glGetUniformLocation(program, "displacementTexture");
 
-		// set texture slots (these don't change per material)
-		if (diffuseTexUniform >= 0)
-			glUniform1i(diffuseTexUniform, 0);
-		if (alphaTexUniform >= 0)
-			glUniform1i(alphaTexUniform, 1);
-		if (ambientTexUniform >= 0)
-			glUniform1i(ambientTexUniform, 2);
-		if (specTexUniform >= 0)
-			glUniform1i(specTexUniform, 3);
-		if (specHighlightTexUniform >= 0)
-			glUniform1i(specHighlightTexUniform, 4);
-		if (normalTexUniform >= 0)
-			glUniform1i(normalTexUniform, 5);
-		if (dispTexUniform >= 0)
-			glUniform1i(dispTexUniform, 6);
+		//// set texture slots (these don't change per material)
+		//if (diffuseTexUniform >= 0)
+		//	glUniform1i(diffuseTexUniform, 0);
+		//if (alphaTexUniform >= 0)
+		//	glUniform1i(alphaTexUniform, 1);
+		//if (ambientTexUniform >= 0)
+		//	glUniform1i(ambientTexUniform, 2);
+		//if (specTexUniform >= 0)
+		//	glUniform1i(specTexUniform, 3);
+		//if (specHighlightTexUniform >= 0)
+		//	glUniform1i(specHighlightTexUniform, 4);
+		//if (normalTexUniform >= 0)
+		//	glUniform1i(normalTexUniform, 5);
+		//if (dispTexUniform >= 0)
+		//	glUniform1i(dispTexUniform, 6);
 
-		int currentMaterial = -1;
+		//int currentMaterial = -1;
 
 		// draw the mesh chunks
 		for (auto& c : m_meshChunks) {

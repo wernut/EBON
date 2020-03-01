@@ -11,18 +11,18 @@ uniform mat4 projection_view_matrix;
 uniform mat4 model_matrix;
 uniform mat3 normal_matrix;
 
-out vec4 outPosition;
-out vec3 outNormal;
-out vec2 outTexCoords;
-out vec3 outTangent;
-out vec3 outBiTangent;
+out vec4 vPosition;
+out vec3 vNormal;
+out vec2 vTexCoords;
+out vec3 vTangent;
+out vec3 vBiTangent;
 
 void main()
 {
-	outPosition = model_matrix * local_position;
-	outNormal = normal_matrix * normal.xyz;
-	outTexCoords = tex_coords;
-	outTangent = normal_matrix * tangent.xyz;
-	outBiTangent = cross(outNormal, outTangent) * tangent.w;
+	vPosition = model_matrix * local_position;
+	vNormal = normal_matrix * normal.xyz;
+	vTexCoords = tex_coords;
+	vTangent = normal_matrix * tangent.xyz;
+	vBiTangent = cross(vNormal, vTangent) * tangent.w;
 	gl_Position = (projection_view_matrix * model_matrix) * local_position;
 }

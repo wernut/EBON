@@ -2,17 +2,19 @@
 
 // Phong lighting fragment shader:
 
-in vec4 outPosition;
-in vec3 outNormal;
-in vec2 outTexCoords;
-in vec3 outTangent;
-in vec3 outBiTangent;
+in vec4 vPosition;
+in vec3 vNormal;
+in vec2 vTexCoords;
+in vec3 vTangent;
+in vec3 vBiTangent;
 
 uniform vec3 camera_position;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D specularTexture;
-uniform sampler2D normalTexture;
+layout(binding = 0) uniform sampler2D diffuseTexture;
+layout(binding = 1) uniform sampler2D specularTexture;
+layout(binding = 2) uniform sampler2D normalTexture;
+layout(binding = 3) uniform sampler2D ambientTexture;
+layout(binding = 4) uniform sampler2D glossTexture;
 
 uniform vec3 Ka = vec3(0.25f, 0.25f, 0.25f);// mat ambient colour					
 uniform vec3 Kd = vec3(1.0f, 1.0f, 1.0f); // mat diffuse colour
@@ -29,14 +31,16 @@ out vec4 final_color;
 void main()
 {
 	// Obtaining the rgb values of the textures at the specified coords:
-	vec3 texDiffuse  = texture(diffuseTexture,  outTexCoords).rgb;
-	vec3 texSpecular = texture(specularTexture, outTexCoords).rgb;
-	vec3 texNormal   = texture(normalTexture,   outTexCoords).rgb;
+	vec3 texDiffuse = texture(diffuseTexture, vTexCoords).rgb;
+	vec3 texSpecular = texture(specularTexture, vTexCoords).rgb;
+	vec3 texNormal = texture(normalTexture, vTexCoords).rgb;
+	vec3 texAmbient = texture(ambientTexture, vTexCoords).rgb;
+	vec4 texGloss = texture(glossTexture, vTexCoords).rgba;
 
 	// Normalizing all the passed values:
-	vec3 N = normalize(outNormal);
-	vec3 T = normalize(outTangent);
-	vec3 B = normalize(outBiTangent);
+	vec3 N = normalize(vNormal);
+	vec3 T = normalize(vTangent);
+	vec3 B = normalize(vBiTangent);
 	vec3 L  = normalize(light_direction);
 	
 	// Getting the TBN and setting the new normal:
@@ -47,14 +51,22 @@ void main()
 	float lambertTerm = max(0, dot(N, -L));
 	
 	// Calculating the view and reflection vectors:
-	vec3 V = normalize(camera_position - outPosition.xyz);
+	vec3 V = normalize(camera_position - vPosition.xyz);
 	vec3 R = reflect(L, N);
 	
 	// Calculating the specular term:
 	float specularTerm = pow(max(0, dot(R, V)), specular_power);
+	if(texGloss.a >= 0)
+	{
+		//specularTerm * texGloss.a;
+	}
 	
 	// Calculating the final vectors:
 	vec3 ambient = Ia * Ka;
+	if(texAmbient.r > 0)
+	{
+		//ambient * texAmbient;
+	}
 	vec3 diffuse = Id * Kd * texDiffuse * lambertTerm;
 	vec3 specular = Is * Ks * texSpecular * specularTerm;
 	

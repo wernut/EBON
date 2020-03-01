@@ -37,8 +37,8 @@ public:
 	uint getID();
 
 	// Use the shader:
-	void use();
-	void stop();
+	void bind();
+	void unbind();
 
 	// Uniform functions:
 	void setBool(const std::string& name, bool value) const;

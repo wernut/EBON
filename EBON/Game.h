@@ -5,24 +5,17 @@
 
 class Game
 {
-private:
-	struct DirectionalLight
+public:
+	struct DirLight
 	{
 		glm::vec3 direction;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
 	};
-
-	struct PointLight
-	{
-		glm::vec3 position;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-	};
-
-	DirectionalLight m_light;
-
+private:
+	DirLight m_light;
 	glm::vec3 m_ambientLight;
+
 
 	GameManager* m_gameManager;
 	Application* m_application;
@@ -31,20 +24,8 @@ private:
 	GLFWwindow* m_window;
 
 	TexturedModel* m_earthModel;
-	Image* m_earthDiffuse;
-	Image* m_earthSpecular;
-	Image* m_earthNormal;
 
 	TexturedModel* m_ivyModel;
-	Image* m_ivyDiffuse;
-	Image* m_ivySpecular;
-	Image* m_ivyNormal;
-
-	TexturedModel* m_grassModel;
-	Image* m_grassTexture;
-
-	TexturedModel* m_lampModel;
-	Image* m_lampTexture;
 
 	// Key press timer:
 	bool m_canReload;
