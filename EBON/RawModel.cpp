@@ -4,7 +4,7 @@
 RawModel::RawModel()
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
-	m_shader = m_shaderManager->getShader(ShaderManager::DIR_LIT);
+	m_shader = m_shaderManager->getShader(ShaderManager::E_MODEL);
 	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
@@ -12,7 +12,7 @@ RawModel::RawModel()
 }
 
 // meshType must constuct new mesh!
-RawModel::RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType)
+RawModel::RawModel(Mesh* meshType, ShaderManager::SHADER_TYPE shaderType)
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
 	m_shader = m_shaderManager->getShader(shaderType);
@@ -23,7 +23,7 @@ RawModel::RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType)
 }
 
 // obj constructor
-RawModel::RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType)
+RawModel::RawModel(const char* fileLocation, ShaderManager::SHADER_TYPE shaderType)
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
 	m_shader = m_shaderManager->getShader(shaderType);

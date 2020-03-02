@@ -1,7 +1,7 @@
 #pragma once
+#include "TexturedModel.h"
 #include "GameManager.h"
 
-#include "TexturedModel.h"
 
 class Game
 {
@@ -11,11 +11,29 @@ public:
 		glm::vec3 direction;
 		glm::vec3 diffuse;
 		glm::vec3 specular;
+		glm::vec3 ambient;
 	};
-private:
-	DirLight m_light;
-	glm::vec3 m_ambientLight;
 
+	struct PointLight
+	{
+		glm::vec3 position;
+		float constant;
+		float linear;
+		float quadratic;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		glm::vec3 ambient;
+	};
+
+	struct ModelLight
+	{
+		RawModel* model;
+		PointLight light;
+	};
+
+private:
+	DirLight m_dirLight;
+	ModelLight m_modelLights[2];
 
 	GameManager* m_gameManager;
 	Application* m_application;
@@ -24,7 +42,6 @@ private:
 	GLFWwindow* m_window;
 
 	TexturedModel* m_earthModel;
-
 	TexturedModel* m_ivyModel;
 
 	// Key press timer:

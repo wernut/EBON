@@ -20,9 +20,9 @@ protected:
 public:
 	RawModel();
 	// Generated mesh:
-	RawModel(Mesh* meshType, ShaderManager::E_SHADER_TYPE shaderType);
+	RawModel(Mesh* meshType, ShaderManager::SHADER_TYPE shaderType);
 	// OBJ mesh:
-	RawModel(const char* fileLocation, ShaderManager::E_SHADER_TYPE shaderType);
+	RawModel(const char* fileLocation, ShaderManager::SHADER_TYPE shaderType);
 	~RawModel();
 
 	void render(Camera* camera);

@@ -1,40 +1,70 @@
 #include "TexturedModel.h"
 #include <iostream>
 
-TexturedModel::TexturedModel(Mesh* mesh, ShaderManager::E_SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap, Image* normalMap, Image* ambientMap, Image* glossMap) : RawModel(mesh, shaderType)
+TexturedModel::TexturedModel(Mesh* mesh, ShaderManager::SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap, Image* normalMap, Image* ambientMap, Image* glossMap) : RawModel(mesh, shaderType)
 {
-	m_diffuse = diffuseMap;
-	m_specular = specularMap;
-	m_normal = normalMap;
-	m_ambient = ambientMap;
-	m_gloss = glossMap;
+	m_imageMaps = new Image * [E_COUNT];
+	m_imageMaps[E_DIFFUSE] = diffuseMap;
+	m_imageMaps[E_SPECULAR] = specularMap;
+	m_imageMaps[E_NORMAL] = normalMap;
+	m_imageMaps[E_AMBIENT] = ambientMap;
+	m_imageMaps[E_GLOSS] = glossMap;
 	m_isOBJ = false;
 	setTextureUnits();
 }
 
-TexturedModel::TexturedModel(const char* objLocation, ShaderManager::E_SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap, Image* normalMap, Image* ambientMap, Image* glossMap) : RawModel(objLocation, shaderType)
+TexturedModel::TexturedModel(const char* objLocation, ShaderManager::SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap, Image* normalMap, Image* ambientMap, Image* glossMap) : RawModel(objLocation, shaderType)
 {
-	m_diffuse = diffuseMap;
-	m_specular = specularMap;
-	m_normal = normalMap;
-	m_ambient = ambientMap;
-	m_gloss = glossMap;
+	m_imageMaps = new Image * [E_COUNT];
+	m_imageMaps[E_DIFFUSE] = diffuseMap;
+	m_imageMaps[E_SPECULAR] = specularMap;
+	m_imageMaps[E_NORMAL] = normalMap;
+	m_imageMaps[E_AMBIENT] = ambientMap;
+	m_imageMaps[E_GLOSS] = glossMap;
+	m_isOBJ = true;
+	setTextureUnits();
+}
+
+TexturedModel::TexturedModel(Mesh* mesh, ShaderManager::SHADER_TYPE shaderType) : RawModel(mesh, shaderType)
+{
+	m_imageMaps = new Image * [E_COUNT];
+	m_imageMaps[E_DIFFUSE] = nullptr;
+	m_imageMaps[E_SPECULAR] = nullptr;
+	m_imageMaps[E_NORMAL] = nullptr;
+	m_imageMaps[E_AMBIENT] = nullptr;
+	m_imageMaps[E_GLOSS] = nullptr;
+	m_isOBJ = false;
+	setTextureUnits();
+}
+
+TexturedModel::TexturedModel(const char* objLocation, ShaderManager::SHADER_TYPE shaderType) : RawModel(objLocation, shaderType)
+{
+	m_imageMaps = new Image * [E_COUNT];
+	m_imageMaps[E_DIFFUSE] = nullptr;
+	m_imageMaps[E_SPECULAR] = nullptr;
+	m_imageMaps[E_NORMAL] = nullptr;
+	m_imageMaps[E_AMBIENT] = nullptr;
+	m_imageMaps[E_GLOSS] = nullptr;
 	m_isOBJ = true;
 	setTextureUnits();
 }
 
 TexturedModel::~TexturedModel() 
 {
-	if(m_diffuse)
-		delete m_diffuse;
-	if(m_specular)
-		delete m_specular;
-	if(m_normal)
-		delete m_normal;	
-	if(m_ambient)
-		delete m_ambient;
-	if(m_gloss)
-		delete m_gloss;
+	for (int i = 0; i < E_COUNT; ++i)
+	{
+		if (m_imageMaps[i])
+		{
+			delete m_imageMaps[i];
+			m_imageMaps[i] = nullptr;
+		}
+	}
+	delete[] m_imageMaps;
+}
+
+void TexturedModel::addMap(IMAGE_MAPS eSlot, const char* imageLocation, GLenum imageFormat)
+{
+	m_imageMaps[eSlot] = new Image(imageLocation, imageFormat);
 }
 
 void TexturedModel::setTextureUnits()
@@ -60,34 +90,14 @@ void TexturedModel::setTextureUnits()
 
 void TexturedModel::render(Camera* camera)
 {
-	if (m_diffuse)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_diffuse->getGlHandle());
-	}
 
-	if (m_specular)
+	for (int i = 0; i < E_COUNT; ++i)
 	{
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, m_specular->getGlHandle());
-	}
-
-	if (m_normal)
-	{
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, m_normal->getGlHandle());
-	}
-
-	if (m_ambient)
-	{
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, m_ambient->getGlHandle());
-	}
-
-	if (m_gloss)
-	{
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, m_gloss->getGlHandle());
+		if (m_imageMaps[i])
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, m_imageMaps[i]->getGlHandle());
+		}
 	}
 
 	if (m_isOBJ)

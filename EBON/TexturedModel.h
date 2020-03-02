@@ -4,21 +4,32 @@
 
 class TexturedModel : public RawModel
 {
-private:
-	Image* m_diffuse;
-	Image* m_specular;
-	Image* m_normal;
-	Image* m_ambient;
-	Image* m_gloss;
-
-	bool m_isOBJ;
-	void setTextureUnits();
-
 public:
-	TexturedModel(Mesh* mesh, ShaderManager::E_SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap = nullptr, Image* normalMap = nullptr, Image* ambientMap = nullptr, Image* glossMap = nullptr);
-	TexturedModel(const char* objLocation, ShaderManager::E_SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap = nullptr, Image* normalMap = nullptr, Image* ambientMap = nullptr, Image* glossMap = nullptr);
+	enum IMAGE_MAPS
+	{
+		E_DIFFUSE,
+		E_SPECULAR,
+		E_NORMAL,
+		E_AMBIENT,
+		E_GLOSS,
+		E_COUNT
+	};
+
+	TexturedModel(Mesh* mesh, ShaderManager::SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap = nullptr, Image* normalMap = nullptr, Image* ambientMap = nullptr, Image* glossMap = nullptr);
+	TexturedModel(const char* objLocation, ShaderManager::SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap = nullptr, Image* normalMap = nullptr, Image* ambientMap = nullptr, Image* glossMap = nullptr);
+
+	TexturedModel(Mesh* mesh, ShaderManager::SHADER_TYPE shaderType);
+	TexturedModel(const char* objLocation, ShaderManager::SHADER_TYPE shaderType);
 	~TexturedModel();
 
 	void render(Camera* camera);
+protected:
+	void addMap(IMAGE_MAPS eSlot, const char* imageLocation, GLenum imageFormat);
+
+private:
+	Image** m_imageMaps;
+
+	bool m_isOBJ;
+	void setTextureUnits();
 };
 
