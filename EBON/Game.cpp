@@ -43,14 +43,17 @@ Game::~Game()
 
     delete m_ivyModel;
     m_ivyModel = nullptr;
+
+    delete m_shieldModel;
+    m_shieldModel = nullptr;
     
+    // Deleting lights:
     for (int i = 0; i < 2; ++i)
     {
         delete m_modelLights[i];
     }
     delete[] m_modelLights;
 
-    // Deleting lights:
     delete m_dirLight;
 
     // Destroying the camera:
@@ -107,6 +110,13 @@ void Game::InitModels()
 
     // Ivysaur
     m_ivyModel = new IvysaurModel(m_dirLight, m_modelLights);
+
+    // Shield
+    aie::OBJMesh swordAndShield;
+    if (!swordAndShield.load("..\\Models\\SwordAndSheild\\meshSwordShield.obj"))
+        std::cout << "ERROR_LOADING_SWORD&SHIELD_MODEL_" << std::endl;
+
+    m_shieldModel = new ShieldModel(swordAndShield.m_meshChunks[0], m_dirLight, m_modelLights);
 }
   
 void Game::Update()
@@ -179,6 +189,9 @@ void Game::Render()
 
     // Ivysaur
     m_ivyModel->render(m_camera);
+
+    // Sheild
+    m_shieldModel->render(m_camera);
 
     // Swapping the buffers:
     m_application->SwapBuffers();

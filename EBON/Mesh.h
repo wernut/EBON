@@ -1,6 +1,7 @@
 #pragma once
 #include "glm.hpp"
 #include "..\glcore\gl_core_4_5.h"
+#include "OBJMesh.h"
 
 using uint = unsigned int;
 
@@ -28,12 +29,15 @@ public:
 	Mesh(uint vertexCount, const Vertex* vertices,
 		 uint indexCount = 0, const uint* indexBuffer = nullptr);
 
+	// Creating a mesh from an OBJ mesh chunk:
+	Mesh(aie::OBJMesh::MeshChunk chunk);
+
 	virtual ~Mesh();
 
 	// Render mesh:
 	void render();
 
 	// Standard init:
-	void initialise();
+	void storeOnGPU();
 };
 

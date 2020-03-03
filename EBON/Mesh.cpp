@@ -23,7 +23,7 @@ Mesh::Mesh(Mesh* &mesh)
 	m_IBO = mesh->m_IBO;
 	m_vertices = mesh->m_vertices;
 	m_indices = mesh->m_indices;
-	initialise();
+	storeOnGPU();
 }
 
 Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint* indices)
@@ -36,7 +36,19 @@ Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint
 	m_VAO = 0;
 	m_VBO = 0;
 	m_IBO = 0;
-	initialise();
+	storeOnGPU();
+}
+
+Mesh::Mesh(aie::OBJMesh::MeshChunk chunk)
+{
+	m_vertices = nullptr;
+	m_indices = nullptr;
+	m_indexCount = chunk.indexCount;
+	m_triCount = m_indexCount / 3;
+	m_VAO = chunk.vao;
+	m_VBO = chunk.vbo;
+	m_IBO = chunk.ibo;
+	m_vertexCount = 0;
 }
 
 Mesh::~Mesh()
@@ -52,7 +64,7 @@ Mesh::~Mesh()
 		delete[] m_indices;
 }
 
-void Mesh::initialise()
+void Mesh::storeOnGPU()
 {
 	// Exiting init incase mesh has already been created:
 	if (m_VAO != 0) return;

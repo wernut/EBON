@@ -4,7 +4,7 @@
 RawModel::RawModel()
 {
 	m_shaderManager = GameManager::getInstance()->getShaderManager();
-	m_shader = m_shaderManager->getShader(ShaderManager::E_MODEL);
+	m_shader = m_shaderManager->getShader(ShaderManager::E_DEFAULT);
 	m_shader->SetInUse(true);
 	m_transform = glm::mat4(1.0f);
 	m_mesh = NULL;
@@ -88,4 +88,9 @@ void RawModel::setRotation(float eularAngle, glm::vec3 axis)
 ShaderProgram* RawModel::getShader()
 {
 	return m_shader;
+}
+
+aie::OBJMesh RawModel::getObjMesh()
+{
+	return m_objMesh;
 }

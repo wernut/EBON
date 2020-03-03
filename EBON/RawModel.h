@@ -37,5 +37,7 @@ public:
 	void setRotation(float eularAngle, glm::vec3 axis);
 
 	void setScale(glm::vec3 scale);
+
+	aie::OBJMesh getObjMesh();
 };
 
