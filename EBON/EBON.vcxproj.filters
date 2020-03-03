@@ -37,18 +37,24 @@
     <Filter Include="Header Files\Models">
       <UniqueIdentifier>{b7d0de53-18bd-4bff-bee5-1f6758ea8f02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{1e95879c-c335-4c0f-ade0-0d401c793b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{072bc441-030b-4444-a245-fe6ed3016993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Models\Bases">
+      <UniqueIdentifier>{2ab3034e-b0c0-4c96-aa6d-c3f3d7fdaae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Models\Bases">
+      <UniqueIdentifier>{eb1d20f9-a39a-4ed3-b909-34f3426ed121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lights">
+      <UniqueIdentifier>{5d310fe3-7451-4e5b-a321-60d70835ffd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
@@ -66,40 +72,46 @@
     <ClCompile Include="ShaderProgram.cpp">
       <Filter>Source Files\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Dependencies\glcore\gl_core_4_5.c">
       <Filter>Source Files\Imports</Filter>
-    </ClCompile>
-    <ClCompile Include="RawModel.cpp">
-      <Filter>Source Files\Models</Filter>
-    </ClCompile>
-    <ClCompile Include="TexturedModel.cpp">
-      <Filter>Source Files\Models</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderFade.cpp">
       <Filter>Source Files\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedModel.cpp">
+      <Filter>Source Files\Models\Bases</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Models\Bases</Filter>
+    </ClCompile>
+    <ClCompile Include="RawModel.cpp">
+      <Filter>Source Files\Models\Bases</Filter>
+    </ClCompile>
+    <ClCompile Include="IvysaurModel.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="EarthModel.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Header Files\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="tiny_obj_loader.h">
-      <Filter>Header Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Primitives.h">
       <Filter>Header Files\Geometry</Filter>
@@ -113,29 +125,59 @@
     <ClInclude Include="ShaderProgram.h">
       <Filter>Header Files\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Directives.h">
       <Filter>Header Files\Imports</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files\Imports</Filter>
     </ClInclude>
-    <ClInclude Include="RawModel.h">
-      <Filter>Header Files\Models</Filter>
-    </ClInclude>
     <ClInclude Include="PerlinNoise.hpp">
       <Filter>Header Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TexturedModel.h">
-      <Filter>Header Files\Models</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderFade.h">
       <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="tiny_obj_loader.h">
+      <Filter>Header Files\Imports</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedModel.h">
+      <Filter>Header Files\Models\Bases</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Models\Bases</Filter>
+    </ClInclude>
+    <ClInclude Include="RawModel.h">
+      <Filter>Header Files\Models\Bases</Filter>
+    </ClInclude>
+    <ClInclude Include="IvysaurModel.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="EarthModel.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLight.h">
+      <Filter>Header Files\Lights</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

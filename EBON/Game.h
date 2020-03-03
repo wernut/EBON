@@ -1,39 +1,41 @@
 #pragma once
-#include "TexturedModel.h"
 #include "GameManager.h"
+#include "IvysaurModel.h"
+#include "EarthModel.h"
+#include "ModelLight.h"
 
 
 class Game
 {
 public:
-	struct DirLight
-	{
-		glm::vec3 direction;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-		glm::vec3 ambient;
-	};
+	//struct DirLight
+	//{
+	//	glm::vec3 direction;
+	//	glm::vec3 diffuse;
+	//	glm::vec3 specular;
+	//	glm::vec3 ambient;
+	//};
 
-	struct PointLight
-	{
-		glm::vec3 position;
-		float constant;
-		float linear;
-		float quadratic;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-		glm::vec3 ambient;
-	};
+	//struct PointLight
+	//{
+	//	glm::vec3 position;
+	//	float constant;
+	//	float linear;
+	//	float quadratic;
+	//	glm::vec3 diffuse;
+	//	glm::vec3 specular;
+	//	glm::vec3 ambient;
+	//};
 
-	struct ModelLight
-	{
-		RawModel* model;
-		PointLight light;
-	};
+	//struct ModelLight
+	//{
+	//	RawModel* model;
+	//	PointLight light;
+	//};
 
 private:
-	DirLight m_dirLight;
-	ModelLight m_modelLights[2];
+	DirectionalLight* m_dirLight;
+	ModelLight** m_modelLights;
 
 	GameManager* m_gameManager;
 	Application* m_application;
@@ -41,8 +43,8 @@ private:
 	Camera* m_camera;
 	GLFWwindow* m_window;
 
-	TexturedModel* m_earthModel;
-	TexturedModel* m_ivyModel;
+	EarthModel* m_earthModel;
+	IvysaurModel* m_ivyModel;
 
 	// Key press timer:
 	bool m_canReload;

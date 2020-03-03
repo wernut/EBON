@@ -1,6 +1,8 @@
 #include "ShaderManager.h"
 #include "ShaderFade.h"
 #include <iostream>
+#include <chrono>
+#include <ctime>
 
 ShaderManager* ShaderManager::m_instance = nullptr;
 
@@ -30,8 +32,9 @@ ShaderProgram* ShaderManager::getShader(SHADER_TYPE shaderType)
 
 void ShaderManager::ReloadAllShaders()
 {
+
 	std::cout << std::endl;
-	std::cout << "+ Recompiling active shaders... " << std::endl;
+	std::cout << " + Recompiling active shaders... " << std::endl;
 	for (int i = 0; i < E_COUNT; ++i)
 	{
 		if (m_shaders[i]->GetInUse())

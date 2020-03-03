@@ -37,7 +37,7 @@ int Application::InitWindow(const char* gameTitle, const float windowWidth, cons
 		return -1;
 
 	// Creating the window:
-	m_window = glfwCreateWindow(windowWidth, windowHeight, gameTitle, NULL, NULL);
+	m_window = glfwCreateWindow((int)windowWidth, windowHeight, gameTitle, NULL, NULL);
 
 	// Checking if the window was successfully created:
 	if (m_window == NULL)

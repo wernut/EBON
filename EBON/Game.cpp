@@ -43,12 +43,15 @@ Game::~Game()
 
     delete m_ivyModel;
     m_ivyModel = nullptr;
-
+    
     for (int i = 0; i < 2; ++i)
     {
-        delete m_modelLights[i].model;
-        m_modelLights[i].model = nullptr;
+        delete m_modelLights[i];
     }
+    delete[] m_modelLights;
+
+    // Deleting lights:
+    delete m_dirLight;
 
     // Destroying the camera:
     delete m_camera;
@@ -68,9 +71,7 @@ void Game::Run()
         // Clearing the color: (Making the background white).
         m_application->ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        // Enabling wiremesh mode:
-        // m_application->ToggleWiremeshMode();
-
+        // Enabling depth testing:
         glEnable(GL_DEPTH_TEST);
 
         // Update game:
@@ -81,51 +82,31 @@ void Game::Run()
 void Game::InitModels()
 {
     // Directional light properties
-    m_dirLight.direction = glm::vec3(0.0f, 1.0f, 0.0f);
-    m_dirLight.diffuse = { 1, 1, 1 };
-    m_dirLight.specular = { 1, 1, 1 };
-    m_dirLight.ambient = { 0.15f, 0.15f, 0.15f };
+    m_dirLight = new DirectionalLight({ 0.0f, 1.0f, 0.0f }, glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.15f));
 
+    // Setting up the point lights:
+    m_modelLights = new ModelLight * [2];
     for (int i = 0; i < 2; ++i)
     {
-        // Light position:
+        // Position:
         int pos = -1;
         if (i == 0)
             pos = 1;
         glm::vec3 position = glm::vec3(pos * 4, 4.0f, 0.0f);
 
-        // Model:
-        m_modelLights[i].model = new RawModel(Primitives::generateCube(), ShaderManager::E_DEFAULT);
-        m_modelLights[i].model->setPosition(position);
-        m_modelLights[i].model->setScale(glm::vec3(0.2f));
-
-        // Light props:
-        m_modelLights[i].light.position = position;
-        m_modelLights[i].light.constant = 1.0f;
-        m_modelLights[i].light.linear = 0.09f;
-        m_modelLights[i].light.quadratic = 0.0075f;
-        m_modelLights[i].light.diffuse =  { 1.0f, 1.0f, 1.0f };
-        m_modelLights[i].light.specular = { 1.0f, 1.0f, 1.0f };
-        m_modelLights[i].light.ambient =  { 0.15f, 0.15, 0.15f };
+        m_modelLights[i] = new ModelLight(new RawModel(Primitives::generateCube(), ShaderManager::E_DEFAULT),
+                                       position, 1.0f, 0.09f, 0.0075f, 
+                                       glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.15f));
+        m_modelLights[i]->getModel()->setScale(glm::vec3(0.2f));
     }
 
     // Earth
-    Image* earthDiffuse = new Image("..\\Textures\\Earth\\earth_diffuse.jpg", GL_RGB);
-    Image* earthSpecular = new Image("..\\Textures\\Earth\\earth_specular.jpg", GL_RGB);
-    Image* earthNormal = new Image("..\\Textures\\Earth\\earth_normal.jpg", GL_RGB);
-    m_earthModel = new TexturedModel(Primitives::generateSphere(1.0f, 36.0f, 18.0f), ShaderManager::E_MODEL, 
-                                    earthDiffuse, earthSpecular, earthNormal);
+    m_earthModel = new EarthModel(m_dirLight, m_modelLights);
     m_earthModel->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
     m_earthModel->setRotation(270.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Ivysaur
-    Image* ivyDiffuse = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Diffuse.png", GL_RGBA);
-    Image* ivySpecular = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Specular.png", GL_RGBA);
-    Image* ivyNormal = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Normal.png", GL_RGBA);
-    Image* ivyAmbient = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Ambient_Occlusion.png", GL_RGBA);
-    Image* ivyGloss = new Image("..\\Textures\\Ivysaur\\Final_Pokemon_Ambient_Occlusion.png", GL_RGBA);
-    m_ivyModel = new TexturedModel("..\\Models\\Ivysaur\\Pokemon.obj", ShaderManager::E_MODEL, 
-                                    ivyDiffuse, ivySpecular, ivyNormal, ivyAmbient, ivyGloss);
+    m_ivyModel = new IvysaurModel(m_dirLight, m_modelLights);
 }
   
 void Game::Update()
@@ -172,7 +153,7 @@ void Game::Update()
         }
 
         // Rotating earth:
-        m_earthModel->setRotation(0.003f, glm::vec3(0.0f, 0.0f, 1.0f));
+        m_earthModel->setRotation(0.06f, glm::vec3(0.0f, 0.0f, 1.0f));
 
         // Updating the camera class:
         m_camera->update(deltaTime);
@@ -190,50 +171,13 @@ void Game::Render()
     // Light cubes:
     for (int i = 0; i < 2; ++i)
     {
-        m_modelLights[i].model->render(m_camera);
+        m_modelLights[i]->render(m_camera);
     }
 
     // Earth
-    m_earthModel->getShader()->bind();
-    m_earthModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_earthModel->getTransform())));
-    m_earthModel->getShader()->setVector3("camera_position", m_camera->getPosition());
-    m_earthModel->getShader()->setVector3("dirLight.direction", m_dirLight.direction);
-    m_earthModel->getShader()->setVector3("dirLight.ambient", m_dirLight.ambient);
-    m_earthModel->getShader()->setVector3("dirLight.diffuse", m_dirLight.diffuse);
-    m_earthModel->getShader()->setVector3("dirLight.specular", m_dirLight.specular);
-    for (int i = 0; i < 2; ++i)
-    {
-        const std::string index = std::to_string(i);
-        m_earthModel->getShader()->setVector3("pointLights[" + index + "].position", m_modelLights[i].light.position);
-        m_earthModel->getShader()->setVector3("pointLights[" + index + "].ambient",  m_modelLights[i].light.ambient);
-        m_earthModel->getShader()->setVector3("pointLights[" + index + "].diffuse",  m_modelLights[i].light.diffuse);
-        m_earthModel->getShader()->setVector3("pointLights[" + index + "].specular", m_modelLights[i].light.specular);
-        m_earthModel->getShader()->setFloat  ("pointLights[" + index + "].constant", m_modelLights[i].light.constant);
-        m_earthModel->getShader()->setFloat  ("pointLights[" + index + "].linear",   m_modelLights[i].light.linear);
-        m_earthModel->getShader()->setFloat  ("pointLights[" + index + "].quadratic",m_modelLights[i].light.quadratic);
-    }
     m_earthModel->render(m_camera);
 
-
     // Ivysaur
-    m_ivyModel->getShader()->bind();
-    m_ivyModel->getShader()->setMatrix3("normal_matrix", glm::inverseTranspose(glm::mat3(m_ivyModel->getTransform())));
-    m_ivyModel->getShader()->setVector3("camera_position", m_camera->getPosition());
-    m_ivyModel->getShader()->setVector3("dirLight.direction", m_dirLight.direction);
-    m_ivyModel->getShader()->setVector3("dirLight.ambient", m_dirLight.ambient);
-    m_ivyModel->getShader()->setVector3("dirLight.diffuse", m_dirLight.diffuse);
-    m_ivyModel->getShader()->setVector3("dirLight.specular", m_dirLight.specular);
-    for (int i = 0; i < 2; ++i)
-    {
-        const std::string index = std::to_string(i);
-        m_ivyModel->getShader()->setVector3("pointLights[" + index + "].position",  m_modelLights[i].light.position);
-        m_ivyModel->getShader()->setVector3("pointLights[" + index + "].ambient",   m_modelLights[i].light.ambient);
-        m_ivyModel->getShader()->setVector3("pointLights[" + index + "].diffuse",   m_modelLights[i].light.diffuse);
-        m_ivyModel->getShader()->setVector3("pointLights[" + index + "].specular",  m_modelLights[i].light.specular);
-        m_ivyModel->getShader()->setFloat  ("pointLights[" + index + "].constant",  m_modelLights[i].light.constant);
-        m_ivyModel->getShader()->setFloat  ("pointLights[" + index + "].linear",    m_modelLights[i].light.linear);
-        m_ivyModel->getShader()->setFloat  ("pointLights[" + index + "].quadratic", m_modelLights[i].light.quadratic);
-    }
     m_ivyModel->render(m_camera);
 
     // Swapping the buffers:
