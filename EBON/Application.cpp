@@ -1,9 +1,16 @@
 #include "Application.h"
 
+
 Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Creating GLFW window:
 	if (InitWindow(gameTitle, windowWidth, windowHeight) < 0) { return; }
+
+	// Printing the version of OpenGL we are running:
+	PrintOpenGLVersion();
+
+	// Init ImGui:
+	InitImGui();
 
 	// Init vars:
 	m_deltaTime = 0.0;
@@ -13,9 +20,7 @@ Application::Application(const char* gameTitle, const float windowWidth, const f
 	m_fpsInterval = 0.0;
 	m_gameOver = false;
 	m_wireMeshMode = false;
-
-	// Printing the version of OpenGL we are running:
-	PrintOpenGLVersion();
+	m_bIsMouseLocked = false;
 }
 
 Application::~Application()
@@ -23,6 +28,11 @@ Application::~Application()
 	// Deleting the window:
 	if (m_window)
 	{
+		// Cleanup ImGui:
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+
 		// Shutdown GLFW:
 		glfwDestroyWindow(m_window);
 		glfwTerminate();
@@ -62,6 +72,17 @@ int Application::InitWindow(const char* gameTitle, const float windowWidth, cons
 	return 0;
 }
 
+// Initalise ImGUI:
+void Application::InitImGui()
+{
+	// Setting context to current window:
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+
+	// Setting color scheme:
+	ImGui::StyleColorsDark();
+}
+
 // Updating the application, should be called every frame:
 void Application::Update()
 {
@@ -82,6 +103,11 @@ void Application::Update()
 
 	// Checking if the application should exit:
 	m_gameOver = m_gameOver || hasWindowClosed();
+
+	// Adjusting viewport to window size:
+	int display_w, display_h;
+	glfwGetFramebufferSize(m_window, &display_w, &display_h);
+	glViewport(0, 0, display_w, display_h);
 }
 
 // Printing the OpenGL version to the console:
@@ -188,4 +214,26 @@ void Application::ToggleWiremeshMode()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+}
+
+bool Application::getMouseLock()
+{
+	return m_bIsMouseLocked;
+}
+
+void Application::setMouseLock(bool value)
+{
+	m_bIsMouseLocked = value;
+
+	if(m_bIsMouseLocked)
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	else
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void Application::toggleMouseLock()
+{
+	m_bIsMouseLocked = !m_bIsMouseLocked;
+
+	setMouseLock(m_bIsMouseLocked);
 }

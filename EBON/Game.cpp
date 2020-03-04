@@ -29,6 +29,10 @@ Game::Game()
     // Creating a pointer to the GLFWwindow:
     m_window = m_application->getWindow();
 
+    show_demo_window = true;
+    show_another_window = false;
+    clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
     // Initalising vars:
     m_canReload = true;
     m_reloadTimer = 0.0f;
@@ -46,6 +50,9 @@ Game::~Game()
 
     delete m_shieldModel;
     m_shieldModel = nullptr;
+
+    delete m_swordModel;
+    m_swordModel = nullptr;
     
     // Deleting lights:
     for (int i = 0; i < 2; ++i)
@@ -95,7 +102,7 @@ void Game::InitModels()
         int pos = -1;
         if (i == 0)
             pos = 1;
-        glm::vec3 position = glm::vec3(pos * 4, 4.0f, 0.0f);
+        glm::vec3 position = glm::vec3(pos * 4, 7.0f, 0.0f);
 
         m_modelLights[i] = new ModelLight(new RawModel(Primitives::generateCube(), ShaderManager::E_DEFAULT),
                                        position, 1.0f, 0.09f, 0.0075f, 
@@ -105,18 +112,27 @@ void Game::InitModels()
 
     // Earth
     m_earthModel = new EarthModel(m_dirLight, m_modelLights);
-    m_earthModel->setPosition(glm::vec3(0.0f, 3.0f, 0.0f));
-    m_earthModel->setRotation(270.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_earthModel->addPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+    m_earthModel->addRotation(270.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Ivysaur
     m_ivyModel = new IvysaurModel(m_dirLight, m_modelLights);
 
-    // Shield
-    aie::OBJMesh swordAndShield;
-    if (!swordAndShield.load("..\\Models\\SwordAndSheild\\meshSwordShield.obj"))
+    // Sword and shield:
+    if (!swordAndShield.load("..\\Models\\SwordAndShield\\meshSwordShield.obj"))
         std::cout << "ERROR_LOADING_SWORD&SHIELD_MODEL_" << std::endl;
 
+    // Extracting shield from obj:
     m_shieldModel = new ShieldModel(swordAndShield.m_meshChunks[0], m_dirLight, m_modelLights);
+    m_shieldModel->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_shieldModel->addPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+    m_shieldModel->setScale(glm::vec3(0.5f));
+
+    // Extracting sword from obj:
+    m_swordModel = new SwordModel(swordAndShield.m_meshChunks[1], m_dirLight, m_modelLights);
+    m_swordModel->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_swordModel->addPosition(glm::vec3(0.0f, 7.0f, 0.0f));
+    m_swordModel->setScale(glm::vec3(0.5f));
 }
   
 void Game::Update()
@@ -135,7 +151,9 @@ void Game::Update()
 
         // Exitting the application if the escape key is pressed:
         if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
             m_application->setGameOver(true);
+        }
 
         // Reloading the shaders:
         if (glfwGetKey(m_window, GLFW_KEY_KP_1) == GLFW_PRESS && m_canReload)
@@ -163,7 +181,7 @@ void Game::Update()
         }
 
         // Rotating earth:
-        m_earthModel->setRotation(0.06f, glm::vec3(0.0f, 0.0f, 1.0f));
+        m_earthModel->addRotation(0.006f, glm::vec3(0.0f, 0.0f, 1.0f));
 
         // Updating the camera class:
         m_camera->update(deltaTime);
@@ -177,7 +195,7 @@ void Game::Render()
 {
     // Clearing the buffers:
     m_application->ClearBuffers();
-
+ 
     // Light cubes:
     for (int i = 0; i < 2; ++i)
     {
@@ -192,6 +210,41 @@ void Game::Render()
 
     // Sheild
     m_shieldModel->render(m_camera);
+
+    // Sword
+    m_swordModel->render(m_camera);
+
+    // ImGUI
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+    // Example window:
+    {
+        static float f = 0.0f;
+        static int counter = 0;
+
+        ImGui::Begin("Model Adjustments");                          // Create a window called "Hello, world!" and append into it.
+
+        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+        ImGui::Checkbox("Another Window", &show_another_window);
+
+        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+            counter++;
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", counter);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // Swapping the buffers:
     m_application->SwapBuffers();

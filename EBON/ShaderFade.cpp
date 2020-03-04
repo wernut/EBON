@@ -14,7 +14,7 @@ ShaderFade::~ShaderFade() {}
 void ShaderFade::update(float deltaTime)
 {
     Application* application = GameManager::getInstance()->getApplication();
-    float time = application->getTime();
+    float time = (float) application->getTime();
 
     bind();
     setBool("isRunning", m_bEffectStatus);

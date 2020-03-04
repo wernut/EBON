@@ -23,13 +23,17 @@ public:
 	~TexturedModel();
 
 	void render(Camera* camera);
+
+	void setIsOBJMesh(bool value);
+	bool getIsOBJMesh();
+
 protected:
 	void addMap(IMAGE_MAPS eSlot, const char* imageLocation, GLenum imageFormat);
+	bool m_isOBJ;
 
 private:
 	Image** m_imageMaps;
 
-	bool m_isOBJ;
 	void setTextureUnits();
 };
 

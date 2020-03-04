@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "ext.hpp"
 #include "Directives.h"
 #include <cmath>
 #include <iostream>
@@ -36,11 +35,14 @@ Camera::Camera()
 	projectionView_transform = projection_transform * view_transform;
 	world_transform = glm::inverse(view_transform);
 
+	// Instances:
+	m_application = GameManager::getInstance()->getApplication();
+
 	// Getting the GLFW window:
 	m_window = glfwGetCurrentContext();
 
-	// Capturing the mouse (hiding & locking it in the middle of the screen):
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Locking the mouse:
+	m_application->setMouseLock(true);
 }
 
 Camera::~Camera() {}
@@ -51,14 +53,18 @@ void Camera::update(float deltaTime)
 	direction = glm::normalize(position - target);
 	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
     upAxis = glm::cross(direction, rightAxis);
+
+	if (m_application->getMouseLock())
+		updateMouseInput(deltaTime);
+
 	updateKeyboardInput(deltaTime);
-	updateMouseInput(deltaTime);
+
 	setPosition(position);
 }
 
-void Camera::setPerspective(float fov, float ratio, float near, float far)
+void Camera::setPerspective(float fov, float ratio, float near_, float far_)
 {
-	projection_transform = glm::perspective(fov, ratio, near, far);
+	projection_transform = glm::perspective(fov, ratio, near_, far_);
 }
 
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
@@ -105,6 +111,12 @@ void Camera::updateKeyboardInput(float deltaTime)
 		movementSpeed = 15.0f;
 	else
 		movementSpeed = 3.5;
+
+	if (glfwGetKey(m_window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		m_application->setMouseLock(false);
+
+	if (glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+		m_application->setMouseLock(true);
 }
 
 void Camera::updateMouseInput(float deltaTime)

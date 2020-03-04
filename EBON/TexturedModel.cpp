@@ -105,3 +105,13 @@ void TexturedModel::render(Camera* camera)
 	else
 		RawModel::render(camera);
 }
+
+void TexturedModel::setIsOBJMesh(bool value)
+{
+	m_isOBJ = value;
+}
+
+bool TexturedModel::getIsOBJMesh()
+{
+	return m_isOBJ;
+}

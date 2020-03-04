@@ -1,6 +1,5 @@
 #pragma once
-#include "glm.hpp"
-#include "glfw3.h"
+#include "GameManager.h"
 
 
 class Camera
@@ -38,6 +37,8 @@ private:
 	glm::mat4 projection_transform;
 	glm::mat4 projectionView_transform;
 
+	// Instances:
+	Application* m_application;
 	GLFWwindow* m_window;
 
 public:

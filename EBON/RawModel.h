@@ -31,10 +31,10 @@ public:
 	ShaderProgram* getShader();
 	glm::mat4 getTransform();
 
-	void setPosition(glm::vec3 position);
+	void addPosition(glm::vec3 position);
 	glm::vec3 getPosition();
 
-	void setRotation(float eularAngle, glm::vec3 axis);
+	void addRotation(float eularAngle, glm::vec3 axis);
 
 	void setScale(glm::vec3 scale);
 

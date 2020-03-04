@@ -9,7 +9,7 @@ ModelLight::ModelLight(RawModel* model, glm::vec3 pos, float c, float l, float q
 	: PointLight(pos, c, l, q, diffuse, specular, ambient)
 {
 	m_model = model;
-	m_model->setPosition(pos);
+	m_model->addPosition(pos);
 }
 
 ModelLight::~ModelLight()
@@ -20,7 +20,7 @@ ModelLight::~ModelLight()
 
 void ModelLight::setPos(glm::vec3 pos)
 {
-	m_model->setPosition(pos);
+	m_model->addPosition(pos);
 	m_position = pos;
 }
 

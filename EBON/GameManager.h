@@ -39,6 +39,7 @@ public:
 	}
 
 	static GameManager* getInstance() { return m_instance; }
+
 	Application* getApplication();
 	ShaderManager* getShaderManager();
 };

@@ -1,8 +1,16 @@
 #pragma once
+// Math library:
 #include "glm.hpp"
 #include "ext.hpp"
+// OpenGL loader:
 #include "..\glcore\gl_core_4_5.h"
+// Window:
 #include "glfw3.h"
+// ImGui
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+// Console:
 #include <iostream>
 
 using uint = unsigned int;
@@ -31,8 +39,11 @@ public:
 	float getWindowWidth();
 	float getWindowHeight();
 	void getMousePos(float &xPos, float &yPos);
+	bool getMouseLock();
 	// Setters
 	void setGameOver(bool value);
+	void setMouseLock(bool value);
+	void toggleMouseLock();
 
 private:
 	GLFWwindow* m_window;
@@ -42,8 +53,10 @@ private:
 	bool m_gameOver;
 	char* m_gameTitle;
 	bool m_wireMeshMode;
+	bool m_bIsMouseLocked;
 	float m_windowWidth, m_windowHeight;
 
 	int InitWindow(const char* gameTitle, const float screenWidth, const float screenHeight);
+	void InitImGui();
 };
 

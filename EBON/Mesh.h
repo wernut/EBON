@@ -16,6 +16,9 @@ public:
 		glm::vec4 tangent;
 	};
 
+	// Standard init:
+	void storeOnGPU();
+
 protected:
 	uint m_vertexCount, m_indexCount, m_triCount;
 	uint m_VAO, m_VBO, m_IBO;
@@ -36,8 +39,5 @@ public:
 
 	// Render mesh:
 	void render();
-
-	// Standard init:
-	void storeOnGPU();
 };
 

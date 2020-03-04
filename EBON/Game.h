@@ -4,6 +4,7 @@
 #include "EarthModel.h"
 #include "ModelLight.h"
 #include "ShieldModel.h"
+#include "SwordModel.h"
 
 
 class Game
@@ -27,7 +28,14 @@ private:
 
 	EarthModel* m_earthModel;
 	IvysaurModel* m_ivyModel;
+	aie::OBJMesh swordAndShield;
 	ShieldModel* m_shieldModel;
+	SwordModel* m_swordModel;
+
+	// ImGui Example:
+	bool show_demo_window;
+	bool show_another_window;
+	ImVec4 clear_color;
 
 	// Key press timer:
 	bool m_canReload;

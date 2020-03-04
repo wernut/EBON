@@ -64,7 +64,7 @@ glm::mat4 RawModel::getTransform()
 	return m_transform;
 }
 
-void RawModel::setPosition(glm::vec3 position)
+void RawModel::addPosition(glm::vec3 position)
 {
 	m_transform = glm::translate(m_transform, position);
 	m_pos = position;
@@ -80,7 +80,7 @@ glm::vec3 RawModel::getPosition()
 	return m_pos;
 }
 
-void RawModel::setRotation(float eularAngle, glm::vec3 axis)
+void RawModel::addRotation(float eularAngle, glm::vec3 axis)
 {
 	m_transform = glm::rotate(m_transform, glm::radians(eularAngle), axis);
 }
