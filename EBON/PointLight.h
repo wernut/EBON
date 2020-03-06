@@ -14,6 +14,11 @@ public:
 	PointLight(glm::vec3 pos, float c, float l, float q, glm::vec3 dif, glm::vec3 spe, glm::vec3 amb);
 	~PointLight();
 
+	void setPosition(glm::vec3 pos);
+	void setConstant(float c);
+	void setLinear(float l);
+	void setQuadratic(float q);
+
 	glm::vec3 getPosition();
 	float getConstant();
 	float getLinear();

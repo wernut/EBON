@@ -5,6 +5,7 @@
 #include "ModelLight.h"
 #include "ShieldModel.h"
 #include "SwordModel.h"
+#include "GameObject.h"
 
 
 class Game
@@ -32,10 +33,11 @@ private:
 	ShieldModel* m_shieldModel;
 	SwordModel* m_swordModel;
 
-	// ImGui Example:
-	bool show_demo_window;
-	bool show_another_window;
-	ImVec4 clear_color;
+	Model** m_modelList;
+
+	// ImGui vars:
+	ImVec4 m_modelColor;
+	float m_movementSpeed, m_movementFastSpeed, m_sensitivity;
 
 	// Key press timer:
 	bool m_canReload;

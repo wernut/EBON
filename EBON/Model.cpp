@@ -1,6 +1,8 @@
 #include "Model.h"
 #include "Game.h"
 
+Model::Model() : TexturedModel() {}
+
 Model::Model(Mesh* mesh, DirectionalLight* dirLight, ModelLight** modelLights) : TexturedModel(mesh, ShaderManager::E_MODEL)
 {
     m_dirLight = dirLight;

@@ -10,6 +10,7 @@ in vec3 vBiTangent;
 
 uniform vec3 camera_position;
 uniform float specular_power = 32.0f;
+uniform vec3 color = vec3(1.0f, 1.0f, 1.0f);
 
 layout(binding = 0) uniform sampler2D diffuseTexture;
 layout(binding = 1) uniform sampler2D specularTexture;
@@ -123,5 +124,5 @@ void main()
     }
 	
 	// Assigning the final fragment colour:
-	final_color = vec4(result, 1.0f);
+	final_color = vec4(result, 1.0f) * vec4(color, 1.0f);
 }

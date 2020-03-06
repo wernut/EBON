@@ -12,9 +12,9 @@ private:
 	const float farPlane = 150.0f;
 
 	// Movement vars:
-	float movementSpeed;
+	float movementSpeed, movementFastSpeed, sensitivity;
+	float defaultSpeed, defaultMovementFastSpeed, defaultSensitivity;
 	float pitch, yaw;
-	float sensitivity;
 	double mouseX, mouseY;
 	double mouseLastX, mouseLastY;
 	float minPitch, maxPitch;
@@ -59,5 +59,15 @@ public:
 	glm::mat4 getProjection();
 	glm::mat4 getProjectionView();
 	glm::vec3 getPosition();
+
+	void setMovementSpeed(float value);
+	void setMovementFastSpeed(float value);
+	void setSensitivity(float value);
+	float getMovementSpeed();
+	float getMovementFastSpeed();
+	float getSensitivity();
+	float getDefaultMovementSpeed();
+	float getDefaultMovementFastSpeed();
+	float getDefaultSensitivity();
 };
 

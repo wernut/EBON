@@ -18,6 +18,26 @@ DirectionalLight::DirectionalLight(glm::vec3 dir, glm::vec3 dif, glm::vec3 spe, 
 
 DirectionalLight::~DirectionalLight() {}
 
+void DirectionalLight::setDirection(glm::vec3 dir)
+{
+	m_direction = dir;
+}
+
+void DirectionalLight::setDiffuse(glm::vec3 diff)
+{
+	m_diffuse = diff;
+}
+
+void DirectionalLight::setSpecular(glm::vec3 spec)
+{
+	m_specular = spec;
+}
+
+void DirectionalLight::setAmbient(glm::vec3 amb)
+{
+	m_ambient = amb;
+}
+
 glm::vec3 DirectionalLight::getDirection()
 {
 	return m_direction;

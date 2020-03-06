@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "Directives.h"
 #include "ShaderManager.h"
 #include "Mesh.h"
 #include "Primitives.h"
@@ -22,16 +21,18 @@ Game::Game()
 
     // Creating the camera:
     m_camera = new Camera();
+    
+    // Init ImGui vars:
+    m_movementSpeed = m_camera->getMovementSpeed();
+    m_movementFastSpeed = m_camera->getMovementFastSpeed();
+    m_sensitivity = m_camera->getSensitivity();
 
     // Initalising the models:
     InitModels();
 
     // Creating a pointer to the GLFWwindow:
     m_window = m_application->getWindow();
-
-    show_demo_window = true;
-    show_another_window = false;
-    clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    m_modelColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
 
     // Initalising vars:
     m_canReload = true;
@@ -53,6 +54,8 @@ Game::~Game()
 
     delete m_swordModel;
     m_swordModel = nullptr;
+
+    delete[] m_modelList;
     
     // Deleting lights:
     for (int i = 0; i < 2; ++i)
@@ -133,6 +136,13 @@ void Game::InitModels()
     m_swordModel->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     m_swordModel->addPosition(glm::vec3(0.0f, 7.0f, 0.0f));
     m_swordModel->setScale(glm::vec3(0.5f));
+
+    m_modelList = new Model * [4];
+    m_modelList[0] = m_earthModel;
+    m_modelList[1] = m_ivyModel;
+    m_modelList[2] = m_shieldModel;
+    m_modelList[3] = m_swordModel;
+
 }
   
 void Game::Update()
@@ -219,29 +229,51 @@ void Game::Render()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    // Info window:
+    ImGui::Begin("Information");
 
-    // Example window:
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();   // Info window:
+
+    // Camera adjustments:
+    ImGui::Begin("Camera Options");
+    ImGui::Text("[ENTER] to unlock cursor.");
+    ImGui::Text("[RSHIFT] to lock cursor.");
+    ImGui::InputFloat("Speed", &m_movementSpeed, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputFloat("Fast Speed", &m_movementFastSpeed, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputFloat("Sensitivity", &m_sensitivity, ImGuiInputTextFlags_CharsDecimal);
+
+    if (ImGui::Button("Confirm Changes"))
     {
-        static float f = 0.0f;
-        static int counter = 0;
-
-        ImGui::Begin("Model Adjustments");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        ImGui::Checkbox("Another Window", &show_another_window);
-
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+        m_camera->setMovementSpeed(m_movementSpeed);
+        m_camera->setMovementFastSpeed(m_movementFastSpeed);
+        m_camera->setSensitivity(m_sensitivity);
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Revert To Default"))
+    {
+        m_movementSpeed = m_camera->getDefaultMovementSpeed();
+        m_movementFastSpeed = m_camera->getDefaultMovementFastSpeed();
+        m_sensitivity = m_camera->getDefaultSensitivity();
+        m_camera->setMovementSpeed(m_movementSpeed);
+        m_camera->setMovementFastSpeed(m_movementFastSpeed);
+        m_camera->setSensitivity(m_sensitivity);
+    }
+
+    ImGui::End();   // Camera adjustments:
+
+    // Model adjustments window:
+    ImGui::Begin("Model Adjustments");
+    ImGui::ColorEdit3("Model Color", (float*)&m_modelColor);
+
+    for (int i = 0; i < 4; ++i)
+    {
+        ShaderProgram* modelShader = m_modelList[i]->getShader();
+        glm::vec3 lightColor = glm::vec3(m_modelColor.x, m_modelColor.y, m_modelColor.z);
+        modelShader->bind();
+        modelShader->setVector3("color", lightColor);
+    }
+    ImGui::End(); // Model adjustments window:
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

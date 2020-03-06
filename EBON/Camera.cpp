@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "Directives.h"
 #include <cmath>
 #include <iostream>
 
@@ -7,9 +6,13 @@ Camera::Camera()
 {
 	// Movement vars:
 	movementSpeed = 3.5f;
+	movementFastSpeed = 10.0f;
+	sensitivity = 0.10f;
+	defaultSpeed = movementSpeed;
+	defaultMovementFastSpeed = movementFastSpeed;
+	defaultSensitivity = sensitivity;
 	pitch = 0.0f;
 	yaw = -90.0f;
-	sensitivity = 0.10f;
 	mouseX = 0;
 	mouseY = 0;
 	mouseLastX = SCREEN_WIDTH / 2;
@@ -108,9 +111,9 @@ void Camera::updateKeyboardInput(float deltaTime)
 		position -= movementSpeed * worldUpAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		movementSpeed = 15.0f;
+		movementSpeed = movementFastSpeed;
 	else
-		movementSpeed = 3.5;
+		movementSpeed = defaultSpeed;
 
 	if (glfwGetKey(m_window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		m_application->setMouseLock(false);
@@ -121,8 +124,9 @@ void Camera::updateKeyboardInput(float deltaTime)
 
 void Camera::updateMouseInput(float deltaTime)
 {
-	double xPos, yPos;
-	glfwGetCursorPos(m_window, &xPos, &yPos);
+	// Get cursor pos:
+	float xPos, yPos;
+	m_application->getMousePos(xPos, yPos);
 
 	// Checking if this is the first time the window has been in focus:
 	if (firstTimeEnter)
@@ -191,4 +195,49 @@ void Camera::updateMatricies()
 glm::vec3 Camera::getPosition()	
 {
 	return position;
+}
+
+void Camera::setMovementSpeed(float value)
+{
+	movementSpeed = value;
+}
+
+void Camera::setMovementFastSpeed(float value)
+{
+	movementFastSpeed = value;
+}
+
+void Camera::setSensitivity(float value)
+{
+	sensitivity = value;
+}
+
+float Camera::getMovementSpeed()
+{
+	return movementSpeed;
+}
+
+float Camera::getMovementFastSpeed()
+{
+	return movementFastSpeed;
+}
+
+float Camera::getSensitivity()
+{
+	return sensitivity;
+}
+
+float Camera::getDefaultMovementSpeed()
+{
+	return defaultSpeed;
+}
+
+float Camera::getDefaultMovementFastSpeed()
+{
+	return defaultMovementFastSpeed;
+}
+
+float Camera::getDefaultSensitivity()
+{
+	return defaultSensitivity;
 }

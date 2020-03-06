@@ -9,6 +9,7 @@ private:
 	DirectionalLight* m_dirLight;
 	ModelLight** m_modelLights;
 public:
+	Model();
 	Model(Mesh* mesh, DirectionalLight* dirLight, ModelLight** modelLights);
 	Model(const char* objLocation, DirectionalLight* dirLight, ModelLight** modelLights);
 	~Model();

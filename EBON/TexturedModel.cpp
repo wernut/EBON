@@ -1,6 +1,12 @@
 #include "TexturedModel.h"
 #include <iostream>
 
+TexturedModel::TexturedModel() : RawModel()
+{
+	m_imageMaps = nullptr;
+	m_isOBJ = false;
+}
+
 TexturedModel::TexturedModel(Mesh* mesh, ShaderManager::SHADER_TYPE shaderType, Image* diffuseMap, Image* specularMap, Image* normalMap, Image* ambientMap, Image* glossMap) : RawModel(mesh, shaderType)
 {
 	m_imageMaps = new Image * [E_COUNT];

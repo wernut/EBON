@@ -21,6 +21,26 @@ PointLight::PointLight(glm::vec3 pos, float c, float l, float q, glm::vec3 dif, 
 
 PointLight::~PointLight() {}
 
+void PointLight::setPosition(glm::vec3 pos)
+{
+	m_position = pos;
+}
+
+void PointLight::setConstant(float c)
+{
+	m_constant = c;
+}
+
+void PointLight::setLinear(float l)
+{
+	m_linear = l;
+}
+
+void PointLight::setQuadratic(float q)
+{
+	m_quadratic = q;
+}
+
 glm::vec3 PointLight::getPosition()
 {
 	return m_position;

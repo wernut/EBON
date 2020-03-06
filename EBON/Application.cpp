@@ -202,18 +202,10 @@ void Application::ToggleWiremeshMode()
 {
 	m_wireMeshMode = !m_wireMeshMode;
 
-	std::cout << std::endl;
-	std::cout << "+ Toggling wiremesh mode..." << std::endl;
-	std::cout << "WIREMESH_" << m_wireMeshMode << std::endl;
-
 	if (m_wireMeshMode)
-	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
 	else
-	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
 }
 
 bool Application::getMouseLock()
