@@ -10,7 +10,7 @@ int main()
 
 	// Running the game:
 	Game* game = new Game();
-	game->Run();
+	game->run();
 
 	// Cleaning up the game:
 	delete game;

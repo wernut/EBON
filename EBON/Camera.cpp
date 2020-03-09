@@ -5,38 +5,38 @@
 Camera::Camera()
 {
 	// Movement vars:
-	movementSpeed = 3.5f;
-	movementFastSpeed = 10.0f;
-	sensitivity = 0.10f;
-	defaultSpeed = movementSpeed;
-	defaultMovementFastSpeed = movementFastSpeed;
-	defaultSensitivity = sensitivity;
-	pitch = 0.0f;
-	yaw = -90.0f;
-	mouseX = 0;
-	mouseY = 0;
-	mouseLastX = SCREEN_WIDTH / 2;
-	mouseLastY = SCREEN_HEIGHT / 2;
-	minPitch = -89.0f;
-	maxPitch =  89.0f;
-	firstTimeEnter = true;
+	m_movementSpeed = 3.5f;
+	m_movementFastSpeed = 10.0f;
+	m_sensitivity = 0.10f;
+	m_defaultSpeed = m_movementSpeed;
+	m_defaultMovementFastSpeed = m_movementFastSpeed;
+	m_defaultSensitivity = m_sensitivity;
+	m_pitch = 0.0f;
+	m_yaw = -90.0f;
+	m_mouseX = 0;
+	m_mouseY = 0;
+	m_mouseLastX = SCREEN_WIDTH / 2;
+	m_mouseLastY = SCREEN_HEIGHT / 2;
+	m_minPitch = -89.0f;
+	m_maxPitch =  89.0f;
+	m_firstTimeEnter = true;
 
 	// Position / Rotation:
-	position = glm::vec3(0.0f, 0.0f, 3.0f);
-	target = glm::vec3(0.0f);
-	direction = glm::vec3(0);
+	m_position = glm::vec3(0.0f, 0.0f, 3.0f);
+	m_target = glm::vec3(0.0f);
+	m_direction = glm::vec3(0);
 
 	// Axis:
-	worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	rightAxis = glm::vec3(0);
-	upAxis = glm::vec3(0, 1, 0);
-	frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
+	m_worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+	m_rightAxis = glm::vec3(0);
+	m_upAxis = glm::vec3(0, 1, 0);
+	m_frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	// Transforms:
-	view_transform = glm::mat4(1.0f);
-	projection_transform = glm::perspective(fov, ratio, nearPlane, farPlane);
-	projectionView_transform = projection_transform * view_transform;
-	world_transform = glm::inverse(view_transform);
+	m_viewTransform = glm::mat4(1.0f);
+	m_projectionTransform = glm::perspective(m_FOV, m_RATIO, m_NEARPLANE, m_FARPLANE);
+	m_projectionViewTransform = m_projectionTransform * m_viewTransform;
+	m_worldTransform = glm::inverse(m_viewTransform);
 
 	// Instances:
 	m_application = GameManager::getInstance()->getApplication();
@@ -52,68 +52,68 @@ Camera::~Camera() {}
 
 void Camera::update(float deltaTime) 
 {
-	target = frontAxis;
-	direction = glm::normalize(position - target);
-	rightAxis = glm::normalize(glm::cross(worldUpAxis, direction));
-    upAxis = glm::cross(direction, rightAxis);
+	m_target = m_frontAxis;
+	m_direction = glm::normalize(m_position - m_target);
+	m_rightAxis = glm::normalize(glm::cross(m_worldUpAxis, m_direction));
+    m_upAxis = glm::cross(m_direction, m_rightAxis);
 
 	if (m_application->getMouseLock())
 		updateMouseInput(deltaTime);
 
 	updateKeyboardInput(deltaTime);
 
-	setPosition(position);
+	setPosition(m_position);
 }
 
 void Camera::setPerspective(float fov, float ratio, float near_, float far_)
 {
-	projection_transform = glm::perspective(fov, ratio, near_, far_);
+	m_projectionTransform = glm::perspective(fov, ratio, near_, far_);
 }
 
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 {
-	view_transform = glm::lookAt(from, to, up);
-	world_transform = glm::inverse(view_transform);
+	m_viewTransform = glm::lookAt(from, to, up);
+	m_worldTransform = glm::inverse(m_viewTransform);
 	updateProjectionViewTransform();
 }
 
 void Camera::setPosition(glm::vec3 position)
 {
-	view_transform = glm::lookAt(position, position + target, worldUpAxis);
-	world_transform = glm::inverse(view_transform);
+	m_viewTransform = glm::lookAt(position, position + m_target, m_worldUpAxis);
+	m_worldTransform = glm::inverse(m_viewTransform);
 	updateProjectionViewTransform();
 }
 
 void Camera::updateProjectionViewTransform()
 {
-	projectionView_transform = projection_transform * view_transform;
+	m_projectionViewTransform = m_projectionTransform * m_viewTransform;
 }
 
 void Camera::updateKeyboardInput(float deltaTime)
 {
 
 	if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
-		position += movementSpeed * frontAxis * deltaTime;
+		m_position += m_movementSpeed * m_frontAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
-		position -= movementSpeed * frontAxis * deltaTime;
+		m_position -= m_movementSpeed * m_frontAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
-		position -= glm::normalize(glm::cross(frontAxis, worldUpAxis)) * movementSpeed * deltaTime;
+		m_position -= glm::normalize(glm::cross(m_frontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
-		position += glm::normalize(glm::cross(frontAxis, worldUpAxis)) * movementSpeed * deltaTime;
+		m_position += glm::normalize(glm::cross(m_frontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		position += movementSpeed * worldUpAxis * deltaTime;
+		m_position += m_movementSpeed * m_worldUpAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		position -= movementSpeed * worldUpAxis * deltaTime;
+		m_position -= m_movementSpeed * m_worldUpAxis * deltaTime;
 
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		movementSpeed = movementFastSpeed;
+		m_movementSpeed = m_movementFastSpeed;
 	else
-		movementSpeed = defaultSpeed;
+		m_movementSpeed = m_defaultSpeed;
 
 	if (glfwGetKey(m_window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		m_application->setMouseLock(false);
@@ -129,115 +129,115 @@ void Camera::updateMouseInput(float deltaTime)
 	m_application->getMousePos(xPos, yPos);
 
 	// Checking if this is the first time the window has been in focus:
-	if (firstTimeEnter)
+	if (m_firstTimeEnter)
 	{
-		mouseLastX = xPos;
-		mouseLastY = yPos;
-		firstTimeEnter = false;
+		m_mouseLastX = xPos;
+		m_mouseLastY = yPos;
+		m_firstTimeEnter = false;
 	}
 
 	// Calculate the offset movement between the last and current frame:
-	float xOffset = (float) (xPos - mouseLastX);
-	float yOffset = (float) (mouseLastY - yPos);
-	mouseLastX = xPos;
-	mouseLastY = yPos;
+	float xOffset = (float) (xPos - m_mouseLastX);
+	float yOffset = (float) (m_mouseLastY - yPos);
+	m_mouseLastX = xPos;
+	m_mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	(xOffset *= sensitivity) * deltaTime;
-	(yOffset *= sensitivity) * deltaTime;
+	(xOffset *= m_sensitivity) * deltaTime;
+	(yOffset *= m_sensitivity) * deltaTime;
 
 	// Adding offset values to the yaw and pitch:
-	yaw   += xOffset;
-	pitch += yOffset;
+	m_yaw   += xOffset;
+	m_pitch += yOffset;
 
 	// Clamping the pitch:
-	if (pitch > maxPitch)
-		pitch = maxPitch;
-	else if (pitch < minPitch)
-		pitch = minPitch;
+	if (m_pitch > m_maxPitch)
+		m_pitch = m_maxPitch;
+	else if (m_pitch < m_minPitch)
+		m_pitch = m_minPitch;
 
 	// Clamping the yaw:
-	yaw = glm::mod(yaw + xOffset, 360.0f);
+	m_yaw = glm::mod(m_yaw + xOffset, 360.0f);
 
 	// Calculating final direction & adjusting the front axis:
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	frontAxis = glm::normalize(direction);
+	direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	direction.y = sin(glm::radians(m_pitch));
+	direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_frontAxis = glm::normalize(direction);
 }
 
 glm::mat4 Camera::getWorldTransform()
 {
-	return world_transform;
+	return m_worldTransform;
 }
 
 glm::mat4 Camera::getView()
 {
-	return view_transform;
+	return m_viewTransform;
 }
 
 glm::mat4 Camera::getProjection()
 {
-	return projection_transform;
+	return m_projectionTransform;
 }
 
 glm::mat4 Camera::getProjectionView()
 {
-	return projectionView_transform;
+	return m_projectionViewTransform;
 }
 
 void Camera::updateMatricies()
 {
-	view_transform = glm::inverse(world_transform);
+	m_viewTransform = glm::inverse(m_worldTransform);
 }
 
 glm::vec3 Camera::getPosition()	
 {
-	return position;
+	return m_position;
 }
 
 void Camera::setMovementSpeed(float value)
 {
-	movementSpeed = value;
+	m_movementSpeed = value;
 }
 
 void Camera::setMovementFastSpeed(float value)
 {
-	movementFastSpeed = value;
+	m_movementFastSpeed = value;
 }
 
 void Camera::setSensitivity(float value)
 {
-	sensitivity = value;
+	m_sensitivity = value;
 }
 
 float Camera::getMovementSpeed()
 {
-	return movementSpeed;
+	return m_movementSpeed;
 }
 
 float Camera::getMovementFastSpeed()
 {
-	return movementFastSpeed;
+	return m_movementFastSpeed;
 }
 
 float Camera::getSensitivity()
 {
-	return sensitivity;
+	return m_sensitivity;
 }
 
 float Camera::getDefaultMovementSpeed()
 {
-	return defaultSpeed;
+	return m_defaultSpeed;
 }
 
 float Camera::getDefaultMovementFastSpeed()
 {
-	return defaultMovementFastSpeed;
+	return m_defaultMovementFastSpeed;
 }
 
 float Camera::getDefaultSensitivity()
 {
-	return defaultSensitivity;
+	return m_defaultSensitivity;
 }

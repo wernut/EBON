@@ -14,9 +14,9 @@ public:
 	Game();
 	~Game();
 
-	void Run();
-	void Update();
-	void Render();
+	void run();
+	void update();
+	void render();
 private:
 	DirectionalLight* m_dirLight;
 	ModelLight** m_modelLights;
@@ -36,13 +36,14 @@ private:
 	Model** m_modelList;
 
 	// ImGui vars:
-	ImVec4 m_modelColor;
+	ImVec4 m_modelTintColor;
 	float m_movementSpeed, m_movementFastSpeed, m_sensitivity;
 
 	// Key press timer:
 	bool m_canReload;
 	float m_reloadTimer;
 
-	void InitModels();
+	void initModels();
+	void renderImGui();
 };
 

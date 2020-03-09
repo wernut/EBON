@@ -28,11 +28,11 @@ Game::Game()
     m_sensitivity = m_camera->getSensitivity();
 
     // Initalising the models:
-    InitModels();
+    initModels();
 
     // Creating a pointer to the GLFWwindow:
     m_window = m_application->getWindow();
-    m_modelColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    m_modelTintColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
 
     // Initalising vars:
     m_canReload = true;
@@ -74,7 +74,7 @@ Game::~Game()
     GameManager::Destroy();
 }
 
-void Game::Run()
+void Game::run()
 {
     if (m_application)
     {
@@ -88,11 +88,11 @@ void Game::Run()
         glEnable(GL_DEPTH_TEST);
 
         // Update game:
-        Update();
+        update();
     }
 }
 
-void Game::InitModels()
+void Game::initModels()
 {
     // Directional light properties
     m_dirLight = new DirectionalLight({ 0.0f, 1.0f, 0.0f }, glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.15f));
@@ -144,8 +144,64 @@ void Game::InitModels()
     m_modelList[3] = m_swordModel;
 
 }
+
+void Game::renderImGui()
+{
+    // ImGUI
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Info window:
+    ImGui::Begin("Information");
+    ImGui::Text("[ENTER] to unlock cursor.");
+    ImGui::Text("[RSHIFT] to lock cursor.");
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();   // Info window:
+
+    // Camera adjustments:
+    ImGui::Begin("Camera Options");
+    ImGui::InputFloat("Speed", &m_movementSpeed, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputFloat("Fast Speed", &m_movementFastSpeed, ImGuiInputTextFlags_CharsDecimal);
+    ImGui::InputFloat("Sensitivity", &m_sensitivity, ImGuiInputTextFlags_CharsDecimal);
+
+    if (ImGui::Button("Confirm Changes"))
+    {
+        m_camera->setMovementSpeed(m_movementSpeed);
+        m_camera->setMovementFastSpeed(m_movementFastSpeed);
+        m_camera->setSensitivity(m_sensitivity);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Revert To Default"))
+    {
+        m_movementSpeed = m_camera->getDefaultMovementSpeed();
+        m_movementFastSpeed = m_camera->getDefaultMovementFastSpeed();
+        m_sensitivity = m_camera->getDefaultSensitivity();
+        m_camera->setMovementSpeed(m_movementSpeed);
+        m_camera->setMovementFastSpeed(m_movementFastSpeed);
+        m_camera->setSensitivity(m_sensitivity);
+    }
+
+    ImGui::End();   // Camera adjustments:
+
+    // Model adjustments window:
+    ImGui::Begin("Model Adjustments");
+    ImGui::ColorEdit3("Model Tint Color", (float*)&m_modelTintColor);
+
+    for (int i = 0; i < 4; ++i)
+    {
+        ShaderProgram* modelShader = m_modelList[i]->getShader();
+        glm::vec3 lightColor = glm::vec3(m_modelTintColor.x, m_modelTintColor.y, m_modelTintColor.z);
+        modelShader->bind();
+        modelShader->setVector3("color", lightColor);
+    }
+    ImGui::End(); // Model adjustments window:
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
   
-void Game::Update()
+void Game::update()
 {
     // Main game loop:
     while (!m_application->hasWindowClosed() && !m_application->isGameOver())
@@ -197,11 +253,11 @@ void Game::Update()
         m_camera->update(deltaTime);
 
         // Rendering everything:
-        Render();
+        render();
     }
 }
 
-void Game::Render()
+void Game::render()
 {
     // Clearing the buffers:
     m_application->ClearBuffers();
@@ -224,59 +280,8 @@ void Game::Render()
     // Sword
     m_swordModel->render(m_camera);
 
-    // ImGUI
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    // Info window:
-    ImGui::Begin("Information");
-
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();   // Info window:
-
-    // Camera adjustments:
-    ImGui::Begin("Camera Options");
-    ImGui::Text("[ENTER] to unlock cursor.");
-    ImGui::Text("[RSHIFT] to lock cursor.");
-    ImGui::InputFloat("Speed", &m_movementSpeed, ImGuiInputTextFlags_CharsDecimal);
-    ImGui::InputFloat("Fast Speed", &m_movementFastSpeed, ImGuiInputTextFlags_CharsDecimal);
-    ImGui::InputFloat("Sensitivity", &m_sensitivity, ImGuiInputTextFlags_CharsDecimal);
-
-    if (ImGui::Button("Confirm Changes"))
-    {
-        m_camera->setMovementSpeed(m_movementSpeed);
-        m_camera->setMovementFastSpeed(m_movementFastSpeed);
-        m_camera->setSensitivity(m_sensitivity);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Revert To Default"))
-    {
-        m_movementSpeed = m_camera->getDefaultMovementSpeed();
-        m_movementFastSpeed = m_camera->getDefaultMovementFastSpeed();
-        m_sensitivity = m_camera->getDefaultSensitivity();
-        m_camera->setMovementSpeed(m_movementSpeed);
-        m_camera->setMovementFastSpeed(m_movementFastSpeed);
-        m_camera->setSensitivity(m_sensitivity);
-    }
-
-    ImGui::End();   // Camera adjustments:
-
-    // Model adjustments window:
-    ImGui::Begin("Model Adjustments");
-    ImGui::ColorEdit3("Model Color", (float*)&m_modelColor);
-
-    for (int i = 0; i < 4; ++i)
-    {
-        ShaderProgram* modelShader = m_modelList[i]->getShader();
-        glm::vec3 lightColor = glm::vec3(m_modelColor.x, m_modelColor.y, m_modelColor.z);
-        modelShader->bind();
-        modelShader->setVector3("color", lightColor);
-    }
-    ImGui::End(); // Model adjustments window:
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // Render ImGui:
+    renderImGui();
 
     // Swapping the buffers:
     m_application->SwapBuffers();
