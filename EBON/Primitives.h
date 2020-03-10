@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Primitives.h & Primitives.cpp
+ * Purpose:     Static class that holds functions for geometry generation:
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #pragma once
 #include "Mesh.h"
 #include <vector>
@@ -7,8 +16,10 @@ using uint = unsigned int;
 class Primitives
 {
 public:
-	// Procedual geometry:
+	// Generates a cube and returns the mesh:
 	static Mesh* generateCube();
+
+    // Generates a sphere and returns the mesh:
 	static Mesh* generateSphere(float radius, float stackCount, float sectorCount);
 	static Mesh* generatePlane(float size, bool perlinY = false, uint seed = 1234);
 

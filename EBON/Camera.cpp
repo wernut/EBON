@@ -13,14 +13,16 @@
 
 Camera::Camera()
 {
-	// Movement vars:
+	// Initialise fly camera movement variables:
 	m_movementSpeed = 3.5f;
 	m_movementFastSpeed = 10.0f;
 	m_sensitivity = 0.10f;
 	m_defaultSpeed = m_movementSpeed;
 	m_defaultMovementFastSpeed = m_movementFastSpeed;
 	m_defaultSensitivity = m_sensitivity;
-	m_pitch = 0.0f;
+
+	// Initialise mouse input variables:
+	m_pitch = 0.0f; 
 	m_yaw = -90.0f;
 	m_mouseX = 0;
 	m_mouseY = 0;
@@ -30,16 +32,16 @@ Camera::Camera()
 	m_maxPitch =  89.0f;
 	m_firstTimeEnter = true;
 
+	// Axis:
+	m_worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+	m_cameraRightAxis = glm::vec3(0);
+	m_cameraUpAxis = glm::vec3(0, 1, 0);
+	m_cameraFrontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
+
 	// Position / Rotation:
 	m_position = glm::vec3(0.0f, 0.0f, 3.0f);
 	m_target = glm::vec3(0.0f);
 	m_direction = glm::vec3(0);
-
-	// Axis:
-	m_worldUpAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_rightAxis = glm::vec3(0);
-	m_upAxis = glm::vec3(0, 1, 0);
-	m_frontAxis = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	// Transforms:
 	m_viewTransform = glm::mat4(1.0f);
@@ -61,73 +63,101 @@ Camera::~Camera() {}
 
 void Camera::Update(float deltaTime) 
 {
-	m_target = m_frontAxis;
-	m_direction = glm::normalize(m_position - m_target);
-	m_rightAxis = glm::normalize(glm::cross(m_worldUpAxis, m_direction));
-    m_upAxis = glm::cross(m_direction, m_rightAxis);
+	// Updating the camera's target:
+	m_target = m_cameraFrontAxis;
 
+	// Getting the normalised direction from the position and target.
+	m_direction = glm::normalize(m_position - m_target);
+	
+	// Getting the camera's normalised right axis, from the cross product of the world up and direction.
+	m_cameraRightAxis = glm::normalize(glm::cross(m_worldUpAxis, m_direction));
+
+	// Getting the camera's up axis from the cross product of the direction and camera's right axis.
+    m_cameraUpAxis = glm::cross(m_direction, m_cameraRightAxis);
+
+	// Updating the mouse input if the mouse is locked:
 	if (m_application->getMouseLock())
 		updateMouseInput(deltaTime);
 
+	// Updating the movement input:
 	updateKeyboardInput(deltaTime);
-
-	setPosition(m_position);
 }
 
 void Camera::setPerspective(float fov, float ratio, float near_, float far_)
 {
+	// Using the glm function to set the new perspective transfrom:
 	m_projectionTransform = glm::perspective(fov, ratio, near_, far_);
 }
 
 void Camera::setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
 {
+	// Setting the view transform with glm's lookAtFunction:
 	m_viewTransform = glm::lookAt(from, to, up);
+
+	// Setting the world transform to be the inverse of the view transform:
 	m_worldTransform = glm::inverse(m_viewTransform);
-	updateProjectionViewTransform();
+
+	// Updating the projection view transform:
+	UpdateProjectionViewTransform();
 }
 
 void Camera::setPosition(glm::vec3 position)
 {
+	// Setting the view transform from position, to position + target via the world up axis.
 	m_viewTransform = glm::lookAt(position, position + m_target, m_worldUpAxis);
+
+	// Setting the world transform to be in inverse of the view transform:
 	m_worldTransform = glm::inverse(m_viewTransform);
-	updateProjectionViewTransform();
+
+	// Updating the projection view transform:
+	UpdateProjectionViewTransform();
 }
 
-void Camera::updateProjectionViewTransform()
+void Camera::UpdateProjectionViewTransform()
 {
+	// Multiplying the projection and view transforms to give us the projection view transform.
 	m_projectionViewTransform = m_projectionTransform * m_viewTransform;
 }
 
 void Camera::updateKeyboardInput(float deltaTime)
 {
+	/* Checking for keypresses and updating the position variable: */
+
+	// Forwards:
 	if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
-		m_position += m_movementSpeed * m_frontAxis * deltaTime;
-
+		m_position += m_movementSpeed * m_cameraFrontAxis * deltaTime;
+	// Backwards:
 	if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
-		m_position -= m_movementSpeed * m_frontAxis * deltaTime;
-
+		m_position -= m_movementSpeed * m_cameraFrontAxis * deltaTime;
+	// Left:
 	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
-		m_position -= glm::normalize(glm::cross(m_frontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
-
+		m_position -= glm::normalize(glm::cross(m_cameraFrontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
+	// Right:
 	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
-		m_position += glm::normalize(glm::cross(m_frontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
-
+		m_position += glm::normalize(glm::cross(m_cameraFrontAxis, m_worldUpAxis)) * m_movementSpeed * deltaTime;
+	// Up:
 	if (glfwGetKey(m_window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		m_position += m_movementSpeed * m_worldUpAxis * deltaTime;
-
+	// Down:
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		m_position -= m_movementSpeed * m_worldUpAxis * deltaTime;
-
+	
+	// Setting the movement speed to fast on keydown:
 	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		m_movementSpeed = m_movementFastSpeed;
 	else
+		// Default speed otherwise:
 		m_movementSpeed = m_defaultSpeed;
 
+	// Setting the mouse lock function based on either keypress:
 	if (glfwGetKey(m_window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		m_application->setMouseLock(false);
 
 	if (glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
 		m_application->setMouseLock(true);
+
+	// Setting the updated position:
+	setPosition(m_position);
 }
 
 void Camera::updateMouseInput(float deltaTime)
@@ -172,7 +202,7 @@ void Camera::updateMouseInput(float deltaTime)
 	direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 	direction.y = sin(glm::radians(m_pitch));
 	direction.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_frontAxis = glm::normalize(direction);
+	m_cameraFrontAxis = glm::normalize(direction);
 }
 
 glm::mat4 Camera::getWorldTransform()
@@ -197,6 +227,7 @@ glm::mat4 Camera::getProjectionView()
 
 void Camera::updateMatricies()
 {
+	// Setting the view transform to be the inverse of the world transform:
 	m_viewTransform = glm::inverse(m_worldTransform);
 }
 

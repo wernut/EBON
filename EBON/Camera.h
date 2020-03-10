@@ -10,21 +10,20 @@
 #pragma once
 #include "GameManager.h"
 
-
 class Camera
 {
 public:
-	/*
-		Main Consturctor:
-	*/
+	/* Main Consturctor: */
 	Camera();
-	/*
-		Virutal destructor:
-	*/
+
+	/* Virutal destructor: */
 	virtual ~Camera();
 
-	// Updates transforms, axis and input:
+	// Updates transforms, axis and movement input:
 	void Update(float deltaTime);
+
+	// Updates the projection view transform:
+	void UpdateProjectionViewTransform();
 
 	// Sets the cameras perspective:
 	void setPerspective(float fov, float ratio, float near_, float far_);
@@ -34,9 +33,6 @@ public:
 
 	// Sets the cameras position:
 	void setPosition(glm::vec3 position);
-
-	// Updates the projection view transform:
-	void updateProjectionViewTransform();
 
 	// Updates the cameras view transform to be the inverse of the world trasform:
 	void updateMatricies();
@@ -90,25 +86,27 @@ private:
 	const float m_NEARPLANE = 0.1f;
 	const float m_FARPLANE = 150.0f;
 
-	// Fly camera movement variables:
+	/* Fly camera variables */
+	// ~ Movement:
 	float m_movementSpeed, m_movementFastSpeed, m_sensitivity;
 	float m_defaultSpeed, m_defaultMovementFastSpeed, m_defaultSensitivity;
+	// ~ Mouse input:
 	float m_pitch, m_yaw;
+	float m_minPitch, m_maxPitch;
 	double m_mouseX, m_mouseY;
 	double m_mouseLastX, m_mouseLastY;
-	float m_minPitch, m_maxPitch;
-	bool m_firstTimeEnter;
+	bool m_firstTimeEnter; // First time the mouse is entering the window?
+
+	// Axis:
+	glm::vec3 m_worldUpAxis;
+	glm::vec3 m_cameraRightAxis;
+	glm::vec3 m_cameraUpAxis;
+	glm::vec3 m_cameraFrontAxis;
 
 	// Position / Rotation:
 	glm::vec3 m_direction;
 	glm::vec3 m_target;
 	glm::vec3 m_position;
-
-	// Axis:
-	glm::vec3 m_worldUpAxis;
-	glm::vec3 m_rightAxis;
-	glm::vec3 m_upAxis;
-	glm::vec3 m_frontAxis;
 
 	// Transforms:
 	glm::mat4 m_worldTransform;

@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       GameObject.h & GameObject.cpp
+ * Purpose:     To simulate an object in world space.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "GameObject.h"
 
 GameObject::GameObject(Model* model)

@@ -1,8 +1,19 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Mesh.h & Mesh.cpp
+ * Purpose:     Holds the location of a mesh on the GPU.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
+
 #include "Mesh.h"
 #include "GameManager.h"
 
 Mesh::Mesh()
 {
+	// Initialising all variables to 0/null:
 	m_vertexCount = 0;
 	m_indexCount = 0;
 	m_triCount = 0;
@@ -15,6 +26,7 @@ Mesh::Mesh()
 
 Mesh::Mesh(Mesh* &mesh)
 {
+	// Initialising all variables other mesh's varaibles:
 	m_vertexCount = mesh->m_vertexCount;
 	m_indexCount = mesh->m_indexCount;
 	m_triCount = mesh->m_triCount;
@@ -28,6 +40,7 @@ Mesh::Mesh(Mesh* &mesh)
 
 Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint* indices)
 {
+	// Initialising all variables to passed paramenters:
 	m_vertexCount = vertexCount;
 	m_indexCount = indexCount;
 	m_triCount = indexCount / 3;
@@ -36,32 +49,44 @@ Mesh::Mesh(uint vertexCount, const Vertex* vertices, uint indexCount, const uint
 	m_VAO = 0;
 	m_VBO = 0;
 	m_IBO = 0;
+
+	// Storing all data on the GPU.
 	storeOnGPU();
 }
 
 Mesh::Mesh(aie::OBJMesh::MeshChunk chunk)
 {
+	// Initialising all buffer object variables to passed chunk:
 	m_vertices = nullptr;
 	m_indices = nullptr;
+	m_vertexCount = 0;
 	m_indexCount = chunk.indexCount;
 	m_triCount = m_indexCount / 3;
 	m_VAO = chunk.vao;
 	m_VBO = chunk.vbo;
 	m_IBO = chunk.ibo;
-	m_vertexCount = 0;
 }
 
 Mesh::~Mesh()
 {
+	// Deleting the buffer objects:
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_IBO);
 
-	if(m_vertices)
+	// Deleting the vertices:
+	if (m_vertices)
+	{
 		delete[] m_vertices;
+		m_vertices = nullptr;
+	}
 
-	if(m_indices)
+	// Deleting the indices:
+	if (m_indices)
+	{
 		delete[] m_indices;
+		m_indices = nullptr;
+	}
 }
 
 void Mesh::storeOnGPU()
@@ -121,7 +146,7 @@ void Mesh::storeOnGPU()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Mesh::render()
+void Mesh::Render()
 {
 	// Drawing either by indices or vertices:
 	glBindVertexArray(m_VAO);

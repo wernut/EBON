@@ -46,7 +46,7 @@ void RawModel::render(Camera* camera)
 	m_shader->bind();
 	m_shader->setMatrix4("projection_view_matrix", camera->getProjectionView());
 	m_shader->setMatrix4("model_matrix", m_transform);
-	m_mesh->render();
+	m_mesh->Render();
 	m_shader->unbind();
 }
 

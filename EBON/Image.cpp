@@ -1,5 +1,15 @@
-#include "Image.h"
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Image.h & Image.cpp
+ * Purpose:     To repesent an image, and hold the necessary information needed
+ *				for rendering.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 
+#include "Image.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" 
 
@@ -9,12 +19,12 @@ Image::Image(const char* textureLocation, GLenum format)
 	m_gl_format = format;
 
 	// Load texture from location:
-	m_gl_handle = load(textureLocation);
+	m_gl_handle = Load(textureLocation);
 }
 
 Image::~Image() {}
 
-uint Image::load(const char* textureLocation)
+uint Image::Load(const char* textureLocation)
 {
 	// Generating a new texture with OpenGL and storing it in an unsigned int:
 	uint texture;
