@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Camera.h & Camera.cpp
+ * Purpose:     To serve as a perspective renderer.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "Camera.h"
 #include <cmath>
 #include <iostream>
@@ -50,7 +59,7 @@ Camera::Camera()
 
 Camera::~Camera() {}
 
-void Camera::update(float deltaTime) 
+void Camera::Update(float deltaTime) 
 {
 	m_target = m_frontAxis;
 	m_direction = glm::normalize(m_position - m_target);
@@ -91,7 +100,6 @@ void Camera::updateProjectionViewTransform()
 
 void Camera::updateKeyboardInput(float deltaTime)
 {
-
 	if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
 		m_position += m_movementSpeed * m_frontAxis * deltaTime;
 
@@ -125,7 +133,7 @@ void Camera::updateKeyboardInput(float deltaTime)
 void Camera::updateMouseInput(float deltaTime)
 {
 	// Get cursor pos:
-	float xPos, yPos;
+	double xPos, yPos;
 	m_application->getMousePos(xPos, yPos);
 
 	// Checking if this is the first time the window has been in focus:

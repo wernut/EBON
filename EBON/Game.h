@@ -38,6 +38,7 @@ private:
 	// ImGui vars:
 	ImVec4 m_modelTintColor;
 	float m_movementSpeed, m_movementFastSpeed, m_sensitivity;
+	int m_modelListIndex;
 
 	// Key press timer:
 	bool m_canReload;
@@ -45,5 +46,6 @@ private:
 
 	void initModels();
 	void renderImGui();
+	int wrap(int& index, int min, int max);
 };
 

@@ -37,6 +37,7 @@ Game::Game()
     // Initalising vars:
     m_canReload = true;
     m_reloadTimer = 0.0f;
+    m_modelListIndex = 0;
 
 }
 
@@ -105,6 +106,7 @@ void Game::initModels()
         int pos = -1;
         if (i == 0)
             pos = 1;
+
         glm::vec3 position = glm::vec3(pos * 4, 7.0f, 0.0f);
 
         m_modelLights[i] = new ModelLight(new RawModel(Primitives::generateCube(), ShaderManager::E_DEFAULT),
@@ -181,20 +183,28 @@ void Game::renderImGui()
         m_camera->setMovementFastSpeed(m_movementFastSpeed);
         m_camera->setSensitivity(m_sensitivity);
     }
-
     ImGui::End();   // Camera adjustments:
 
     // Model adjustments window:
     ImGui::Begin("Model Adjustments");
-    ImGui::ColorEdit3("Model Tint Color", (float*)&m_modelTintColor);
-
-    for (int i = 0; i < 4; ++i)
+    
+    if (ImGui::Button("Increase Index"))
     {
-        ShaderProgram* modelShader = m_modelList[i]->getShader();
-        glm::vec3 lightColor = glm::vec3(m_modelTintColor.x, m_modelTintColor.y, m_modelTintColor.z);
-        modelShader->bind();
-        modelShader->setVector3("color", lightColor);
+        ++m_modelListIndex;
+        m_modelListIndex = wrap(m_modelListIndex, 0, 3);
     }
+
+    ImGui::SameLine();
+    ImGui::Text("%i", m_modelListIndex);
+
+    ImGui::Text("Model Shader Properties");
+    ImGui::ColorEdit3("Tint", (float*)&m_modelTintColor);
+
+    ShaderProgram* modelShader = m_modelList[m_modelListIndex]->getShader();
+    glm::vec3 lightColor = glm::vec3(m_modelTintColor.x, m_modelTintColor.y, m_modelTintColor.z);
+    modelShader->bind();
+    modelShader->setVector3("color", lightColor);
+
     ImGui::End(); // Model adjustments window:
 
     ImGui::Render();
@@ -250,7 +260,7 @@ void Game::update()
         m_earthModel->addRotation(0.006f, glm::vec3(0.0f, 0.0f, 1.0f));
 
         // Updating the camera class:
-        m_camera->update(deltaTime);
+        m_camera->Update(deltaTime);
 
         // Rendering everything:
         render();
@@ -268,21 +278,37 @@ void Game::render()
         m_modelLights[i]->render(m_camera);
     }
 
+    // Models:
+    for (int i = 0; i < 4; ++i)
+    {
+        m_modelList[i]->render(m_camera);
+    }
+
     // Earth
-    m_earthModel->render(m_camera);
+    //m_earthModel->render(m_camera);
 
     // Ivysaur
-    m_ivyModel->render(m_camera);
+    //m_ivyModel->render(m_camera);
 
     // Sheild
-    m_shieldModel->render(m_camera);
+    //m_shieldModel->render(m_camera);
 
     // Sword
-    m_swordModel->render(m_camera);
+    //m_swordModel->render(m_camera);
 
     // Render ImGui:
     renderImGui();
 
     // Swapping the buffers:
     m_application->SwapBuffers();
+}
+
+int Game::wrap(int& index, int min, int max)
+{
+    if (index > max)
+        index = min;
+    else if (index < min)
+        index = min;
+
+    return index;
 }

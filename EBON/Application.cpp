@@ -1,5 +1,16 @@
-#include "Application.h"
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Application.h & Application.cpp
+ * Purpose:     Initialise GLFW & ImGUI. Keep track of deltaTime, FPS,
+ *				gameOver state and the resizing of the window. 
+ *				Also serves as a wrapper for some OpenGL calls.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 
+#include "Application.h"
 
 Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
@@ -39,7 +50,6 @@ Application::~Application()
 	}
 }
 
-// Initialising the GLFW window: 
 int Application::InitWindow(const char* gameTitle, const float windowWidth, const float windowHeight)
 {
 	// Initalise GLFW.
@@ -72,7 +82,6 @@ int Application::InitWindow(const char* gameTitle, const float windowWidth, cons
 	return 0;
 }
 
-// Initalise ImGUI:
 void Application::InitImGui()
 {
 	// Setting context to current window:
@@ -83,7 +92,6 @@ void Application::InitImGui()
 	ImGui::StyleColorsDark();
 }
 
-// Updating the application, should be called every frame:
 void Application::Update()
 {
 	// Updating deltaTime;
@@ -108,23 +116,26 @@ void Application::Update()
 	int display_w, display_h;
 	glfwGetFramebufferSize(m_window, &display_w, &display_h);
 	glViewport(0, 0, display_w, display_h);
+	m_windowWidth = display_w;
+	m_windowHeight = display_h;
 }
 
-// Printing the OpenGL version to the console:
 void Application::PrintOpenGLVersion()
 {
+	// Getting the major and minor version of OpenGL:
 	auto major = ogl_GetMajorVersion();
 	auto minor = ogl_GetMinorVersion();
+
+	// Printing them to the console:
 	printf("GL: %i.%i\n", major, minor);
 }
 
-// Wrapper for the VSync flag:
 void Application::SetVSync(bool enabled)
 {
+	// Using the GLFW function to set VSync:
 	glfwSwapInterval(enabled);
 }
 
-// Getters and setters:
 double Application::getDeltaTime()
 {
 	return m_deltaTime;
@@ -147,6 +158,7 @@ bool Application::isGameOver()
 
 bool Application::hasWindowClosed()
 {
+	// Checking if the current window has closed with GLFW:
 	return glfwWindowShouldClose(m_window) == GL_TRUE;
 }
 
@@ -157,16 +169,19 @@ void Application::setGameOver(bool value)
 
 void Application::SwapBuffers()
 {
+	// Swapping the windows buffers:
 	glfwSwapBuffers(m_window);
 }
 
 void Application::ClearBuffers()
 {
+	// Clearing the depth and color buffer:
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
 
 void Application::PollEvents()
 {
+	// Polls current context events:
 	glfwPollEvents();
 }
 
@@ -185,23 +200,31 @@ float Application::getWindowHeight()
 	return m_windowHeight;
 }
 
-void Application::getMousePos(float& xPos, float& yPos)
+void Application::getMousePos(double& xPos, double& yPos)
 {
+	// Creating 2 doubles to hold the x and y pos:
 	double _xPos, _yPos;
+
+	// Getting the positions:
 	glfwGetCursorPos(m_window, &_xPos, &_yPos);
+
+	// Setting the passed values to the new positions:
 	xPos = _xPos;
 	yPos = _yPos;
 }
 
 void Application::ClearColor(float r, float g, float b, float a)
 {
+	// Clearing the color with the OpenGL call:
 	glClearColor(r, g, b, a);
 }
 
 void Application::ToggleWiremeshMode()
 {
+	// Setting the wiremesh flag to the flag parameter:
 	m_wireMeshMode = !m_wireMeshMode;
 
+	// Setting the wiremesh mode to either line or fill, based on that flag:
 	if (m_wireMeshMode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
@@ -215,8 +238,10 @@ bool Application::getMouseLock()
 
 void Application::setMouseLock(bool value)
 {
+	// Setting the mouse locked flag to the flag parameter:
 	m_bIsMouseLocked = value;
 
+	// Setting the input mode to either disabled or normal, based on that flag:
 	if(m_bIsMouseLocked)
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	else
@@ -225,7 +250,8 @@ void Application::setMouseLock(bool value)
 
 void Application::toggleMouseLock()
 {
+	// Setting the mouse locked flag to it's opposite value:
 	m_bIsMouseLocked = !m_bIsMouseLocked;
-
+	// Using the mouseLock function with the new value:
 	setMouseLock(m_bIsMouseLocked);
 }
