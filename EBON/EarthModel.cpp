@@ -1,3 +1,13 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       DEMONSTRATION MODEL!
+ * Purpose:     An object of a particular object, to demonstrate a lit model
+ *              within a scene.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "EarthModel.h"
 #include "Primitives.h"
 
@@ -11,4 +21,3 @@ EarthModel::EarthModel(DirectionalLight* dirLight, ModelLight** modelLights) : M
 
 EarthModel::~EarthModel() {}
 
-void EarthModel::update(float deltaTime) {}

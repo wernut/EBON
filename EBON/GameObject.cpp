@@ -57,7 +57,7 @@ void GameObject::render(Camera* camera)
 void GameObject::UpdateGlobalTransform()
 {
 	if (m_parent)
-		m_globalTransform = m_parent->m_globalTransform * m_model->m_transform;
+		m_globalTransform = m_parent->m_globalTransform * m_model->getTransform();
 	else
 		m_globalTransform = m_model->getTransform();
 }
@@ -80,7 +80,7 @@ void GameObject::setParent(GameObject* parent)
 
 glm::mat4 GameObject::getLocalTransform()
 {
-	return m_model->m_transform;
+	return m_model->getTransform();
 }
 
 glm::mat4 GameObject::getGlobalTransform()
@@ -91,29 +91,29 @@ glm::mat4 GameObject::getGlobalTransform()
 // sets locals:
 void GameObject::setPosition(glm::vec3 position)
 {
-	std::cout << " + before translation: " << std::endl;
-	printTransfom(m_model->m_transform);
+	//std::cout << " + before translation: " << std::endl;
+	//printTransfom(m_model->m_transform);
 
-	m_model->m_transform = glm::translate(m_model->m_transform, position);
+	//m_model->m_transform = glm::translate(m_model->m_transform, position);
 
-	std::cout << " + after translation: " << std::endl;
-	printTransfom(m_model->m_transform);
+	//std::cout << " + after translation: " << std::endl;
+	//printTransfom(m_model->m_transform);
 }
 
 // Try to only set one axis at a time, or else the get values will be messed up.
 // TODO: Extract the rotation from the transformation matrix correctly.
 void GameObject::setRotation(float angle, glm::vec3 axis)
 {
-	// Store rotation:
-	if (axis.x > 0)
-		m_rotationX = angle;
-	else if (axis.y > 0)
-		m_rotationY = angle;
-	else if (axis.z > 0)
-		m_rotationZ = angle;
+	//// Store rotation:
+	//if (axis.x > 0)
+	//	m_rotationX = angle;
+	//else if (axis.y > 0)
+	//	m_rotationY = angle;
+	//else if (axis.z > 0)
+	//	m_rotationZ = angle;
 
-	// Rotate transform:
-	m_model->m_transform = glm::rotate(m_model->m_transform, glm::radians(angle), axis);
+	//// Rotate transform:
+	//m_model->getTransform() = glm::rotate(m_model->m_transform, glm::radians(angle), axis);
 }
 
 // TODO: Fix scaling! Avoid this function as much as possible for the time being.

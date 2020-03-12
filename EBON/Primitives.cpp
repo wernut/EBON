@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       Primitives.h & Primitives.cpp
+ * Purpose:     Static class that holds functions for geometry generation:
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
@@ -171,7 +180,7 @@ Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 	std::vector<uint>      index_buffer;
 	uint vertexAndUVCount = 0;
 	uint indexCount = 0;
-	float elevation = 0;
+	double elevation = 0;
 
 	siv::PerlinNoise perlin(seed);
 
@@ -184,13 +193,11 @@ Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 			{
 				double nx = i / size - 0.5;
 				double ny = j / size - 0.5;
-				elevation = 1  * perlin.noise(1 * nx, 1 * ny);
-					   +  0.5  * perlin.noise(2 * nx, 2 * ny);
-					   +  0.25 * perlin.noise(4 * nx, 4 * ny);
+				elevation = 1  * perlin.noise(1 * nx, 1 * ny)
+					   +  (0.5  * perlin.noise(2 * nx, 2 * ny))
+					   +  (0.25 * perlin.noise(4 * nx, 4 * ny));
 
 				elevation *= 10;
-
-				// std::cout << elevation << std::endl;
 			}
 
 			// Creating vertices & uv coords:
@@ -201,13 +208,13 @@ Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 			if (i == 0 || j == 0) continue;
 
 			// Creating indices:
-			index_buffer.push_back(size * i + j);				//Top right
-			index_buffer.push_back(size * i + (j - 1));		    //Bottom right
-			index_buffer.push_back(size * (i - 1) + (j - 1));	//Bottom left - First triangle
+			index_buffer.push_back(uint(size * i + j));				//Top right
+			index_buffer.push_back(uint(size * i + (j - 1)));		    //Bottom right
+			index_buffer.push_back(uint(size * (i - 1) + (j - 1)));	//Bottom left - First triangle
 
-			index_buffer.push_back(size * (i - 1) + (j - 1));	//Bottom left 
-			index_buffer.push_back(size * (i - 1) + j);		    //Top left
-			index_buffer.push_back(size * i + j);				//Top right - Second triangle
+			index_buffer.push_back(uint(size * (i - 1) + (j - 1)));	//Bottom left 
+			index_buffer.push_back(uint(size * (i - 1) + j));		    //Top left
+			index_buffer.push_back(uint(size * i + j));				//Top right - Second triangle
 		}
 	}
 
@@ -230,23 +237,32 @@ Mesh* Primitives::generatePlane(float size, bool perlinY, uint seed)
 
 uint* Primitives::vectorToUintArray(std::vector<uint> index_buffer, uint& indexCount)
 {
-	indexCount = index_buffer.size();
+	// Creating standard array:
+	indexCount = uint(index_buffer.size());
 	uint* indices = new uint[indexCount];
+
+	// Filling the array with the vector data:
 	for (size_t i = 0; i < indexCount; ++i)
 	{
 		indices[i] = index_buffer[i];
 	}
+
+	// Returning the array.
 	return indices;
 }
 
 Mesh::Vertex* Primitives::vectorToVertexArray(std::vector<glm::vec4> vertex_buffer, std::vector<glm::vec2> uv_buffer, uint& vertexCount)
 {
+	// Creating standard array:
 	Mesh::Vertex* vertices = new Mesh::Vertex[vertexCount];
+
+	// Filling the array with the vector data:
 	for (uint i = 0; i < vertexCount; ++i)
 	{
 		vertices[i].position = vertex_buffer[i];
 		vertices[i].texCoord = uv_buffer[i];
 	}
 
+	// Returning the array.
 	return vertices;
 }

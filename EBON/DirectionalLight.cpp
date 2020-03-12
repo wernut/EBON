@@ -2,6 +2,7 @@
 
 DirectionalLight::DirectionalLight()
 {
+	// Initialising the properties to 0.
 	m_direction = glm::vec3(0.0f);
 	m_diffuse = glm::vec3(0.0f);
 	m_specular = glm::vec3(0.0f);
@@ -10,6 +11,7 @@ DirectionalLight::DirectionalLight()
 
 DirectionalLight::DirectionalLight(glm::vec3 dir, glm::vec3 dif, glm::vec3 spe, glm::vec3 amb)
 {
+	// Initialising the properties to the passed values:
 	m_direction = dir;
 	m_diffuse = dif;
 	m_specular = spe;

@@ -28,7 +28,7 @@ Game::Game()
     m_sensitivity = m_camera->getSensitivity();
 
     // Initalising the models:
-    initModels();
+    InitModels();
 
     // Creating a pointer to the GLFWwindow:
     m_window = m_application->getWindow();
@@ -37,24 +37,16 @@ Game::Game()
     // Initalising vars:
     m_canReload = true;
     m_reloadTimer = 0.0f;
-    m_modelListIndex = 0;
-
 }
 
 Game::~Game() 
 {
     // Destroying the models:
-    delete m_earthModel;
-    m_earthModel = nullptr;
-
-    delete m_ivyModel;
-    m_ivyModel = nullptr;
-
-    delete m_shieldModel;
-    m_shieldModel = nullptr;
-
-    delete m_swordModel;
-    m_swordModel = nullptr;
+    for (int i = 0; i < 4; ++i)
+    {
+        delete m_modelList[i];
+        m_modelList[i] = nullptr;
+    }
 
     delete[] m_modelList;
     
@@ -75,7 +67,7 @@ Game::~Game()
     GameManager::Destroy();
 }
 
-void Game::run()
+void Game::Run()
 {
     if (m_application)
     {
@@ -89,11 +81,11 @@ void Game::run()
         glEnable(GL_DEPTH_TEST);
 
         // Update game:
-        update();
+        Update();
     }
 }
 
-void Game::initModels()
+void Game::InitModels()
 {
     // Directional light properties
     m_dirLight = new DirectionalLight({ 0.0f, 1.0f, 0.0f }, glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.15f));
@@ -115,39 +107,36 @@ void Game::initModels()
         m_modelLights[i]->getModel()->setScale(glm::vec3(0.2f));
     }
 
+    // Initialising the model list:
+    m_modelList = new Model * [4];
+
     // Earth
-    m_earthModel = new EarthModel(m_dirLight, m_modelLights);
-    m_earthModel->addPosition(glm::vec3(0.0f, 3.0f, 0.0f));
-    m_earthModel->addRotation(270.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_modelList[0] = new EarthModel(m_dirLight, m_modelLights);
+    m_modelList[0]->addPosition(glm::vec3(0.0f, 3.0f, 0.0f));
+    m_modelList[0]->addRotation(270.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Ivysaur
-    m_ivyModel = new IvysaurModel(m_dirLight, m_modelLights);
+    m_modelList[1] = new IvysaurModel(m_dirLight, m_modelLights);
 
     // Sword and shield:
     if (!swordAndShield.load("..\\Models\\SwordAndShield\\meshSwordShield.obj"))
         std::cout << "ERROR_LOADING_SWORD&SHIELD_MODEL_" << std::endl;
 
     // Extracting shield from obj:
-    m_shieldModel = new ShieldModel(swordAndShield.m_meshChunks[0], m_dirLight, m_modelLights);
-    m_shieldModel->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    m_shieldModel->addPosition(glm::vec3(0.0f, 5.0f, 0.0f));
-    m_shieldModel->setScale(glm::vec3(0.5f));
+    m_modelList[2] = new ShieldModel(swordAndShield.m_meshChunks[0], m_dirLight, m_modelLights);
+    m_modelList[2]->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_modelList[2]->addPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+    m_modelList[2]->setScale(glm::vec3(0.5f));
 
     // Extracting sword from obj:
-    m_swordModel = new SwordModel(swordAndShield.m_meshChunks[1], m_dirLight, m_modelLights);
-    m_swordModel->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    m_swordModel->addPosition(glm::vec3(0.0f, 7.0f, 0.0f));
-    m_swordModel->setScale(glm::vec3(0.5f));
-
-    m_modelList = new Model * [4];
-    m_modelList[0] = m_earthModel;
-    m_modelList[1] = m_ivyModel;
-    m_modelList[2] = m_shieldModel;
-    m_modelList[3] = m_swordModel;
+    m_modelList[3] = new SwordModel(swordAndShield.m_meshChunks[1], m_dirLight, m_modelLights);
+    m_modelList[3]->addRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    m_modelList[3]->addPosition(glm::vec3(0.0f, 7.0f, 0.0f));
+    m_modelList[3]->setScale(glm::vec3(0.5f));
 
 }
 
-void Game::renderImGui()
+void Game::RenderImGui()
 {
     // ImGUI
     ImGui_ImplOpenGL3_NewFrame();
@@ -158,6 +147,8 @@ void Game::renderImGui()
     ImGui::Begin("Information");
     ImGui::Text("[ENTER] to unlock cursor.");
     ImGui::Text("[RSHIFT] to lock cursor.");
+    ImGui::Text("[NUMPUD 1] to reload shaders.");
+    ImGui::Text("[NUMPUD 2] to toggle wiremesh mode.");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::End();   // Info window:
 
@@ -187,23 +178,17 @@ void Game::renderImGui()
 
     // Model adjustments window:
     ImGui::Begin("Model Adjustments");
-    
-    if (ImGui::Button("Increase Index"))
-    {
-        ++m_modelListIndex;
-        m_modelListIndex = wrap(m_modelListIndex, 0, 3);
-    }
-
-    ImGui::SameLine();
-    ImGui::Text("%i", m_modelListIndex);
 
     ImGui::Text("Model Shader Properties");
     ImGui::ColorEdit3("Tint", (float*)&m_modelTintColor);
 
-    ShaderProgram* modelShader = m_modelList[m_modelListIndex]->getShader();
-    glm::vec3 lightColor = glm::vec3(m_modelTintColor.x, m_modelTintColor.y, m_modelTintColor.z);
-    modelShader->bind();
-    modelShader->setVector3("color", lightColor);
+    for (int i = 0; i < 4; ++i)
+    {
+        ShaderProgram* modelShader = m_modelList[i]->getShader();
+        glm::vec3 lightColor = glm::vec3(m_modelTintColor.x, m_modelTintColor.y, m_modelTintColor.z);
+        modelShader->bind();
+        modelShader->setVector3("color", lightColor);
+    }
 
     ImGui::End(); // Model adjustments window:
 
@@ -211,7 +196,7 @@ void Game::renderImGui()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
   
-void Game::update()
+void Game::Update()
 {
     // Main game loop:
     while (!m_application->hasWindowClosed() && !m_application->isGameOver())
@@ -234,7 +219,7 @@ void Game::update()
         // Reloading the shaders:
         if (glfwGetKey(m_window, GLFW_KEY_KP_1) == GLFW_PRESS && m_canReload)
         {
-            m_shaderManager->ReloadAllShaders();
+            m_shaderManager->ReloadActiveShaders();
             m_canReload = false;
         }
 
@@ -257,17 +242,17 @@ void Game::update()
         }
 
         // Rotating earth:
-        m_earthModel->addRotation(0.006f, glm::vec3(0.0f, 0.0f, 1.0f));
+        m_modelList[0]->addRotation(0.006f, glm::vec3(0.0f, 0.0f, 1.0f));
 
         // Updating the camera class:
         m_camera->Update(deltaTime);
 
         // Rendering everything:
-        render();
+        Render();
     }
 }
 
-void Game::render()
+void Game::Render()
 {
     // Clearing the buffers:
     m_application->ClearBuffers();
@@ -275,35 +260,23 @@ void Game::render()
     // Light cubes:
     for (int i = 0; i < 2; ++i)
     {
-        m_modelLights[i]->render(m_camera);
+        m_modelLights[i]->Render(m_camera);
     }
 
     // Models:
     for (int i = 0; i < 4; ++i)
     {
-        m_modelList[i]->render(m_camera);
+        m_modelList[i]->Render(m_camera);
     }
 
-    // Earth
-    //m_earthModel->render(m_camera);
-
-    // Ivysaur
-    //m_ivyModel->render(m_camera);
-
-    // Sheild
-    //m_shieldModel->render(m_camera);
-
-    // Sword
-    //m_swordModel->render(m_camera);
-
     // Render ImGui:
-    renderImGui();
+    RenderImGui();
 
     // Swapping the buffers:
     m_application->SwapBuffers();
 }
 
-int Game::wrap(int& index, int min, int max)
+int Game::Wrap(int& index, int min, int max)
 {
     if (index > max)
         index = min;

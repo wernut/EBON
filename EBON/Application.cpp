@@ -12,10 +12,10 @@
 
 #include "Application.h"
 
-Application::Application(const char* gameTitle, const float windowWidth, const float windowHeight)
+Application::Application(const char* gameTitle, const int screenWidth, const int screenHeight)
 {
 	// Creating GLFW window:
-	if (InitWindow(gameTitle, windowWidth, windowHeight) < 0) { return; }
+	if (InitWindow(gameTitle, screenWidth, screenHeight) < 0) { return; }
 
 	// Printing the version of OpenGL we are running:
 	PrintOpenGLVersion();
@@ -50,14 +50,14 @@ Application::~Application()
 	}
 }
 
-int Application::InitWindow(const char* gameTitle, const float windowWidth, const float windowHeight)
+int Application::InitWindow(const char* gameTitle, const int windowWidth, const int windowHeight)
 {
 	// Initalise GLFW.
 	if (glfwInit() == false)
 		return -1;
 
 	// Creating the window:
-	m_window = glfwCreateWindow((int)windowWidth, windowHeight, gameTitle, NULL, NULL);
+	m_window = glfwCreateWindow(windowWidth, windowHeight, gameTitle, NULL, NULL);
 
 	// Checking if the window was successfully created:
 	if (m_window == NULL)
@@ -190,12 +190,12 @@ GLFWwindow* Application::getWindow()
 	return m_window;
 }
 
-float Application::getWindowWidth()
+int Application::getWindowWidth()
 {
 	return m_windowWidth;
 }
 
-float Application::getWindowHeight()
+int Application::getWindowHeight()
 {
 	return m_windowHeight;
 }

@@ -1,10 +1,20 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       ShaderProgram.h & ShaderProgram.cpp
+ * Purpose:     Compiles and links a vertex and fragment shader.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
+
 #include "ShaderProgram.h"
 
 ShaderProgram::ShaderProgram(std::string vertexLocation, std::string fragmentLocation)
 {
 	// - Init vars:
-	m_bEffectStatus = false;
-	m_bIsInUse = false;
+	m_effectStatus = false;
+	m_isActive = false;
 
 	// - Storing the location of the files:
 	m_vertexLocation = vertexLocation;
@@ -34,10 +44,11 @@ ShaderProgram::ShaderProgram(std::string vertexLocation, std::string fragmentLoc
 
 ShaderProgram::~ShaderProgram()
 {
+	// Deleting and unlinking all shaders:
 	cleanUpShader();
 }
 
-uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
+uint ShaderProgram::loadShader(const char* fileLocation, GLint shaderType)
 {
 	// Loading vertex shader:
 	uint id = 0;
@@ -68,22 +79,22 @@ uint ShaderProgram::loadShader(const char* fileLocation, uint shaderType)
 
 // Virtual functions:
 
-void ShaderProgram::update(float deltaTime){}
+void ShaderProgram::Update(float deltaTime){}
 
-void ShaderProgram::toggleEffect(float args0, float args1, float args2) {}
+void ShaderProgram::ToggleEffect(float args0, float args1, float args2) {}
 
-void ShaderProgram::startEffect() {}
+void ShaderProgram::StartEffect() {}
 
-void ShaderProgram::stopEffect() {}
+void ShaderProgram::StopEffect() {}
 
-void ShaderProgram::resetEffect() {}
+void ShaderProgram::ResetEffect() {}
 
 uint ShaderProgram::getID()
 {
 	return m_shaderProgramID;
 }
 
-GLint ShaderProgram::checkSuccess(uint id)
+GLint ShaderProgram::checkSuccess(GLint id)
 {
 	// - Check the shader compiled:
 	GLint success = GL_FALSE;
@@ -192,6 +203,7 @@ bool ShaderProgram::Reload()
 
 void ShaderProgram::cleanUpShader()
 {
+	// Deattaching and the shaders and program:
 	glDetachShader(m_shaderProgramID, m_vertexID);
 	glDetachShader(m_shaderProgramID, m_fragmentID);
 	glDeleteShader(m_vertexID);
@@ -201,15 +213,15 @@ void ShaderProgram::cleanUpShader()
 
 bool ShaderProgram::GetEffectStatus()
 {
-	return m_bEffectStatus;
+	return m_effectStatus;
 }
 
-void ShaderProgram::SetInUse(bool value)
+void ShaderProgram::SetActive(bool value)
 {
-	m_bIsInUse = value;
+	m_isActive = value;
 }
 
-bool ShaderProgram::GetInUse()
+bool ShaderProgram::GetActive()
 {
-	return m_bIsInUse;
+	return m_isActive;
 }

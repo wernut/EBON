@@ -1,3 +1,13 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       DEMONSTRATION MODEL!
+ * Purpose:     An object of a particular object, to demonstrate a lit model
+ *              within a scene.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "ShieldModel.h"
 
 ShieldModel::ShieldModel(aie::OBJMesh::MeshChunk chunk, DirectionalLight* dirLight, ModelLight** modelLights) 
@@ -9,4 +19,3 @@ ShieldModel::ShieldModel(aie::OBJMesh::MeshChunk chunk, DirectionalLight* dirLig
 
 ShieldModel::~ShieldModel() {}
 
-void ShieldModel::update(float deltaTime) {}

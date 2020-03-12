@@ -16,7 +16,7 @@ Camera::Camera()
 	// Initialise fly camera movement variables:
 	m_movementSpeed = 3.5f;
 	m_movementFastSpeed = 10.0f;
-	m_sensitivity = 0.10f;
+	m_sensitivity = 70.0f;
 	m_defaultSpeed = m_movementSpeed;
 	m_defaultMovementFastSpeed = m_movementFastSpeed;
 	m_defaultSensitivity = m_sensitivity;
@@ -181,8 +181,8 @@ void Camera::updateMouseInput(float deltaTime)
 	m_mouseLastY = yPos;
 
 	// Multiplying the offsets by the sensitivity var:
-	(xOffset *= m_sensitivity) * deltaTime;
-	(yOffset *= m_sensitivity) * deltaTime;
+	xOffset *= (m_sensitivity * deltaTime);
+	yOffset *= (m_sensitivity * deltaTime);
 
 	// Adding offset values to the yaw and pitch:
 	m_yaw   += xOffset;

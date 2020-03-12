@@ -1,3 +1,13 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       DEMONSTRATION MODEL!
+ * Purpose:     An object of a particular object, to demonstrate a lit model
+ *              within a scene.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "IvysaurModel.h"
 
 IvysaurModel::IvysaurModel(DirectionalLight* dirLight, ModelLight** modelLights) : Model("..\\Models\\Ivysaur\\Pokemon.obj", dirLight, modelLights)
@@ -12,4 +22,3 @@ IvysaurModel::IvysaurModel(DirectionalLight* dirLight, ModelLight** modelLights)
 
 IvysaurModel::~IvysaurModel(){}
 
-void IvysaurModel::update(float deltaTime) {}

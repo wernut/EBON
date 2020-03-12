@@ -23,7 +23,7 @@ private:
 			~ windowWidth - Window width.
 			~ windowHeight - Window height.
 	*/
-	GameManager(const char* gameTitle, const float windowWidth, const float windowHeight);
+	GameManager(const char* gameTitle, const int screenWidth, const int screenHeight);
 	/*
 		Destructor:
 	*/
@@ -39,7 +39,7 @@ private:
 	ShaderManager* m_shaderManager;
 
 	// Create the application:
-	void CreateApplication(const char* gameTitle, const float windowWidth, const float windowHeight);
+	void CreateApplication(const char* gameTitle, const int screenWidth, const int screenHeight);
 
 	// Create the shader manager:
 	void CreateShaderManager();
@@ -53,11 +53,11 @@ public:
 			~ windowWidth - Window width.
 			~ windowHeight - Window height.
 	*/
-	static GameManager* Create(const char* gameTitle, const float windowWidth, const float windowHeight)
+	static GameManager* Create(const char* gameTitle, const int screenWidth, const int screenHeight)
 	{
 		if (!m_instance)
 		{
-			m_instance = new GameManager(gameTitle, windowWidth, windowHeight);
+			m_instance = new GameManager(gameTitle, screenWidth, screenHeight);
 			return m_instance;
 		}
 

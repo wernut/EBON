@@ -1,7 +1,17 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       PointLight.h & PointLight.cpp
+ * Purpose:     Serves as a point light, that sends light in each direction.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "PointLight.h"
 
 PointLight::PointLight()
 {
+	// Initialising the properties to 0.
 	m_position = glm::vec3(0.0f);
 	m_constant = 0.0f;
 	m_linear = 0.0f;
@@ -10,6 +20,7 @@ PointLight::PointLight()
 
 PointLight::PointLight(glm::vec3 pos, float c, float l, float q, glm::vec3 dif, glm::vec3 spe, glm::vec3 amb) : DirectionalLight(glm::vec3(0.0f), dif, spe, amb)
 {
+	// Initialising the values to the passed paramenters.
 	m_position = pos;
 	m_constant = c;
 	m_linear = l;

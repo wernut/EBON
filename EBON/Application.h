@@ -37,7 +37,7 @@ public:
 			~ screenWidth - Initial width of the screen.
 			~ screenHeight - Initial height of the screen.
 	*/
-	Application(const char* gameTitle, const float screenWidth, const float screenHeight);
+	Application(const char* gameTitle, const int screenWidth, const int screenHeight);
 
 	/*
 		Destructor:
@@ -95,10 +95,10 @@ public:
 	bool hasWindowClosed();
 
 	// Returns the current window width:
-	float getWindowWidth();
+	int getWindowWidth();
 
 	// Returns the current window height:
-	float getWindowHeight();
+	int getWindowHeight();
 
 	// Returns the mouse position within the window:
 	void getMousePos(double &xPos, double &yPos);
@@ -139,10 +139,10 @@ private:
 	bool m_bIsMouseLocked;
 
 	// Current window resolution:
-	float m_windowWidth, m_windowHeight;
+	int m_windowWidth, m_windowHeight;
 
 	// Initialises GLFW's window:
-	int InitWindow(const char* gameTitle, const float screenWidth, const float screenHeight);
+	int InitWindow(const char* gameTitle, const int screenWidth, const int screenHeight);
 
 	// Initialises ImGui:
 	void InitImGui();

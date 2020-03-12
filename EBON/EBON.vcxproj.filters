@@ -150,9 +150,6 @@
     <ClCompile Include="imgui_impl_opengl3.cpp">
       <Filter>Source Files\Imports\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderManager.h">
@@ -250,9 +247,6 @@
     </ClInclude>
     <ClInclude Include="imgui_impl_opengl3.h">
       <Filter>Header Files\Imports\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

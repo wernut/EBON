@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       ShaderProgram.h & ShaderProgram.cpp
+ * Purpose:     Compiles and links a vertex and fragment shader.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #pragma once
 #include "glm.hpp"
 #include "ext.hpp"
@@ -9,35 +18,31 @@ using uint = unsigned int;
 
 class ShaderProgram
 {
-private:
-	uint m_vertexID;
-	uint m_fragmentID;
-	uint m_shaderProgramID;
-	std::string m_vertexLocation, m_fragmentLocation;
-	uint loadShader(const char* fileLocation, uint shaderType);
-	GLint checkSuccess(uint id);
-	void cleanUpShader();
-
-protected:
-	bool m_bEffectStatus;
-	bool m_bIsInUse;
-
 public:
+	/* Main Constructor - Loads and links vertex and frament shader: 
+		~ std::string vertexLocation - Vertex Shader location.
+		~ std::string fragmentLocation - Fragment shader location. */
 	ShaderProgram(std::string vertexLocation, std::string fragmentLocation);
 
-	// virutal functions:
+	/* Virtual destructor: */
 	virtual ~ShaderProgram();
-	virtual void update(float deltaTime);
-	virtual void toggleEffect(float args0 = 0.0f, float args1 = 0.0f, float args2 = 0.0f);
-	virtual void startEffect();
-	virtual void stopEffect();
-	virtual void resetEffect();
+
+	// Virtual functions for derived classes:
+	//--
+	virtual void Update(float deltaTime);
+	virtual void ToggleEffect(float args0 = 0.0f, float args1 = 0.0f, float args2 = 0.0f);
+	virtual void StartEffect();
+	virtual void StopEffect();
+	virtual void ResetEffect();
+	//--
 
 	// Get the shader ID:
 	uint getID();
 
 	// Use the shader:
 	void bind();
+
+	// Stop using the shader:
 	void unbind();
 
 	// Uniform functions:
@@ -51,8 +56,46 @@ public:
 
 	// Function to reload the shader:
 	bool Reload();
-	void SetInUse(bool value);
-	bool GetInUse();
+
+	// Sets the shaders active status:
+	void SetActive(bool value);
+
+	// Returns the shaders active status:
+	bool GetActive();
+
+	// Returns the effect status of the shader:
 	bool GetEffectStatus();
+
+private:
+	// Location of vertex fragment on the GPU.
+	uint m_vertexID;
+
+	// Location of fragment shader on the GPU.
+	uint m_fragmentID;
+
+	// Location of linked shaders on the GPU.
+	uint m_shaderProgramID;
+
+	// Location of vertex and fragment shader on the drive:
+	std::string m_vertexLocation, m_fragmentLocation;
+
+	/* Function to load and compile either a vertex or fragment shader: 
+		~ const char* fileLocation - The location of the shader on the computer.
+		~ GLint shaderType - The type of shader we want to load. */
+	uint loadShader(const char* fileLocation, GLint shaderType);
+
+	/* Function to check if the shader compiled:
+		~ GLint id - The ID of the shader we want to check.*/
+	GLint checkSuccess(GLint id);
+
+	// Deattaches the shaders from the program and deletes them all.
+	void cleanUpShader();
+
+protected:
+	// Effect status of the shader.
+	bool m_effectStatus;
+
+	// Active flag for reloading purposes. (Is the shader being used?)
+	bool m_isActive;
 };
 

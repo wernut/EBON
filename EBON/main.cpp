@@ -1,3 +1,12 @@
+/*=============================================================================
+ * Project:     EBON Engine
+ * Version:     1.0
+ *
+ * Class:       main.cpp
+ * Purpose:     To hold the entry point of the program, and to start the game.
+ *
+ * Author:      Lachlan Wernert
+ *===========================================================================*/
 #include "Game.h"
 #include <crtdbg.h>
 
@@ -10,7 +19,7 @@ int main()
 
 	// Running the game:
 	Game* game = new Game();
-	game->run();
+	game->Run();
 
 	// Cleaning up the game:
 	delete game;

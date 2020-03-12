@@ -12,11 +12,11 @@
 
 GameManager* GameManager::m_instance = nullptr;
 
-GameManager::GameManager(const char* gameTitle, const float windowWidth, const float windowHeight)
+GameManager::GameManager(const char* gameTitle, const int screenWidth, const int screenHeight)
 {
 	// Creating the application:
 	m_application = nullptr;
-	CreateApplication(gameTitle, windowWidth, windowHeight);
+	CreateApplication(gameTitle, screenWidth, screenHeight);
 
 	// Creating the shader manager:
 	m_shaderManager = nullptr;
@@ -30,12 +30,12 @@ GameManager::~GameManager()
 	delete m_shaderManager;
 }
 
-void GameManager::CreateApplication(const char* gameTitle, const float windowWidth, const float windowHeight)
+void GameManager::CreateApplication(const char* gameTitle, const int screenWidth, const int screenHeight)
 {
 	// Initialising the application instance if the application pointer is null:
 	if (!m_application)
 	{
-		m_application = new Application(gameTitle, windowWidth, windowHeight);
+		m_application = new Application(gameTitle, screenWidth, screenHeight);
 	}
 	else
 		// Otherwise print an error message:

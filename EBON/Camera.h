@@ -13,7 +13,7 @@
 class Camera
 {
 public:
-	/* Main Consturctor: */
+	/* Default/Main Consturctor: */
 	Camera();
 
 	/* Virutal destructor: */
